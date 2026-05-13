@@ -13,7 +13,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final Key SECRET_KEY = Keys.hmacShaKeyFor("ChaveDeTeste".getBytes());
+    private final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     Date now = new Date();
     Date expirationDate = new Date(System.currentTimeMillis() + 1000 * 60 * 60); // 1 hora

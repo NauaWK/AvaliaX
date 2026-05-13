@@ -3,7 +3,7 @@ CREATE TABLE usuarios (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
     login VARCHAR(50) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
-    perfil ENUM('ROLE_ADMIN', 'ROLE_USER') NOT NULL
+    perfil ENUM('ADMIN', 'USER') NOT NULL
 );
 
 -- Tabela de Pacientes

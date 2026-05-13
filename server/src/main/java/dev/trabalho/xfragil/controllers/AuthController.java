@@ -7,8 +7,10 @@ import dev.trabalho.xfragil.security.jwt.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,20 +26,20 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody @Valid AuthRequestDTO authRequestDTO){
+    public ResponseEntity<?> login(@RequestBody @Valid AuthRequestDTO authRequestDTO){
 
-        //autentica credenciais
-        Authentication authentication = authenticationManager.authenticate(
+        try {
+            Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequestDTO.login(), authRequestDTO.password())
-        );
+            );
 
-        //pega o usuario autenticado
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            String jwt = jwtUtil.generateToken(userDetails);
 
-        // gera token
-        String jwt = jwtUtil.generateToken(userDetails);
-
-        return ResponseEntity.ok(new AuthResponseDTO(jwt));
+            return ResponseEntity.ok(new AuthResponseDTO(jwt));
+        } catch (UsernameNotFoundException | BadCredentialsException e) {
+            return ResponseEntity.status(401).body("Credenciais inválidas");
+        }
     }
 
     @GetMapping("/teste")

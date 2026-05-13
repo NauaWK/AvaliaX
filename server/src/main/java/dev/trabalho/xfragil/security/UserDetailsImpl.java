@@ -11,7 +11,7 @@ import java.util.List;
 
 public class UserDetailsImpl implements UserDetails {
 
-    private Users user;
+    private final Users user;
 
     public UserDetailsImpl(Users user) {
         this.user = user;
@@ -33,7 +33,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return user.getLogin();
     }
 
     @Override

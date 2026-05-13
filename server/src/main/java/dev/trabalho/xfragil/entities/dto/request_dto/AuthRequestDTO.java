@@ -7,7 +7,7 @@ public record AuthRequestDTO(
 
         @NotBlank
         @Size(max = 50)
-        String username,
+        String login,
 
         @NotBlank
         @Size(max = 255)

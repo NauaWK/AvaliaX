@@ -28,7 +28,7 @@ public class AuthController {
 
         //autentica credenciais
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequestDTO.username(), authRequestDTO.password())
+                new UsernamePasswordAuthenticationToken(authRequestDTO.login(), authRequestDTO.password())
         );
 
         //pega o usuario autenticado

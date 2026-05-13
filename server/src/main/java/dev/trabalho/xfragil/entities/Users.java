@@ -11,10 +11,10 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String login;
 
     @Column(name = "senha", nullable = false)
     private String password;
@@ -23,12 +23,12 @@ public class Users {
     @Column(name = "perfil", nullable = false)
     private Role role;
 
-    public String getUsername() {
-        return username;
+    public String getLogin() {
+        return login;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setLogin(String username) {
+        this.login = username;
     }
 
     public int getId() {

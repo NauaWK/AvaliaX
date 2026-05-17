@@ -2,6 +2,7 @@
 CREATE TABLE usuarios (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
     login VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(255) UNIQUE,
     senha VARCHAR(255) NOT NULL,
     perfil ENUM('ADMIN', 'USER') NOT NULL
 );

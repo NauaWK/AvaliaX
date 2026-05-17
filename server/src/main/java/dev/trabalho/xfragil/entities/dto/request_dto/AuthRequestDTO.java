@@ -5,12 +5,13 @@ import jakarta.validation.constraints.Size;
 
 public record AuthRequestDTO(
 
-        @NotBlank
-        @Size(max = 50)
+        @NotBlank(message = "O campo de login é obrigatório!")
+        @Size(max = 50, message = "O login não deve ultrapassar 50 caracteres!")
         String login,
 
-        @NotBlank
-        @Size(max = 255)
-        String password)
+        @NotBlank(message = "A senha é obrigatória!")
+        @Size(max = 255, message = "A senha não deve ultrapassar 255 caracteres!")
+        String senha
+        
+        ) {}
 
-{}

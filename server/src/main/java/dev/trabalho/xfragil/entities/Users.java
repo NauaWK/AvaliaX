@@ -26,6 +26,16 @@ public class Users {
     @Column(name = "perfil", nullable = false)
     private Role role;
     
+    public Users(){}
+
+    public Users(String login, String email, String password, Role role) 
+    {
+        this.login = login;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }  
+    
     public int getId() {
         return id;
     }

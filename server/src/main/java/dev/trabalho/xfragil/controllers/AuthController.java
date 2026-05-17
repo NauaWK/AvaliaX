@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -30,7 +30,7 @@ public class AuthController {
 
         try {
             Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequestDTO.login(), authRequestDTO.password())
+                new UsernamePasswordAuthenticationToken(authRequestDTO.login(), authRequestDTO.senha())
             );
 
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -38,7 +38,7 @@ public class AuthController {
 
             return ResponseEntity.ok(new AuthResponseDTO(jwt));
         } catch (UsernameNotFoundException | BadCredentialsException e) {
-            return ResponseEntity.status(401).body("Credenciais inválidas");
+            return ResponseEntity.status(401).body("Credenciais inválidas!");
         }
     }
 

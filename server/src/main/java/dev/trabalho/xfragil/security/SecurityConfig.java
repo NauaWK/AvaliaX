@@ -31,16 +31,16 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/auth/**").permitAll()
-                    .requestMatchers("/usuarios/**").hasRole("ADMIN")
-                    .requestMatchers("/pacientes/**").hasAnyRole("ADMIN", "USER")
+                    .requestMatchers("/api/auth/login").permitAll()
+                    .requestMatchers("/api/usuarios/**").hasRole("ADMIN")
+                    .requestMatchers("/api/pacientes/**").hasAnyRole("ADMIN", "USER")
 
-                    .requestMatchers(HttpMethod.POST, "/avaliacoes/**").hasRole("USER")
-                    .requestMatchers(HttpMethod.GET, "/avaliacoes/**").hasAnyRole("ADMIN", "USER")
-                    .requestMatchers(HttpMethod.PATCH, "/avaliacoes/**").hasAnyRole("ADMIN", "USER")
-                    .requestMatchers(HttpMethod.DELETE, "/avaliacoes/**").hasAnyRole("ADMIN", "USER")
+                    .requestMatchers(HttpMethod.POST, "/api/avaliacoes/**").hasRole("USER")
+                    .requestMatchers(HttpMethod.GET, "/api/avaliacoes/**").hasAnyRole("ADMIN", "USER")
+                    .requestMatchers(HttpMethod.PATCH, "/api/avaliacoes/**").hasAnyRole("ADMIN", "USER")
+                    .requestMatchers(HttpMethod.DELETE, "/api/avaliacoes/**").hasAnyRole("ADMIN", "USER")
 
-                    .requestMatchers("/relatorios/**").hasAnyRole("ADMIN", "USER")
+                    .requestMatchers("/api/avaliacoes/**").hasAnyRole("ADMIN", "USER")
                     .anyRequest().authenticated()
             )
 

@@ -42,9 +42,4 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/teste")
-    public String testar(){
-        return "eae";
-    }
-
 }

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AvaliaX — Acesso ao sistema</title>
+  <link rel="stylesheet" href="loginStyle.css" />
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Esquerda -->
+    <div class="left">
+      <div class="brand">AvaliaX</div>
+      <div class="tagline">
+        <h2>Triagem clínica<br>para Síndrome do X Frágil</h2>
+        <p>Avalie sinais, registre evidências e identifique pacientes com indicação de teste genético.</p>
+      </div>
+    </div>
+
+    <!-- Direita -->
+    <div class="right">
+      <h1>Acesso ao sistema</h1>
+      <p class="sub">Faça login ou cadastre-se para continuar.</p>
+
+      <div class="tabs">
+        <button class="tab active" id="tab-login" onclick="switchTab('login')">Entrar</button>
+        <button class="tab" id="tab-register" onclick="switchTab('register')">Cadastrar</button>
+      </div>
+
+      <div id="msg" class="msg"></div>
+
+      <div class="register-only" id="field-name">
+        <div class="field">
+          <label for="name">Nome completo</label>
+          <input type="text" id="name" placeholder="Seu nome completo" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="seu@email.com" />
+      </div>
+
+      <div class="field">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" placeholder="••••••••" />
+      </div>
+
+      <div class="register-only" id="field-confirm">
+        <div class="field">
+          <label for="confirmar">Confirmar senha</label>
+          <input type="password" id="confirmar" placeholder="••••••••" />
+        </div>
+      </div>
+
+      <button class="btn-submit" id="btn-submit" onclick="handleSubmit()">Entrar</button>
+    </div>
+
+  </div>
+
+  <script src="login.js"></script>
+
+</body>
+</html>

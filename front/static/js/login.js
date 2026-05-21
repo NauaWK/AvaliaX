@@ -1,6 +1,4 @@
-const API_BASE = 'http://localhost:8080'; // ajuste para a URL do seu backend
-
-/* ── Alternância de abas ── */
+const API_BASE = 'http://localhost:8080'; 
 function switchTab(tab) {
   const isRegister = tab === 'register';
   document.getElementById('tab-login').classList.toggle('active', !isRegister);
@@ -12,7 +10,6 @@ function switchTab(tab) {
   clearMsg();
 }
 
-/* ── Mensagens de feedback ── */
 function showMsg(text, type) {
   const el = document.getElementById('msg');
   el.textContent = text;
@@ -25,7 +22,6 @@ function clearMsg() {
   el.className = 'msg';
 }
 
-/* ── Envio do formulário ── */
 async function handleSubmit() {
   clearMsg();
 
@@ -96,7 +92,6 @@ async function handleSubmit() {
         return;
       }
 
-      // Armazena o token e redireciona para o painel
       localStorage.setItem('token', data.token);
       window.location.href = 'index.html';
     } catch (err) {

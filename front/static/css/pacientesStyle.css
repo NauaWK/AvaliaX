@@ -57,13 +57,16 @@ body{
     transition: 0.3s;
 }
 
-.menu li a {
+.menu a {
     text-decoration: none;
 }
 
 .menu li.active,
 .menu li:hover {
     background: #e3f2fd;
+    color: #2196f3;
+    font-weight: bold;
+    font-size: 18px;
 }
 
 .menu li a:hover {
@@ -90,6 +93,11 @@ body{
     cursor: pointer;
     font-weight: bold;
 }
+
+.logout:hover{
+    color: #f52121;
+}
+
 
 .main{
     flex:1;
@@ -122,6 +130,11 @@ body{
     cursor:pointer;
     font-weight:bold;
     font-size:14px;
+}
+
+.btn:hover {
+    background:#014ab1;
+
 }
 
 .search{

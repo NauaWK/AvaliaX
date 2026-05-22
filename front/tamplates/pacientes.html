@@ -22,6 +22,7 @@
                 <a href="pacientes.html"><li class="active">👥 Pacientes</li></a>
                 <a href=""><li>📝 Avaliações</li></a>
                 <a href=""><li>📄 Relatórios</li></a>
+                <a href=""><li>👤 Usuarios</li></a>
             </ul>
         </div>
         <div class="user-box">
@@ -32,7 +33,6 @@
         </div>
     </aside>
 
-  <!-- CONTEÚDO -->
   <main class="main">
 
     <div class="header">
@@ -42,7 +42,7 @@
         <p>Gerencie sua lista de pacientes</p>
       </div>
 
-      <button class="btn">＋ Novo paciente</button>
+      <button class="btn" id="btn">+ Novo paciente</button>
 
     </div>
 
@@ -54,7 +54,35 @@
       Nenhum paciente cadastrado.
     </div>
 
-  </main>
+    
+    <div class="overlay" id="overlay">
+        
+        
+        <div class="modal">
+            <span class="fechar" id="fecharModal">&times;</span>
 
+            <h2>Cadastrar Paciente</h2>
+            
+            <form>
+              <div class="form-campos">
+                <input type="text" class="input-texto" placeholder="Nome" required>
+                <input type="number" class="input-texto" placeholder="Idade" required>
+                <input type="text" class="input-texto" placeholder="CPF" required>
+
+                <h3>Genero</h3>
+                <div class="genero">
+                  <label for="masculino" class="radio-card"><input type="radio" name="genero" id="masculino" value="Masculino">Masculino</label>
+                  <label for="feminino" class="radio-card"><input type="radio" name="genero" id="feminino" value="Masculino">Feminino</label>
+                </div>
+
+                <button type="submit" class="btn-submit">Salvar</button>
+              </div>
+            </form>
+        </div>
+
+    </div>
+
+  </main>
+  <script src="../static/js/pacientes.js"></script>
 </body>
 </html>

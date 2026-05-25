@@ -46,6 +46,14 @@ public class Patient {
         this.user = user;
     }
     
+    @PrePersist
+    @PreUpdate
+    private void normalizeCpf() {
+        if (CPF != null) {
+            CPF = CPF.replaceAll("\\D", ""); //remove tudo que não é número
+        }
+    }
+    
     public Integer getId() {
         return id;
     }

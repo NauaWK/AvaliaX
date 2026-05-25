@@ -1,6 +1,7 @@
 
 package dev.trabalho.xfragil.entities.dto.patient_dtos;
 
+import dev.trabalho.xfragil.utils.customAnnotations.CPF_annotation.CPF;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,8 +13,7 @@ public record PatientRequestDTO(
         @Size(max = 100, message = "O nome não pode ultrapassar 100 caracteres!")
         String nome,
         
-        @NotBlank(message = "CPF do paciente é obrigatório!")
-        @Size(min = 11, message = "O CPF precisa ter 11 digitos!")
+        @CPF
         String CPF,
         
         @NotBlank(message = "Gênero do paciente é obrigatório!")

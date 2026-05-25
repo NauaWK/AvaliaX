@@ -56,7 +56,7 @@ public class PatientService {
                 .orElseThrow(() -> new ObjectNotFoundException("Usuário com ID " + userId + " não encontrado!"));
                 
         Patient patient = patientMapper.toPatient(patientRequest, user);
-       
+ 
         patientRepo.save(patient);
         return patientMapper.toDto(patient);
     }

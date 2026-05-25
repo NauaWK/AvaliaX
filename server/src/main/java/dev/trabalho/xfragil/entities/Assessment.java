@@ -36,6 +36,21 @@ public class Assessment {
     @Column(name = "detalhes", nullable = true)
     private String details;
 
+    public Assessment() {}
+
+    public Assessment(Patient patient, Users user, BigDecimal score, Result result, String details) {
+        this.patient = patient;
+        this.user = user;
+        this.score = score;
+        this.result = result;
+        this.details = details;
+    }
+    
+    @PrePersist
+    private void setAssessmentDate() {
+        this.assessmentDate = LocalDate.now();
+    }
+
     public Integer getId() {
         return id;
     }

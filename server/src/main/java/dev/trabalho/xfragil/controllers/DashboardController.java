@@ -1,12 +1,12 @@
 package dev.trabalho.xfragil.controllers;
 
 import dev.trabalho.xfragil.entities.dto.dashboard_dto.DashboardResponseDTO;
+import dev.trabalho.xfragil.security.UserDetailsImpl;
 import dev.trabalho.xfragil.services.DashboardService;
 import java.util.Collection;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,18 +22,19 @@ public class DashboardController {
     }
 
     @GetMapping
-    public ResponseEntity<DashboardResponseDTO> getDashboardData() {
+    public ResponseEntity<DashboardResponseDTO> getDashboardData(Authentication auth) {
         
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Integer userId = (Integer) auth.getDetails();      
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        Integer userId = userDetails.getUser().getId();  
         Collection<? extends GrantedAuthority> roles = auth.getAuthorities();
         
         boolean isAdmin = roles.stream()
                            .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
         
-        DashboardResponseDTO dto;
-        if(isAdmin) dto = dashboardService.getAdminDashboardData(userId);
-        else dto = dashboardService.getDashboardData(userId);
+        DashboardResponseDTO dto = isAdmin 
+                ? dashboardService.getAdminDashboardData() 
+                : dashboardService.getDashboardDataByUser(userId);
+
 
         return ResponseEntity.ok(dto);
     }

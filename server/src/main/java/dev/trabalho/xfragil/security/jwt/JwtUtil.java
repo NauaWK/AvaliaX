@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtUtil {
@@ -21,8 +22,8 @@ public class JwtUtil {
         return new Date();
     }
 
-    Date expirationDate = new Date(System.currentTimeMillis() + 1000 * 60 * 60); // 1 hora
-
+    Date expirationDate = new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)); // 1 dia
+    
     public String generateToken(UserDetails userDetails) {
 
         UserDetailsImpl userDetailsImpl = (UserDetailsImpl) userDetails;
@@ -30,7 +31,6 @@ public class JwtUtil {
 
         return Jwts.builder()
                 .setSubject(user.getLogin())
-                .claim("id", user.getId())
                 .claim("role", user.getRole().name())
                 .setIssuedAt(now())
                 .setExpiration(expirationDate)
@@ -47,14 +47,6 @@ public class JwtUtil {
                 .getSubject();
     }
     
-    public Integer extractUserId(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("id", Integer.class);
-    }
     
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");

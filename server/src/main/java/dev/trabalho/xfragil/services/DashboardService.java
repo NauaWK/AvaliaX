@@ -23,7 +23,7 @@ public class DashboardService {
         this.assessmentMapper = assessmentMapper;
     }
 
-    public DashboardResponseDTO getDashboardData(Integer userId) 
+    public DashboardResponseDTO getDashboardDataByUser(Integer userId) 
     {
         Long totalPatients = patientRepo.countByUserId(userId);
         Long totalAssessments = assessmentRepo.countByUserId(userId);
@@ -45,7 +45,7 @@ public class DashboardService {
         );
     }
     
-    public DashboardResponseDTO getAdminDashboardData(Integer userId)
+    public DashboardResponseDTO getAdminDashboardData()
     {
         Long totalPatients = patientRepo.count();
         Long totalAssessments = assessmentRepo.count();

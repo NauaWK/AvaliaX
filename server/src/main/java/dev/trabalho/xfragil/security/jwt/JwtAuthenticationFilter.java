@@ -29,7 +29,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return request.getServletPath().equals("/api/auth/login");
     }
     
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -39,14 +38,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null && jwtUtil.validateToken(token)) {
             String username = jwtUtil.extractUsername(token);
-            Integer userId = jwtUtil.extractUserId(token);
-
             UserDetailsImpl userDetails = (UserDetailsImpl) usersDetailsService.loadUserByUsername(username);
 
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-            auth.setDetails(userId);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
         filterChain.doFilter(request, response);

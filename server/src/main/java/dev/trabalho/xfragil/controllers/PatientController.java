@@ -3,6 +3,7 @@ package dev.trabalho.xfragil.controllers;
 
 import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTO;
 import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientResponseDTO;
+import dev.trabalho.xfragil.security.UserDetailsImpl;
 import dev.trabalho.xfragil.services.PatientService;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -11,7 +12,6 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,30 +29,31 @@ public class PatientController {
     }
     
     @GetMapping
-    public ResponseEntity<List<PatientResponseDTO>> getAllUsers()
+    public ResponseEntity<List<PatientResponseDTO>> getAllUsers(Authentication auth)
     {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Integer userId = (Integer) auth.getDetails();      
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        Integer userId = userDetails.getUser().getId();    
         
         Collection<? extends GrantedAuthority> roles = auth.getAuthorities();        
         boolean isAdmin = roles.stream()
                            .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
         
         
-        List<PatientResponseDTO> dtos;
-        if(isAdmin) dtos = patientService.getAllUsersAdmin();
-        else dtos = patientService.getUsersByUserId(userId);
+        List<PatientResponseDTO> dtos = isAdmin 
+                ? patientService.getAllUsersAdmin() 
+                : patientService.getUsersByUserId(userId);
         
         return ResponseEntity.ok(dtos);
     }
     
     @PostMapping
-    public ResponseEntity<PatientResponseDTO> addPatient(@RequestBody @Valid PatientRequestDTO patientRequest)
+    public ResponseEntity<PatientResponseDTO> addPatient(@RequestBody @Valid PatientRequestDTO patientRequest, 
+            Authentication auth)
     {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Integer userId = (Integer) auth.getDetails();              
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        Integer userId = userDetails.getUser().getId();
+        PatientResponseDTO dto = patientService.addUser(patientRequest, userId);       
         
-        PatientResponseDTO dto = patientService.addUser(patientRequest, userId);                
         return ResponseEntity.created(URI.create("/api/pacientes/" + dto.id())).body(dto);
     
     }

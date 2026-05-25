@@ -2,8 +2,8 @@
 package dev.trabalho.xfragil.utils.mappers;
 
 import dev.trabalho.xfragil.entities.Users;
-import dev.trabalho.xfragil.entities.dto.request_dto.UserRequestDTO;
-import dev.trabalho.xfragil.entities.dto.response_dto.UserResponseDTO;
+import dev.trabalho.xfragil.entities.dto.user_dtos.UserRequestDTO;
+import dev.trabalho.xfragil.entities.dto.user_dtos.UserResponseDTO;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,6 +13,7 @@ public class UserMapper {
     {
         return new Users(
             dto.login(),
+            dto.nome(),
             dto.email(),
             dto.senha(),
             dto.perfil()
@@ -24,6 +25,7 @@ public class UserMapper {
         return new UserResponseDTO(
             user.getId(),
             user.getLogin(),
+            user.getName(),
             user.getEmail(),
             user.getRole()
         );

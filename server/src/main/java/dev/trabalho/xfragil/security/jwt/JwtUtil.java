@@ -2,9 +2,11 @@ package dev.trabalho.xfragil.security.jwt;
 
 import dev.trabalho.xfragil.entities.Users;
 import dev.trabalho.xfragil.security.UserDetailsImpl;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.security.Key;
@@ -28,6 +30,7 @@ public class JwtUtil {
 
         return Jwts.builder()
                 .setSubject(user.getLogin())
+                .claim("id", user.getId())
                 .claim("role", user.getRole().name())
                 .setIssuedAt(now())
                 .setExpiration(expirationDate)
@@ -43,11 +46,34 @@ public class JwtUtil {
                 .getBody()
                 .getSubject();
     }
+    
+    public Integer extractUserId(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("id", Integer.class);
+    }
+    
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        UserDetailsImpl userDetailsImpl = (UserDetailsImpl) userDetails;
-        String username = extractUsername(token);
-        return username.equals(userDetailsImpl.getUsername()) && !isTokenExpired(token);
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token);
+            return !isTokenExpired(token);
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
 
     private boolean isTokenExpired(String token) {

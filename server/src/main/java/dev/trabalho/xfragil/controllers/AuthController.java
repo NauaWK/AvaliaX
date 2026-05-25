@@ -1,7 +1,7 @@
 package dev.trabalho.xfragil.controllers;
 
-import dev.trabalho.xfragil.entities.dto.request_dto.AuthRequestDTO;
-import dev.trabalho.xfragil.entities.dto.response_dto.AuthResponseDTO;
+import dev.trabalho.xfragil.entities.dto.auth_dtos.AuthRequestDTO;
+import dev.trabalho.xfragil.entities.dto.auth_dtos.AuthResponseDTO;
 import dev.trabalho.xfragil.security.UserDetailsImpl;
 import dev.trabalho.xfragil.security.jwt.JwtUtil;
 import jakarta.validation.Valid;

@@ -3,6 +3,7 @@ package dev.trabalho.xfragil.entities;
 
 import dev.trabalho.xfragil.utils.enums.Role;
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
@@ -16,6 +17,9 @@ public class Users {
     @Column(nullable = false, unique = true)
     private String login;
     
+    @Column(name = "nome", nullable = false, unique = true)
+    private String name;
+    
     @Column(nullable = true, unique = true)
     private String email;
 
@@ -26,21 +30,27 @@ public class Users {
     @Column(name = "perfil", nullable = false)
     private Role role;
     
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Patient> patients;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Assessment> assessments;
+    
     public Users(){}
 
-    public Users(String login, String email, String password, Role role) 
-    {
+    public Users(String login, String name, String email, String password, Role role) {
         this.login = login;
+        this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
-    }  
-    
-    public int getId() {
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -48,8 +58,8 @@ public class Users {
         return login;
     }
 
-    public void setLogin(String username) {
-        this.login = username;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public String getEmail() {
@@ -76,4 +86,28 @@ public class Users {
         this.role = role;
     }
 
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(List<Patient> patients) {
+        this.patients = patients;
+    }
+
+    public List<Assessment> getAssessments() {
+        return assessments;
+    }
+
+    public void setAssessments(List<Assessment> assessments) {
+        this.assessments = assessments;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
 }

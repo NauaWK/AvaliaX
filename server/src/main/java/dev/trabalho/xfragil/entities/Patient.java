@@ -35,6 +35,17 @@ public class Patient {
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Assessment> assessments;
 
+    public Patient() {}
+
+    public Patient(String name, String CPF, String gender, Integer age, String guardian, Users user) {
+        this.name = name;
+        this.CPF = CPF;
+        this.gender = gender;
+        this.age = age;
+        this.guardian = guardian;
+        this.user = user;
+    }
+    
     public Integer getId() {
         return id;
     }

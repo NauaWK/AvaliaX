@@ -3,6 +3,7 @@ package dev.trabalho.xfragil.repositories;
 
 import dev.trabalho.xfragil.entities.Patient;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PatientRepository extends JpaRepository<Patient, Integer>{
@@ -11,6 +12,8 @@ public interface PatientRepository extends JpaRepository<Patient, Integer>{
     
     List<Patient> findByUserId(Integer userId);
     
-    boolean existsByName(String name);
+    Optional<Patient> findByCPF(String CPF);
+    
+    boolean existsByNameOrCPF(String name, String CPF);
     
 }

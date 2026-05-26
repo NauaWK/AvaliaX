@@ -4,7 +4,7 @@ package dev.trabalho.xfragil.services;
 import dev.trabalho.xfragil.entities.Users;
 import dev.trabalho.xfragil.entities.dto.user_dtos.UserRequestDTO;
 import dev.trabalho.xfragil.entities.dto.user_dtos.UserResponseDTO;
-import dev.trabalho.xfragil.exception.customExceptions.DuplicatedUserException;
+import dev.trabalho.xfragil.exception.customExceptions.DuplicatedObjectException;
 import dev.trabalho.xfragil.exception.customExceptions.ObjectNotFoundException;
 import dev.trabalho.xfragil.repositories.UserRepository;
 import dev.trabalho.xfragil.utils.mappers.UserMapper;
@@ -39,7 +39,7 @@ public class UserService {
     
     public UserResponseDTO addUser(UserRequestDTO userRequest)
     {
-       if(userAlreadyExists(userRequest.login())) throw new DuplicatedUserException("Este usuário já existe.");
+       if(userAlreadyExists(userRequest.login())) throw new DuplicatedObjectException("Este usuário já existe.");
         
        Users user = userMapper.toUser(userRequest);
        user.setPassword(encoder.encode(user.getPassword()));
@@ -52,9 +52,12 @@ public class UserService {
     {   
         Users user = userRepo.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Usuário com ID " + id + " não encontrado!"));
+        
+        if(userAlreadyExists(userRequest.login())) throw new DuplicatedObjectException("Este usuário já existe.");
 
         user.setLogin(userRequest.login());
         user.setEmail(userRequest.email());
+        user.setName(userRequest.nome());
         user.setPassword(encoder.encode(userRequest.senha()));
         user.setRole(userRequest.perfil());
         
@@ -67,7 +70,6 @@ public class UserService {
         userRepo.findById(id).orElseThrow(() -> new ObjectNotFoundException("Usuário com ID " + id + " não encontrado!"));         
         userRepo.deleteById(id);   
     }
-    
     
     private boolean userAlreadyExists(String login){
         return userRepo.existsByLogin(login);

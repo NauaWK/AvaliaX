@@ -5,7 +5,7 @@ import dev.trabalho.xfragil.entities.Patient;
 import dev.trabalho.xfragil.entities.Users;
 import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTO;
 import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientResponseDTO;
-import dev.trabalho.xfragil.exception.customExceptions.DuplicatedUserException;
+import dev.trabalho.xfragil.exception.customExceptions.DuplicatedObjectException;
 import dev.trabalho.xfragil.exception.customExceptions.ObjectNotFoundException;
 import dev.trabalho.xfragil.repositories.PatientRepository;
 import dev.trabalho.xfragil.repositories.UserRepository;
@@ -26,7 +26,7 @@ public class PatientService {
         this.userRepo = userRepo;
     }
     
-    public List<PatientResponseDTO> getAllUsersAdmin()
+    public List<PatientResponseDTO> getPatients()
     {
         List<Patient> patients = patientRepo.findAll();
         
@@ -37,7 +37,7 @@ public class PatientService {
         return dtos;
     }
     
-    public List<PatientResponseDTO> getUsersByUserId(Integer userId)
+    public List<PatientResponseDTO> getPatientsByUserId(Integer userId)
     {
         List<Patient> patients = patientRepo.findByUserId(userId);
         
@@ -50,7 +50,7 @@ public class PatientService {
     
     public PatientResponseDTO addUser(PatientRequestDTO patientRequest, Integer userId)
     {
-        if(patientAlreadyExists(patientRequest.nome())) throw new DuplicatedUserException("Este paciente já existe.");
+        if(patientAlreadyExists(patientRequest.nome(), patientRequest.CPF())) throw new DuplicatedObjectException("Este paciente já existe.");
         
         Users user = userRepo.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Usuário com ID " + userId + " não encontrado!"));
@@ -61,10 +61,45 @@ public class PatientService {
         return patientMapper.toDto(patient);
     }
     
-    private boolean patientAlreadyExists(String name){
-        return patientRepo.existsByName(name);
+    public PatientResponseDTO getPatientByCPF(String cpf)
+    {
+        String normalizedCpf = cpf.replaceAll("\\D", "");
+        
+        Patient p = patientRepo.findByCPF(normalizedCpf)
+                .orElseThrow(() -> new ObjectNotFoundException("Paciente com CPF " + cpf + " não encontrado."));
+        
+        return patientMapper.toDto(p);
     }
     
+    public PatientResponseDTO editPatient(Integer id, PatientRequestDTO patientRequest)
+    {
+        Patient p = findPatientById(id);
+        String normalizedCpf = patientRequest.CPF().replaceAll("\\D", "");
+        if(patientAlreadyExists(patientRequest.nome(), normalizedCpf)) throw new DuplicatedObjectException("Este paciente já existe.");
+        
+        p.setName(patientRequest.nome());
+        p.setCPF(normalizedCpf);
+        p.setGender(patientRequest.genero());
+        p.setAge(patientRequest.idade());
+        p.setGuardian(patientRequest.guardiao());
+        
+        patientRepo.save(p);
+        return patientMapper.toDto(p);
+    }
     
+    public void deletePatient(Integer id)
+    {
+        findPatientById(id);
+        patientRepo.deleteById(id);
+    }
+    
+    private Patient findPatientById(Integer id){
+        return patientRepo.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Paciente com ID " + id + " não encontrado!"));
+    }
+    
+    private boolean patientAlreadyExists(String name, String CPF){
+        return patientRepo.existsByNameOrCPF(name, CPF);
+    }
     
 }

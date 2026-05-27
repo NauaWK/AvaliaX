@@ -2,6 +2,7 @@
 package dev.trabalho.xfragil.services;
 
 import dev.trabalho.xfragil.entities.Assessment;
+import dev.trabalho.xfragil.entities.AssessmentSymptom;
 import dev.trabalho.xfragil.entities.Patient;
 import dev.trabalho.xfragil.entities.Symptom;
 import dev.trabalho.xfragil.entities.Users;
@@ -9,11 +10,13 @@ import dev.trabalho.xfragil.entities.dto.assessment_dtos.AssessmentRequestDTO;
 import dev.trabalho.xfragil.entities.dto.assessment_dtos.AssessmentResponseDTO;
 import dev.trabalho.xfragil.entities.dto.symptom_dto.SymptomRequestDTO;
 import dev.trabalho.xfragil.repositories.AssessmentRepository;
+import dev.trabalho.xfragil.repositories.AssessmentSymptomRepository;
 import dev.trabalho.xfragil.repositories.SymptomRepository;
 import dev.trabalho.xfragil.utils.enums.Result;
 import dev.trabalho.xfragil.utils.mappers.AssessmentMapper;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,13 +27,20 @@ public class AssessmentService {
     private final PatientService patientService;
     private final UserService userService;
     private final SymptomRepository symptomRepo;
+    private final AssessmentSymptomRepository assessmentSymptomRepo;
 
-    public AssessmentService(AssessmentRepository assessmentRepo, AssessmentMapper assessmentMapper, PatientService patientService, UserService userService, SymptomRepository symptomRepo) {
+    public AssessmentService(AssessmentRepository assessmentRepo, 
+            AssessmentMapper assessmentMapper, 
+            PatientService patientService, 
+            UserService userService, 
+            SymptomRepository symptomRepo, 
+            AssessmentSymptomRepository assessmentSymptomRepo) {
         this.assessmentRepo = assessmentRepo;
         this.assessmentMapper = assessmentMapper;
         this.patientService = patientService;
         this.userService = userService;
         this.symptomRepo = symptomRepo;
+        this.assessmentSymptomRepo = assessmentSymptomRepo;
     }
     
     public List<AssessmentResponseDTO> getAssessments()
@@ -73,9 +83,10 @@ public class AssessmentService {
         Assessment assessment = assessmentMapper.toAssessment(patient, user, score, result, assessmentRequest.detalhes());
         assessmentRepo.save(assessment);
         
+        persistSymptoms(assessment, assessmentRequest.sintomas());
+        
         return assessmentMapper.toDto(assessment);
     }
-    
     
     private BigDecimal calculateScore(AssessmentRequestDTO assessmentRequest, boolean isMan)
     {
@@ -88,6 +99,28 @@ public class AssessmentService {
             }
         }
         return score;
+    }
+    
+    private void persistSymptoms(Assessment assessment, List<SymptomRequestDTO> sintomas) {
+        for (SymptomRequestDTO dto : sintomas) {
+            Symptom symptom = symptomRepo.findByName(dto.nome());
+
+            Optional<AssessmentSymptom> existing = assessmentSymptomRepo.findByAssessmentAndSymptom(assessment, symptom);
+
+            //se for uma edição só atualiza, não cria duplicata
+            if (existing.isPresent()) {
+                AssessmentSymptom relation = existing.get();
+                relation.setPresent(dto.presente()); 
+                assessmentSymptomRepo.save(relation);
+                
+            } else {  //se for criação apenas insere novo registro
+                AssessmentSymptom relation = new AssessmentSymptom();
+                relation.setAssessment(assessment);
+                relation.setSymptom(symptom);
+                relation.setPresent(dto.presente());
+                assessmentSymptomRepo.save(relation);
+            }
+        }
     }
     
 }

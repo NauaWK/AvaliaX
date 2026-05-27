@@ -51,8 +51,6 @@ public class UserService {
     public UserResponseDTO editUser(Integer id, UserRequestDTO userRequest)
     {   
         Users user = findUserByUserId(id);
-        
-        if(userAlreadyExists(userRequest.login())) throw new DuplicatedObjectException("Este usuário já existe.");
 
         user.setLogin(userRequest.login());
         user.setEmail(userRequest.email());

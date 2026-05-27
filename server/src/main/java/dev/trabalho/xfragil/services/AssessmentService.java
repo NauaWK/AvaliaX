@@ -94,8 +94,8 @@ public class AssessmentService {
         for(SymptomRequestDTO symptomDto : assessmentRequest.sintomas()){
             if(symptomDto.presente()){
                 Symptom s = symptomRepo.findByName(symptomDto.nome());
-                if(isMan) score.add(s.getManScore());
-                else score.add(s.getWomanScore());
+                if(isMan) score = score.add(s.getManScore());
+                else score = score.add(s.getWomanScore());
             }
         }
         return score;

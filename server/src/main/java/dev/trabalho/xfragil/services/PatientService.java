@@ -77,7 +77,6 @@ public class PatientService {
     {
         Patient p = findPatientById(id);
         String normalizedCpf = patientRequest.CPF().replaceAll("\\D", "");
-        if(patientAlreadyExists(normalizedCpf)) throw new DuplicatedObjectException("Este paciente já existe.");
         
         p.setName(patientRequest.nome());
         p.setCPF(normalizedCpf);

@@ -104,22 +104,8 @@ public class AssessmentService {
     private void persistSymptoms(Assessment assessment, List<SymptomRequestDTO> sintomas) {
         for (SymptomRequestDTO dto : sintomas) {
             Symptom symptom = symptomRepo.findByName(dto.nome());
-
-            Optional<AssessmentSymptom> existing = assessmentSymptomRepo.findByAssessmentAndSymptom(assessment, symptom);
-
-            //se for uma edição só atualiza, não cria duplicata
-            if (existing.isPresent()) {
-                AssessmentSymptom relation = existing.get();
-                relation.setPresent(dto.presente()); 
-                assessmentSymptomRepo.save(relation);
-                
-            } else {  //se for criação apenas insere novo registro
-                AssessmentSymptom relation = new AssessmentSymptom();
-                relation.setAssessment(assessment);
-                relation.setSymptom(symptom);
-                relation.setPresent(dto.presente());
-                assessmentSymptomRepo.save(relation);
-            }
+            AssessmentSymptom relation = new AssessmentSymptom(assessment, symptom, dto.presente());
+            assessmentSymptomRepo.save(relation);
         }
     }
     

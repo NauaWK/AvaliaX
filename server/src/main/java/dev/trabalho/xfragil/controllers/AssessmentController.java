@@ -29,7 +29,6 @@ public class AssessmentController {
         this.assessmentService = assessmentService;
     }
     
-    
     @GetMapping
     public ResponseEntity<List<AssessmentResponseDTO>> getAssessments(Authentication auth)
     {

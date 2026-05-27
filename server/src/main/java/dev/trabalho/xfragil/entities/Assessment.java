@@ -33,7 +33,7 @@ public class Assessment {
     @Column(name = "resultado", nullable = false)
     private Result result;
     
-    @Column(name = "detalhes", nullable = true)
+    @Column(name = "detalhes", nullable = true, length = 255)
     private String details;
 
     public Assessment() {}

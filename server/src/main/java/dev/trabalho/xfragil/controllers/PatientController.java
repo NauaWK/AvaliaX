@@ -65,7 +65,7 @@ public class PatientController {
     {
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
         Integer userId = userDetails.getUser().getId();
-        PatientResponseDTO dto = patientService.addUser(patientRequest, userId);       
+        PatientResponseDTO dto = patientService.addPatient(patientRequest, userId);       
         
         return ResponseEntity.created(URI.create("/api/pacientes/" + dto.id())).body(dto);
     }

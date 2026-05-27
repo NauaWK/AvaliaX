@@ -48,15 +48,17 @@ public class PatientService {
         return dtos;
     }
     
-    public PatientResponseDTO addUser(PatientRequestDTO patientRequest, Integer userId)
+    public PatientResponseDTO addPatient(PatientRequestDTO patientRequest, Integer userId)
     {
-        if(patientAlreadyExists(patientRequest.nome(), patientRequest.CPF())) throw new DuplicatedObjectException("Este paciente já existe.");
+        String normalizedCpf = patientRequest.CPF().replaceAll("\\D", "");
+        if(patientAlreadyExists(normalizedCpf)) throw new DuplicatedObjectException("Este paciente já existe.");
         
         Users user = userRepo.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Usuário com ID " + userId + " não encontrado!"));
                 
         Patient patient = patientMapper.toPatient(patientRequest, user);
- 
+        patient.setCPF(normalizedCpf);
+        
         patientRepo.save(patient);
         return patientMapper.toDto(patient);
     }
@@ -75,7 +77,6 @@ public class PatientService {
     {
         Patient p = findPatientById(id);
         String normalizedCpf = patientRequest.CPF().replaceAll("\\D", "");
-        if(patientAlreadyExists(patientRequest.nome(), normalizedCpf)) throw new DuplicatedObjectException("Este paciente já existe.");
         
         p.setName(patientRequest.nome());
         p.setCPF(normalizedCpf);
@@ -93,13 +94,13 @@ public class PatientService {
         patientRepo.deleteById(id);
     }
     
-    private Patient findPatientById(Integer id){
+    public Patient findPatientById(Integer id){
         return patientRepo.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Paciente com ID " + id + " não encontrado!"));
     }
     
-    private boolean patientAlreadyExists(String name, String CPF){
-        return patientRepo.existsByNameOrCPF(name, CPF);
+    private boolean patientAlreadyExists(String CPF){
+        return patientRepo.existsByCPF(CPF);
     }
     
 }

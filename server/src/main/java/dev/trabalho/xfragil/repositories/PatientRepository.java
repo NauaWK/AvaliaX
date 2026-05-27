@@ -14,6 +14,6 @@ public interface PatientRepository extends JpaRepository<Patient, Integer>{
     
     Optional<Patient> findByCPF(String CPF);
     
-    boolean existsByNameOrCPF(String name, String CPF);
+    boolean existsByCPF(String CPF);
     
 }

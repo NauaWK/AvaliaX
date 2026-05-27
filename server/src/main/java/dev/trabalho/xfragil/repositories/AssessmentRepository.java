@@ -14,6 +14,8 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Integer>
 
     Long countByUserIdAndResult(Integer userId, Result result);
     
+    List<Assessment> findByUserId(Integer userId);
+    
         @Query(value = "SELECT * FROM avaliacoes "
             + "WHERE id_usuario = :userId "
             + "ORDER BY data_avaliacao "
@@ -21,7 +23,6 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Integer>
     List<Assessment> findRecentAssessmentsByUserId(@Param("userId") Integer userId);
     
     //<-- esses métodos são para o admin -->
-    
     Long countByResult(Result result); 
     
     @Query(value = "SELECT * FROM avaliacoes "

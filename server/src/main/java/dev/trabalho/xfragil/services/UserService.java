@@ -50,8 +50,7 @@ public class UserService {
     
     public UserResponseDTO editUser(Integer id, UserRequestDTO userRequest)
     {   
-        Users user = userRepo.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException("Usuário com ID " + id + " não encontrado!"));
+        Users user = findUserByUserId(id);
         
         if(userAlreadyExists(userRequest.login())) throw new DuplicatedObjectException("Este usuário já existe.");
 
@@ -67,8 +66,13 @@ public class UserService {
     
     public void deleteUser(Integer id)
     {   
-        userRepo.findById(id).orElseThrow(() -> new ObjectNotFoundException("Usuário com ID " + id + " não encontrado!"));         
+        findUserByUserId(id);
         userRepo.deleteById(id);   
+    }
+    
+    public Users findUserByUserId(Integer userId){
+        return userRepo.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException("Usuário com ID " + userId + " não encontrado!"));
     }
     
     private boolean userAlreadyExists(String login){

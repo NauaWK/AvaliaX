@@ -87,6 +87,14 @@ body{
     margin-bottom: 5px;
 }
 
+#info-user{
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    width: fit-content;
+    text-transform: capitalize;
+}
+
 .logout {
     margin-top: 15px;
     color: #2196f3;

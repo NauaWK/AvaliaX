@@ -1,11 +1,11 @@
 
 package dev.trabalho.xfragil.entities.dto.patient_dtos;
 
-import dev.trabalho.xfragil.utils.customAnnotations.CPF_annotation.CPF;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.Range;
+import dev.trabalho.xfragil.utils.customAnnotations.CPF_annotation.CPF;
 
 public record PatientRequestDTO(
         

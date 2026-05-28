@@ -1,11 +1,16 @@
 package dev.trabalho.xfragil.security.jwt;
 
 import dev.trabalho.xfragil.entities.Users;
+import dev.trabalho.xfragil.exception.customExceptions.ExpiredTokenException;
+import dev.trabalho.xfragil.exception.customExceptions.InvalidTokenException;
 import dev.trabalho.xfragil.security.UserDetailsImpl;
-import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -22,7 +27,8 @@ public class JwtUtil {
         return new Date();
     }
 
-    Date expirationDate = new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)); // 1 dia
+    //Date expirationDate = new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)); // 1 dia
+    Date expirationDate = new Date(System.currentTimeMillis() + 30 * 1000);
     
     public String generateToken(UserDetails userDetails) {
 
@@ -63,8 +69,10 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token);
             return !isTokenExpired(token);
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredTokenException("Token expirado. Faça login novamente.");
+        } catch (UnsupportedJwtException | MalformedJwtException | SignatureException e) {
+            throw new InvalidTokenException("Token inválido ou assinatura incorreta.");
         }
     }
 

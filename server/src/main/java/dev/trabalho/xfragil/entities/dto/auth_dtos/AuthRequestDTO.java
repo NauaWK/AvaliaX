@@ -1,4 +1,4 @@
-package dev.trabalho.xfragil.entities.dto.request_dto;
+package dev.trabalho.xfragil.entities.dto.auth_dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

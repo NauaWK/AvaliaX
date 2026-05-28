@@ -2,8 +2,8 @@
 package dev.trabalho.xfragil.services;
 
 import dev.trabalho.xfragil.entities.Users;
-import dev.trabalho.xfragil.entities.dto.request_dto.UserRequestDTO;
-import dev.trabalho.xfragil.entities.dto.response_dto.UserResponseDTO;
+import dev.trabalho.xfragil.entities.dto.user_dtos.UserRequestDTO;
+import dev.trabalho.xfragil.entities.dto.user_dtos.UserResponseDTO;
 import dev.trabalho.xfragil.exception.customExceptions.DuplicatedUserException;
 import dev.trabalho.xfragil.exception.customExceptions.ObjectNotFoundException;
 import dev.trabalho.xfragil.repositories.UserRepository;

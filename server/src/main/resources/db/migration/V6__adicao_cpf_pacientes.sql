@@ -1,0 +1,2 @@
+ALTER TABLE pacientes
+ADD COLUMN CPF VARCHAR(11) NOT NULL UNIQUE; --cpf sem máscara (-)

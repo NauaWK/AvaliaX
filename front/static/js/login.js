@@ -59,6 +59,8 @@ async function handleSubmit() {
       });
 
       const data = await res.json();
+      console.log("Status:", res.status);
+      console.log("Resposta:", data);
 
       if (!res.ok) {
         showMsg(data.message || 'Erro ao criar conta.', 'error');

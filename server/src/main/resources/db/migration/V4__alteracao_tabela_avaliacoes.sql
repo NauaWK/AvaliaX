@@ -1,0 +1,6 @@
+ALTER TABLE avaliacoes
+CHANGE COLUMN recomendacao resultado ENUM('INCONCLUSIVO', 'TESTE_INDICADO') NOT NULL,
+ADD COLUMN detalhes VARCHAR(255);
+
+
+

@@ -1,8 +1,8 @@
 
 package dev.trabalho.xfragil.controllers;
 
-import dev.trabalho.xfragil.entities.dto.request_dto.UserRequestDTO;
-import dev.trabalho.xfragil.entities.dto.response_dto.UserResponseDTO;
+import dev.trabalho.xfragil.entities.dto.user_dtos.UserRequestDTO;
+import dev.trabalho.xfragil.entities.dto.user_dtos.UserResponseDTO;
 import dev.trabalho.xfragil.services.UserService;
 import jakarta.validation.Valid;
 import java.net.URI;

@@ -29,10 +29,10 @@ public class Patient {
     private String guardian;
     
     @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
+    @JoinColumn(name = "id_usuario", nullable = true)
     private Users user;
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "patient")
     private List<Assessment> assessments;
 
     public Patient() {}

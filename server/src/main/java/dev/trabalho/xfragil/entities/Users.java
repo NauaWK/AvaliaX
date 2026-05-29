@@ -30,10 +30,10 @@ public class Users {
     @Column(name = "perfil", nullable = false)
     private Role role;
     
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private List<Patient> patients;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private List<Assessment> assessments;
     
     public Users(){}

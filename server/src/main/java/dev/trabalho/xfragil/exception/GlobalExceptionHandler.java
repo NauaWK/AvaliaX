@@ -2,17 +2,16 @@
 package dev.trabalho.xfragil.exception;
 
 import dev.trabalho.xfragil.exception.customExceptions.DuplicatedObjectException;
-import dev.trabalho.xfragil.exception.customExceptions.ExpiredTokenException;
 import dev.trabalho.xfragil.exception.customExceptions.InvalidCredentialsException;
 import dev.trabalho.xfragil.exception.customExceptions.InvalidEnumException;
-import dev.trabalho.xfragil.exception.customExceptions.InvalidTokenException;
 import dev.trabalho.xfragil.exception.customExceptions.ObjectNotFoundException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,18 +22,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> validationExceptionHandler(MethodArgumentNotValidException ex){
         
-        //HashMap conténdo pares: campo com erro, mensagem do erro
-        Map<String, Object> errors = new HashMap<>();        
-        errors.put("status", HttpStatus.BAD_REQUEST.value());
-        errors.put("timestamp", LocalDateTime.now().withNano(0));
-        errors.put("error", "1 ou mais campos inválidos");
+        List<MyFieldError> fieldErrors = new ArrayList<>();
+        Map<String, Object> requestErrors = new HashMap<>();
         
-        //selecionando todos os campos com erros da exceção e inserindo no HashMap "errors"
+        //selecionando todos os campos com erros da exceção e inserindo na lista "fieldErrors"
         ex.getBindingResult().getFieldErrors().forEach(error -> {
-        errors.put(error.getField(), error.getDefaultMessage());            
-        });             
+        fieldErrors.add(new MyFieldError(error));            
+        });
         
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        requestErrors.put("status", HttpStatus.BAD_REQUEST.value());
+        requestErrors.put("timestamp", LocalDateTime.now().withNano(0));
+        requestErrors.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
+        requestErrors.put("message", "1 ou mais campos inválidos");
+        requestErrors.put("field_errors", fieldErrors);
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(requestErrors);
     }
 
     @ExceptionHandler(ObjectNotFoundException.class)
@@ -56,26 +58,5 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> invalidCredentialsExceptionHandler (InvalidCredentialsException ex){      
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage()));
     } 
-    
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(HttpStatus.FORBIDDEN.value(), "Acesso negado. Permissões insuficientes."));
-    }
-    
-    @ExceptionHandler(ExpiredTokenException.class)
-    public ResponseEntity<ErrorResponse> handleExpiredTokenException(ExpiredTokenException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage()));
-    }
-
-    @ExceptionHandler(InvalidTokenException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidTokenException(InvalidTokenException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(HttpStatus.FORBIDDEN.value(), ex.getMessage()));
-    }
-    
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-        System.out.println(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Erro interno do servidor."));
-    }
     
 }

@@ -10,8 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtUtil {
@@ -21,8 +21,6 @@ public class JwtUtil {
     private Date now() {
         return new Date();
     }
-
-    Date expirationDate = new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)); // 1 dia
     
     public String generateToken(UserDetails userDetails) {
 
@@ -33,7 +31,7 @@ public class JwtUtil {
                 .setSubject(user.getLogin())
                 .claim("role", user.getRole().name())
                 .setIssuedAt(now())
-                .setExpiration(expirationDate)
+                .setExpiration(new Date(System.currentTimeMillis() +  Duration.ofDays(1).toMillis())) //1 dia
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -46,7 +44,6 @@ public class JwtUtil {
                 .getBody()
                 .getSubject();
     }
-    
     
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
@@ -63,7 +60,7 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token);
             return !isTokenExpired(token);
-        } catch (JwtException | IllegalArgumentException e) {
+        } catch (JwtException e) {
             return false;
         }
     }

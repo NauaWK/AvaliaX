@@ -3,7 +3,7 @@ package dev.trabalho.xfragil.utils.mappers;
 
 import dev.trabalho.xfragil.entities.Patient;
 import dev.trabalho.xfragil.entities.Users;
-import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTO;
+import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTOUser;
 import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientResponseDTO;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +17,12 @@ public class PatientMapper {
             p.getName(),
             p.getGender(),
             p.getAge(),
+            p.isActive(),
             p.getGuardian()
         );
     }
     
-    public Patient toPatient(PatientRequestDTO dto, Users user)
+    public Patient toPatient(PatientRequestDTOUser dto, Users user)
     {
         return new Patient(
                 dto.nome(),

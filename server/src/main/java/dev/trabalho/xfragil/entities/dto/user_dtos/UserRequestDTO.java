@@ -24,6 +24,8 @@ public record UserRequestDTO(
         @NotBlank(message = "A senha é obrigatória!")
         @Size(max = 255, message = "A senha não deve ultrapassar 255 caracteres!")
         String senha,
+        
+        Boolean ativo,
                 
         @NotNull(message = "Perfil do usuário é obrigatório!")
         Role perfil

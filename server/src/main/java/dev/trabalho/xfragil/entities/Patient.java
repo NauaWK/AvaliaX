@@ -24,6 +24,9 @@ public class Patient {
 
     @Column(name = "idade")
     private Integer age;
+    
+    @Column(name = "ativo", nullable = false)
+    private boolean active;
 
     @Column(name = "responsavel", length = 100)
     private String guardian;
@@ -118,5 +121,13 @@ public class Patient {
         this.CPF = CPF;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+    
 }
 

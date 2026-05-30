@@ -39,10 +39,11 @@ public class UserService {
     
     public UserResponseDTO addUser(UserRequestDTO userRequest)
     {
-       if(userAlreadyExists(userRequest.login())) throw new DuplicatedObjectException("Este usuário já existe.");
+       if(userAlreadyExists(userRequest.login())) throw new DuplicatedObjectException("Este login já está em uso!");
         
        Users user = userMapper.toUser(userRequest);
        user.setPassword(encoder.encode(user.getPassword()));
+       user.setActive(userRequest.ativo() != null ? userRequest.ativo() : true);
        
        userRepo.save(user);
        return userMapper.toDto(user);
@@ -57,6 +58,7 @@ public class UserService {
         user.setName(userRequest.nome());
         user.setPassword(encoder.encode(userRequest.senha()));
         user.setRole(userRequest.perfil());
+        user.setActive(userRequest.ativo() != null ? userRequest.ativo() : user.isActive());
         
         userRepo.save(user);
         return userMapper.toDto(user);
@@ -64,8 +66,9 @@ public class UserService {
     
     public void deleteUser(Integer id)
     {   
-        findUserByUserId(id);
-        userRepo.deleteById(id);   
+        Users u = findUserByUserId(id);
+        u.setActive(false);
+        userRepo.save(u);
     }
     
     public Users findUserByUserId(Integer userId){

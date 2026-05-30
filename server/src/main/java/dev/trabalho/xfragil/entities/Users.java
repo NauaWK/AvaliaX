@@ -25,6 +25,9 @@ public class Users {
 
     @Column(name = "senha", nullable = false)
     private String password;
+    
+    @Column(name = "ativo", nullable = false)
+    private boolean active;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "perfil", nullable = false)
@@ -108,6 +111,14 @@ public class Users {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
     
 }

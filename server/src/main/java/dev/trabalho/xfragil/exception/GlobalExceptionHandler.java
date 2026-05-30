@@ -2,9 +2,11 @@
 package dev.trabalho.xfragil.exception;
 
 import dev.trabalho.xfragil.exception.customExceptions.DuplicatedObjectException;
+import dev.trabalho.xfragil.exception.customExceptions.InactiveUserException;
 import dev.trabalho.xfragil.exception.customExceptions.InvalidCredentialsException;
 import dev.trabalho.xfragil.exception.customExceptions.InvalidEnumException;
 import dev.trabalho.xfragil.exception.customExceptions.ObjectNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +40,11 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(requestErrors);
     }
+    
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> constraintViolationExceptionHandler (ConstraintViolationException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
+    }
 
     @ExceptionHandler(ObjectNotFoundException.class)
     public ResponseEntity<ErrorResponse> objectNotFoundExceptionHandler (ObjectNotFoundException ex){
@@ -56,6 +63,11 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ErrorResponse> invalidCredentialsExceptionHandler (InvalidCredentialsException ex){      
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage()));
+    } 
+    
+    @ExceptionHandler(InactiveUserException.class)
+    public ResponseEntity<ErrorResponse> inactiveUserExceptionHandler (InactiveUserException ex){      
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage()));
     } 
     

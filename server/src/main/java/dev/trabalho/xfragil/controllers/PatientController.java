@@ -1,7 +1,8 @@
 
 package dev.trabalho.xfragil.controllers;
 
-import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTO;
+import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTOAdmin;
+import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTOUser;
 import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientResponseDTO;
 import dev.trabalho.xfragil.security.UserDetailsImpl;
 import dev.trabalho.xfragil.services.PatientService;
@@ -60,7 +61,7 @@ public class PatientController {
     }
     
     @PostMapping
-    public ResponseEntity<PatientResponseDTO> addPatient(@RequestBody @Valid PatientRequestDTO patientRequest, 
+    public ResponseEntity<PatientResponseDTO> addPatient(@RequestBody @Valid PatientRequestDTOUser patientRequest, 
             Authentication auth)
     {
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
@@ -70,18 +71,26 @@ public class PatientController {
         return ResponseEntity.created(URI.create("/api/pacientes/" + dto.id())).body(dto);
     }
     
-    @PatchMapping("/{id}")
-    public ResponseEntity<PatientResponseDTO> editPatient(@PathVariable Integer id, 
-            @RequestBody @Valid PatientRequestDTO patientRequest)
+    @PatchMapping("/admin/{cpf}")
+    public ResponseEntity<PatientResponseDTO> editPatientAsAdmin(@PathVariable @CPF String cpf,
+            @RequestBody @Valid PatientRequestDTOAdmin patientRequest)
     {
-        PatientResponseDTO dto = patientService.editPatient(id, patientRequest); 
+    PatientResponseDTO dto = patientService.editPatientAsAdmin(cpf, patientRequest);
         return ResponseEntity.ok(dto);
     }
     
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePatient(@PathVariable Integer id)
+    @PatchMapping("/{cpf}")
+    public ResponseEntity<PatientResponseDTO> editPatientAsUser(@PathVariable @CPF String cpf,
+            @RequestBody @Valid PatientRequestDTOUser patientRequest)
+    {
+        PatientResponseDTO dto = patientService.editPatientAsUser(cpf, patientRequest);
+        return ResponseEntity.ok(dto);
+    }
+    
+    @DeleteMapping("/{cpf}")
+    public ResponseEntity<Void> deletePatient(@PathVariable @CPF String cpf)
     {   
-        patientService.deletePatient(id); 
+        patientService.deletePatient(cpf); 
         return ResponseEntity.noContent().build();
     }
     

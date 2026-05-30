@@ -8,11 +8,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PatientRepository extends JpaRepository<Patient, Integer>{
     
-    Long countByUserId(Integer userId);
-    
-    List<Patient> findByUserId(Integer userId);
+    Long countByUserIdAndActiveTrue(Integer userId);
     
     Optional<Patient> findByCPF(String CPF);
+    
+    Optional<Patient> findByCPFAndActiveTrue(String CPF);
+    
+    List<Patient> findByUserIdAndActiveTrue(Integer userId);
     
     boolean existsByCPF(String CPF);
     

@@ -16,7 +16,6 @@ import dev.trabalho.xfragil.utils.enums.Result;
 import dev.trabalho.xfragil.utils.mappers.AssessmentMapper;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -67,7 +66,7 @@ public class AssessmentService {
     
     public AssessmentResponseDTO addAssessment(AssessmentRequestDTO assessmentRequest, Integer userId)
     {
-        Patient patient = patientService.findPatientById(assessmentRequest.id_paciente());
+        Patient patient = patientService.findPatientByCPFUser(assessmentRequest.CPF_paciente());
         Users user = userService.findUserByUserId(userId);
         
         boolean isMan = patient.getGender().equalsIgnoreCase("M");

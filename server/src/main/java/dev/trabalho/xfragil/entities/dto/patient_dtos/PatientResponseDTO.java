@@ -7,6 +7,7 @@ public record PatientResponseDTO(
         String nome,
         String genero,
         Integer idade,
+        Boolean ativo,
         String guardiao
         
         ) {}

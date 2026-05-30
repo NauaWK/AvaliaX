@@ -16,11 +16,11 @@ public class Assessment {
     private Integer id;
     
     @ManyToOne
-    @JoinColumn(name = "id_paciente", nullable = true)
+    @JoinColumn(name = "id_paciente", nullable = false)
     private Patient patient;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = true)
+    @JoinColumn(name = "id_usuario", nullable = false)
     private Users user; 
 
     @Column(name = "data_avaliacao", nullable = false)

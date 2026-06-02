@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.Range;
 import dev.trabalho.xfragil.utils.customAnnotations.CPF_annotation.CPF;
 
-public record PatientRequestDTO(
+public record PatientRequestDTOUser(
         
         @NotBlank(message = "Nome do paciente é obrigatório!")
         @Size(max = 100, message = "O nome não pode ultrapassar 100 caracteres!")

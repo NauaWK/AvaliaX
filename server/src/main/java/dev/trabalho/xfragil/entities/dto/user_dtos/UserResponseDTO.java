@@ -9,6 +9,7 @@ public record UserResponseDTO(
         String login,
         String nome,
         String email,
-        Role perfil
+        Role perfil,
+        Boolean ativo
         
         ) {}

@@ -24,15 +24,18 @@ public class Patient {
 
     @Column(name = "idade")
     private Integer age;
+    
+    @Column(name = "ativo", nullable = false)
+    private boolean active;
 
     @Column(name = "responsavel", length = 100)
     private String guardian;
     
     @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
+    @JoinColumn(name = "id_usuario", nullable = true)
     private Users user;
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "patient")
     private List<Assessment> assessments;
 
     public Patient() {}
@@ -118,5 +121,13 @@ public class Patient {
         this.CPF = CPF;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+    
 }
 

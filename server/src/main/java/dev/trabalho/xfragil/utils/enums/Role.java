@@ -1,7 +1,7 @@
 package dev.trabalho.xfragil.utils.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import dev.trabalho.xfragil.exception.customExceptions.InvalidRoleException;
+import dev.trabalho.xfragil.exception.customExceptions.InvalidEnumException;
 
 public enum Role {
     ADMIN, USER;
@@ -12,7 +12,7 @@ public enum Role {
         try {
             return Role.valueOf(role.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new InvalidRoleException("Tipo de perfil inválido: " + role);
+            throw new InvalidEnumException("Tipo de perfil inválido: " + role);
         }                       
     }  
 

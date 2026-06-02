@@ -2,6 +2,8 @@ package dev.trabalho.xfragil.controllers;
 
 import dev.trabalho.xfragil.entities.dto.auth_dtos.AuthRequestDTO;
 import dev.trabalho.xfragil.entities.dto.auth_dtos.AuthResponseDTO;
+import dev.trabalho.xfragil.exception.customExceptions.InactiveUserException;
+import dev.trabalho.xfragil.exception.customExceptions.InvalidCredentialsException;
 import dev.trabalho.xfragil.security.UserDetailsImpl;
 import dev.trabalho.xfragil.security.jwt.JwtUtil;
 import jakarta.validation.Valid;
@@ -37,9 +39,10 @@ public class AuthController {
             String jwt = jwtUtil.generateToken(userDetails);
 
             return ResponseEntity.ok(new AuthResponseDTO(jwt));
-        } catch (UsernameNotFoundException | BadCredentialsException e) {
-            return ResponseEntity.status(401).body("Credenciais inválidas!");
+        } catch (BadCredentialsException | UsernameNotFoundException e) {
+            throw new InvalidCredentialsException("Credenciais inválidas!");
         }
+
     }
 
 }

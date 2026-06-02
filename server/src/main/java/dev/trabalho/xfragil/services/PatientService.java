@@ -12,6 +12,7 @@ import dev.trabalho.xfragil.repositories.PatientRepository;
 import dev.trabalho.xfragil.repositories.UserRepository;
 import dev.trabalho.xfragil.utils.mappers.PatientMapper;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,11 +21,13 @@ public class PatientService {
     private final PatientRepository patientRepo;
     private final PatientMapper patientMapper;
     private final UserRepository userRepo;
+    private final UserService userService;
 
-    public PatientService(PatientRepository patientRepo, PatientMapper patientMapper, UserRepository userRepo) {
+    public PatientService(PatientRepository patientRepo, PatientMapper patientMapper, UserRepository userRepo, UserService userService) {
         this.patientRepo = patientRepo;
         this.patientMapper = patientMapper;
         this.userRepo = userRepo;
+        this.userService = userService;
     }
     
     public List<PatientResponseDTO> getPatients()
@@ -51,11 +54,10 @@ public class PatientService {
     
     public PatientResponseDTO addPatient(PatientRequestDTOUser patientRequest, Integer userId)
     {
-        String normalizedCpf = patientRequest.CPF().replaceAll("\\D", "");
+        String normalizedCpf = patientRequest.CPF_paciente().replaceAll("\\D", "");
         if(patientAlreadyExists(normalizedCpf)) throw new DuplicatedObjectException("O paciente com CPF " + normalizedCpf + " já existe!");
         
-        Users user = userRepo.findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException("Usuário com ID " + userId + " não encontrado!"));
+        Users user = userService.findUserByUserId(userId);
                 
         Patient patient = patientMapper.toPatient(patientRequest, user);
         patient.setCPF(normalizedCpf);
@@ -78,14 +80,15 @@ public class PatientService {
     public PatientResponseDTO editPatientAsAdmin(String CPF, PatientRequestDTOAdmin patientRequest)
     {
 
-        String normalizedCpf = patientRequest.CPF().replaceAll("\\D", "");
-        Patient p = findPatientByCPFAdmin(normalizedCpf);
+        String normalizedCpf = patientRequest.CPF_paciente().replaceAll("\\D", "");
+        Patient p = findPatientByCPF(normalizedCpf);
         
         p.setName(patientRequest.nome());
         p.setCPF(normalizedCpf);
         p.setGender(patientRequest.genero());
-        p.setAge(patientRequest.idade());
-        p.setGuardian(patientRequest.guardiao());
+        p.setBirthDate(patientRequest.dataNascimento());
+        p.setMomName(patientRequest.nomeMae());
+        p.setDadName(patientRequest.nomePai());
         p.setActive(patientRequest.ativo() != null ? patientRequest.ativo() : p.isActive());
         
         patientRepo.save(p);
@@ -94,17 +97,26 @@ public class PatientService {
     
     public PatientResponseDTO editPatientAsUser(String CPF, PatientRequestDTOUser patientRequest)
     {
-        String normalizedCpf = patientRequest.CPF().replaceAll("\\D", "");
+        String normalizedCpf = patientRequest.CPF_paciente().replaceAll("\\D", "");
         Patient p = findPatientByCPFUser(normalizedCpf);
         
         p.setName(patientRequest.nome());
         p.setCPF(normalizedCpf);
         p.setGender(patientRequest.genero());
-        p.setAge(patientRequest.idade());
-        p.setGuardian(patientRequest.guardiao());
+        p.setBirthDate(patientRequest.dataNascimento());
+        p.setMomName(patientRequest.nomeMae());
+        p.setDadName(patientRequest.nomePai());
         
         patientRepo.save(p);
         return patientMapper.toDto(p);
+    }
+    
+    public Patient createOrFind(PatientRequestDTOUser dto)
+    {
+        String normalizedCpf = dto.CPF_paciente().replaceAll("\\D", "");
+        Optional<Patient> optionalPatient = patientRepo.findByCPF(normalizedCpf);
+        Patient p = optionalPatient.isPresent() ? optionalPatient.get() : patientRepo.save(patientMapper.toPatient(dto, null));
+        return p;
     }
     
     public void deletePatient(String CPF)
@@ -125,7 +137,7 @@ public class PatientService {
                 .orElseThrow(() -> new ObjectNotFoundException("Paciente com CPF " + CPF + " não encontrado!"));
     }
     
-    public Patient findPatientByCPFAdmin(String CPF){
+    public Patient findPatientByCPF(String CPF){
         return patientRepo.findByCPF(CPF)
                 .orElseThrow(() -> new ObjectNotFoundException("Paciente com CPF " + CPF + " não encontrado!"));
     }

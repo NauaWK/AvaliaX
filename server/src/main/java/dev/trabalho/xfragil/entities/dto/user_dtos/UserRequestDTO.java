@@ -17,7 +17,8 @@ public record UserRequestDTO(
         @Size(max = 50, message = "O nome não deve ultrapassar 50 caracteres!")
         String nome,
         
-        @Email(message = "Formato de email inválido!")
+        @NotBlank(message = "Email é obrigatório!")
+        @Email(message = "Email inválido!")
         @Size(max = 255, message = "O email não deve ultrapassar 255 caracteres!")
         String email, 
                 

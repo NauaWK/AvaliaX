@@ -2,6 +2,7 @@
 package dev.trabalho.xfragil.entities;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -22,14 +23,17 @@ public class Patient {
     @Column(name = "sexo", nullable = false, length = 1)
     private String gender;
 
-    @Column(name = "idade")
-    private Integer age;
+    @Column(name = "data_nascimento", nullable = false)
+    private LocalDate birthDate;
+    
+    @Column(name = "nome_mae", nullable = false, length = 100)
+    private String momName;
+    
+    @Column(name = "nome_pai", nullable = true, length = 100)
+    private String dadName;
     
     @Column(name = "ativo", nullable = false)
     private boolean active;
-
-    @Column(name = "responsavel", length = 100)
-    private String guardian;
     
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = true)
@@ -37,17 +41,6 @@ public class Patient {
 
     @OneToMany(mappedBy = "patient")
     private List<Assessment> assessments;
-
-    public Patient() {}
-
-    public Patient(String name, String CPF, String gender, Integer age, String guardian, Users user) {
-        this.name = name;
-        this.CPF = CPF;
-        this.gender = gender;
-        this.age = age;
-        this.guardian = guardian;
-        this.user = user;
-    }
     
     @PrePersist
     @PreUpdate
@@ -57,6 +50,24 @@ public class Patient {
         }
     }
     
+    public Patient() {}
+
+    public Patient(String name, 
+            String CPF, 
+            String gender, 
+            LocalDate birthDate, 
+            String momName, 
+            String dadName, 
+            Users user) {
+        this.name = name;
+        this.CPF = CPF;
+        this.gender = gender;
+        this.birthDate = birthDate;
+        this.momName = momName;
+        this.dadName = dadName;
+        this.user = user;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -73,6 +84,14 @@ public class Patient {
         this.name = name;
     }
 
+    public String getCPF() {
+        return CPF;
+    }
+
+    public void setCPF(String CPF) {
+        this.CPF = CPF;
+    }
+
     public String getGender() {
         return gender;
     }
@@ -81,20 +100,36 @@ public class Patient {
         this.gender = gender;
     }
 
-    public Integer getAge() {
-        return age;
+    public LocalDate getBirthDate() {
+        return birthDate;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
     }
 
-    public String getGuardian() {
-        return guardian;
+    public String getMomName() {
+        return momName;
     }
 
-    public void setGuardian(String guardian) {
-        this.guardian = guardian;
+    public void setMomName(String momName) {
+        this.momName = momName;
+    }
+
+    public String getDadName() {
+        return dadName;
+    }
+
+    public void setDadName(String dadName) {
+        this.dadName = dadName;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public Users getUser() {
@@ -113,21 +148,5 @@ public class Patient {
         this.assessments = assessments;
     }
 
-    public String getCPF() {
-        return CPF;
-    }
-
-    public void setCPF(String CPF) {
-        this.CPF = CPF;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-    
 }
 

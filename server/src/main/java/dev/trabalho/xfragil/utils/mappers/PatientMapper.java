@@ -5,6 +5,7 @@ import dev.trabalho.xfragil.entities.Patient;
 import dev.trabalho.xfragil.entities.Users;
 import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTOUser;
 import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientResponseDTO;
+import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,9 +17,10 @@ public class PatientMapper {
             p.getId(),
             p.getName(),
             p.getGender(),
-            p.getAge(),
-            p.isActive(),
-            p.getGuardian()
+            p.getBirthDate(),
+            p.getMomName(),
+            p.getDadName(),
+            p.isActive()
         );
     }
     
@@ -26,10 +28,11 @@ public class PatientMapper {
     {
         return new Patient(
                 dto.nome(),
-                dto.CPF(),
+                dto.CPF_paciente(),
                 dto.genero(),
-                dto.idade(),
-                dto.guardiao(),
+                dto.dataNascimento(),
+                dto.nomeMae(),
+                dto.nomePai(),
                 user
         );
     }

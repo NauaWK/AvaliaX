@@ -14,7 +14,11 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Integer>
 
     Long countByUserIdAndResult(Integer userId, Result result);
     
-    List<Assessment> findByUserId(Integer userId);
+    @Query(value = "SELECT * FROM avaliacoes "
+            + "WHERE id_usuario = :userId "
+            + "OR origem = 'RESPONSAVEL'", 
+            nativeQuery = true)
+    List<Assessment> findByUserId(@Param("userId") Integer userId);
     
         @Query(value = "SELECT * FROM avaliacoes "
             + "WHERE id_usuario = :userId "

@@ -115,7 +115,16 @@ public class PatientService {
     {
         String normalizedCpf = dto.CPF_paciente().replaceAll("\\D", "");
         Optional<Patient> optionalPatient = patientRepo.findByCPF(normalizedCpf);
-        Patient p = optionalPatient.isPresent() ? optionalPatient.get() : patientRepo.save(patientMapper.toPatient(dto, null));
+        Patient p;
+        if(optionalPatient.isPresent()){
+            p = optionalPatient.get();
+        }
+        else{
+           p = patientMapper.toPatient(dto, null);
+           p.setCPF(normalizedCpf);
+           p.setActive(true);
+           patientRepo.save(p);
+        }
         return p;
     }
     
@@ -124,7 +133,6 @@ public class PatientService {
         Patient p = findPatientByCPFUser(CPF);
         p.setActive(false);
         patientRepo.save(p);
-        
     }
     
     public Patient findPatientById(Integer id){

@@ -5,6 +5,8 @@ import dev.trabalho.xfragil.entities.Patient;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface PatientRepository extends JpaRepository<Patient, Integer>{
     
@@ -14,7 +16,11 @@ public interface PatientRepository extends JpaRepository<Patient, Integer>{
     
     Optional<Patient> findByCPFAndActiveTrue(String CPF);
     
-    List<Patient> findByUserIdAndActiveTrue(Integer userId);
+    @Query(value = "SELECT * FROM pacientes " +
+               "WHERE (id_usuario = :userId OR id_usuario IS NULL) " +
+               "AND ativo = true", 
+       nativeQuery = true)
+    List<Patient> findByUserIdAndActiveTrue(@Param("userId") Integer userId);
     
     boolean existsByCPF(String CPF);
     

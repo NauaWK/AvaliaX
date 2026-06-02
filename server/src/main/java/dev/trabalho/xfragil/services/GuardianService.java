@@ -22,7 +22,15 @@ public class GuardianService {
     {
         String normalizedCpf = dto.CPF_responsavel().replaceAll("\\D", "");
         Optional<Guardian> optionalGuardian = guardianRepo.findByCPF(normalizedCpf);
-        Guardian g = optionalGuardian.isPresent() ? optionalGuardian.get() : guardianRepo.save(guardianMapper.toGuardian(dto));
+        Guardian g;
+        if(optionalGuardian.isPresent()){
+            g = optionalGuardian.get();
+        }
+        else{
+           g = guardianMapper.toGuardian(dto);
+           g.setCPF(normalizedCpf);
+           guardianRepo.save(g);
+        }
         return g;
     }
     

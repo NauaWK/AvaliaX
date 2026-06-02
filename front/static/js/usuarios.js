@@ -74,6 +74,7 @@ function renderizarUsuarios(lista) {
                     <th>Nome</th>
                     <th>Login</th>
                     <th>Email</th>
+                    <th>Perfil</th>
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -83,6 +84,7 @@ function renderizarUsuarios(lista) {
                         <td>${u.nome}</td>
                         <td>${u.login}</td>
                         <td>${u.email ?? '—'}</td>
+                        <td><span class="badge ${u.perfil === 'ADMIN' ? 'badge-admin' : 'badge-user'}">${u.perfil}</span></td>
                         <td>
                             <button class="btn-excluir" onclick="excluirUsuario(${u.id})">Excluir</button>
                         </td>
@@ -105,10 +107,11 @@ document.getElementById('formUsuario').addEventListener('submit', async (e) => {
     e.preventDefault();
     clearMsg();
 
-    const nome  = document.getElementById('nome').value.trim();
-    const login = document.getElementById('login').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const senha = document.getElementById('senha').value;
+    const nome   = document.getElementById('nome').value.trim();
+    const login  = document.getElementById('login').value.trim();
+    const email  = document.getElementById('email').value.trim();
+    const senha  = document.getElementById('senha').value;
+    const perfil = document.querySelector('input[name="perfil"]:checked').value;
 
     const btn = document.querySelector('.btn-submit');
     btn.disabled = true;
@@ -118,7 +121,7 @@ document.getElementById('formUsuario').addEventListener('submit', async (e) => {
         const res = await fetch(`${API_BASE}/api/usuarios`, {
             method: 'POST',
             headers: headers(),
-            body: JSON.stringify({ nome, login, email: email || null, senha, perfil: 'USER' })
+            body: JSON.stringify({ nome, login, email: email || null, senha, perfil })
         });
 
         const data = await res.json();

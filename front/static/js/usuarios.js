@@ -61,6 +61,7 @@ async function carregarUsuarios() {
 
 function renderizarUsuarios(lista) {
     const container = document.getElementById('listaUsuarios');
+    const ativos = lista.filter(u => u.ativo !== false);
 
     if (lista.length === 0) {
         container.innerHTML = '<p class="vazio">Nenhum usuário cadastrado.</p>';
@@ -79,7 +80,7 @@ function renderizarUsuarios(lista) {
                 </tr>
             </thead>
             <tbody>
-                ${lista.map(u => `
+                ${ativos.map(u => `
                     <tr>
                         <td>${u.nome}</td>
                         <td>${u.login}</td>

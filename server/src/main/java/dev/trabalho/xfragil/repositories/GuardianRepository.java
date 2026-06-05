@@ -10,4 +10,6 @@ public interface GuardianRepository extends JpaRepository<Guardian, Integer>{
     
     Optional<Guardian> findByCPF(String CPF);
     
+    boolean existsByCPF(String CPF);
+    
 }

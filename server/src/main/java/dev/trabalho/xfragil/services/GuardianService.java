@@ -34,4 +34,8 @@ public class GuardianService {
         return g;
     }
     
+    public boolean guardianAlreadyExists(String CPF){
+        return guardianRepo.existsByCPF(CPF);
+    }
+    
 }

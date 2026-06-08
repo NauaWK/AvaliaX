@@ -82,9 +82,13 @@ body {
     color: #555;
 }
 
-.user-box strong {
-    display: block;
-    margin-bottom: 5px;
+
+#info-user{
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    width: fit-content;
+    text-transform: capitalize;
 }
 
 .logout {
@@ -178,4 +182,44 @@ main {
     padding-left: 20px;
     color: #718096;
     line-height: 1.8;
+}
+
+.card-avaliacao {
+  list-style: none;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  max-width: 450px;
+  display: block;
+  flex-direction: column;
+  gap: 8px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  color: #64748b; 
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.card-avaliacao:hover {
+  transform: translateY(2px);
+  color: #1e293b;
+  transition: 400ms;
+  cursor: pointer;
+}
+
+.avaliacao-recente {
+  max-height: 200px; 
+  overflow-y: auto;  
+  padding-right: 10px; 
+}
+
+.avaliacao-recente::-webkit-scrollbar {
+  width: 6px;
+}
+
+.avaliacao-recente::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 4px;
 }

@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/relatorios")
 public class ReportsController {
 
-    private final ReportsService reportsService;
+    /*private final ReportsService reportsService;
 
     public ReportsController(ReportsService reportsService) {
         this.reportsService = reportsService;
-    }
+    }*/
 
 
     

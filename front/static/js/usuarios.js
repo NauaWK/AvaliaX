@@ -1,5 +1,23 @@
 const API_BASE = 'http://localhost:8080';
 
+const token = localStorage.getItem('token');
+
+if (!token) {
+    window.location.href = 'login.html';
+}
+
+const payload = JSON.parse(atob(token.split('.')[1]));
+const nomeUser = document.getElementById('info-user');
+nomeUser.innerText = payload.sub;
+
+const btnLogout = document.getElementById('logout');
+btnLogout.addEventListener('click', logout);
+
+function logout() {
+    localStorage.removeItem('token');
+    window.location.href = 'login.html';
+}
+
 const abrirModal  = document.getElementById('btn');
 const fecharModal = document.getElementById('fecharModal');
 const overlay     = document.getElementById('overlay');
@@ -32,14 +50,10 @@ function clearMsg() {
     el.className = 'msg';
 }
 
-function getToken() {
-    return localStorage.getItem('token');
-}
-
 function headers() {
     return {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + getToken()
+        'Authorization': 'Bearer ' + token
     };
 }
 
@@ -63,7 +77,7 @@ function renderizarUsuarios(lista) {
     const container = document.getElementById('listaUsuarios');
     const ativos = lista.filter(u => u.ativo !== false);
 
-    if (lista.length === 0) {
+    if (ativos.length === 0) {
         container.innerHTML = '<p class="vazio">Nenhum usuário cadastrado.</p>';
         return;
     }
@@ -142,6 +156,12 @@ document.getElementById('formUsuario').addEventListener('submit', async (e) => {
     }
 });
 
+function getLoginDoUsuarioLogado() {
+    if (!token) return null;
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.sub;
+}
+
 async function excluirUsuario(id, loginUsuario) {
     const loginLogado = getLoginDoUsuarioLogado();
 
@@ -172,13 +192,6 @@ async function excluirUsuario(id, loginUsuario) {
     } catch (err) {
         alert('Não foi possível conectar ao servidor.');
     }
-}
-
-function getLoginDoUsuarioLogado() {
-    const token = getToken();
-    if (!token) return null;
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.sub;
 }
 
 carregarUsuarios();

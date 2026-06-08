@@ -87,7 +87,7 @@ function renderizarUsuarios(lista) {
                         <td>${u.email ?? '—'}</td>
                         <td><span class="badge ${u.perfil === 'ADMIN' ? 'badge-admin' : 'badge-user'}">${u.perfil}</span></td>
                         <td>
-                            <button class="btn-excluir" onclick="excluirUsuario(${u.id})">Excluir</button>
+                            <button class="btn-excluir" onclick="excluirUsuario(${u.id}, '${u.login}')">Excluir</button>
                         </td>
                     </tr>
                 `).join('')}
@@ -142,7 +142,19 @@ document.getElementById('formUsuario').addEventListener('submit', async (e) => {
     }
 });
 
-async function excluirUsuario(id) {
+async function excluirUsuario(id, loginUsuario) {
+    const loginLogado = getLoginDoUsuarioLogado();
+
+    if (loginUsuario === loginLogado) {
+        alert('Você não pode excluir seu próprio usuário.');
+        return;
+    }
+
+    if (loginUsuario === 'admin') {
+        alert('O usuário admin não pode ser excluído.');
+        return;
+    }
+
     if (!confirm('Deseja realmente excluir este usuário?')) return;
 
     try {
@@ -160,6 +172,13 @@ async function excluirUsuario(id) {
     } catch (err) {
         alert('Não foi possível conectar ao servidor.');
     }
+}
+
+function getLoginDoUsuarioLogado() {
+    const token = getToken();
+    if (!token) return null;
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.sub;
 }
 
 carregarUsuarios();

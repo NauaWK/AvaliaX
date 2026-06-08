@@ -17,10 +17,10 @@ public interface SymptomRepository extends JpaRepository<Symptom, Integer>{
     @Query(value = """
         SELECT s.descricao, COUNT(*) AS qtd
         FROM avaliacao_sintoma avs
-        JOIN sintomas s ON avs.id_sintoma = s.id
-        JOIN avaliacoes a ON avs.id_avaliacao = a.id
-        JOIN pacientes p ON a.id_paciente = p.id
-        WHERE a.id_usuario = :userId AND p.genero = :gender
+        JOIN sintomas s ON avs.id_sintoma = s.id_sintoma
+        JOIN avaliacoes a ON avs.id_avaliacao = a.id_avaliacao
+        JOIN pacientes p ON a.id_paciente = p.id_paciente
+        WHERE a.id_usuario = :userId AND p.sexo = :gender
         GROUP BY s.descricao
         ORDER BY qtd DESC
         LIMIT 1
@@ -30,10 +30,10 @@ public interface SymptomRepository extends JpaRepository<Symptom, Integer>{
     @Query(value = """
         SELECT s.descricao, COUNT(*) AS qtd
         FROM avaliacao_sintoma avs
-        JOIN sintomas s ON avs.id_sintoma = s.id
-        JOIN avaliacoes a ON avs.id_avaliacao = a.id
-        JOIN pacientes p ON a.id_paciente = p.id
-        WHERE p.genero = :gender
+        JOIN sintomas s ON avs.id_sintoma = s.id_sintoma
+        JOIN avaliacoes a ON avs.id_avaliacao = a.id_avaliacao
+        JOIN pacientes p ON a.id_paciente = p.id_paciente
+        WHERE p.sexo = :gender
         GROUP BY s.descricao
         ORDER BY qtd DESC
         LIMIT 1
@@ -43,8 +43,8 @@ public interface SymptomRepository extends JpaRepository<Symptom, Integer>{
     @Query(value = """
         SELECT s.descricao AS nome, COUNT(*) AS qtd
         FROM avaliacao_sintoma avs
-        JOIN sintomas s ON avs.id_sintoma = s.id
-        JOIN avaliacoes a ON avs.id_avaliacao = a.id
+        JOIN sintomas s ON avs.id_sintoma = s.id_sintoma
+        JOIN avaliacoes a ON avs.id_avaliacao = a.id_avaliacao
         WHERE a.id_usuario = :userId
         GROUP BY s.descricao
         ORDER BY qtd DESC
@@ -54,8 +54,8 @@ public interface SymptomRepository extends JpaRepository<Symptom, Integer>{
     @Query(value = """
         SELECT s.descricao AS nome, COUNT(*) AS qtd
         FROM avaliacao_sintoma avs
-        JOIN sintomas s ON avs.id_sintoma = s.id
-        JOIN avaliacoes a ON avs.id_avaliacao = a.id
+        JOIN sintomas s ON avs.id_sintoma = s.id_sintoma
+        JOIN avaliacoes a ON avs.id_avaliacao = a.id_avaliacao
         GROUP BY s.descricao
         ORDER BY qtd DESC
     """, nativeQuery = true)

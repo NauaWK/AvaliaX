@@ -1,11 +1,13 @@
 
 package dev.trabalho.xfragil.entities.dto.patient_dtos;
 
+import dev.trabalho.xfragil.entities.dto.guardian_dtos.GuardianRequestDTO;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.hibernate.validator.constraints.Range;
 import dev.trabalho.xfragil.utils.customAnnotations.CPF_annotation.CPF;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import java.time.LocalDate;
 
 public record PatientRequestDTOUser(
         
@@ -14,17 +16,22 @@ public record PatientRequestDTOUser(
         String nome,
         
         @CPF
-        String CPF,
+        String CPF_paciente,
         
         @NotBlank(message = "Gênero do paciente é obrigatório!")
         String genero,
         
-        @NotNull(message = "Idade do paciente é obrigatória!")
-        @Range(min = 1, message = "Idade precisa ser maior do que 1!")
-        Integer idade,
+        @NotNull(message = "Data de nascimento é obrigatória!")
+        @Past(message = "A data de nascimento do paciente não pode estar no futuro!")
+        LocalDate dataNascimento,
         
-        @NotBlank(message = "Nome do guardião é obrigatório!")
-        @Size(max = 100, message = "O nome do guardião não pode ultrapassar 100 caracteres!")
-        String guardiao
+        @NotBlank(message = "Nome da mãe é obrigatório!")
+        @Size(max = 100, message = "O nome da mãe não pode ultrapassar 100 caracteres!")
+        String nomeMae,
+        
+        @Size(max = 100, message = "O nome do pai não pode ultrapassar 100 caracteres!")
+        String nomePai,
+        
+        GuardianRequestDTO responsavel
         
         ) {}

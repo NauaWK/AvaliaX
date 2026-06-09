@@ -3,14 +3,17 @@ package dev.trabalho.xfragil.controllers;
 
 import dev.trabalho.xfragil.entities.dto.assessment_dtos.AssessmentRequestDTO;
 import dev.trabalho.xfragil.entities.dto.assessment_dtos.AssessmentResponseDTO;
+import dev.trabalho.xfragil.entities.dto.autoassessment_dtos.AutoAssessmentRequestDTO;
 import dev.trabalho.xfragil.security.UserDetailsImpl;
 import dev.trabalho.xfragil.services.AssessmentService;
+import dev.trabalho.xfragil.services.AutoAssessmentService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,9 +27,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AssessmentController {
     
     private final AssessmentService assessmentService;
+    private final AutoAssessmentService autoAssessmentService;
 
-    public AssessmentController(AssessmentService assessmentService) {
+    public AssessmentController(AssessmentService assessmentService, AutoAssessmentService autoAssessmentService) {
         this.assessmentService = assessmentService;
+        this.autoAssessmentService = autoAssessmentService;
     }
     
     @GetMapping
@@ -55,6 +60,14 @@ public class AssessmentController {
         Integer userId = userDetails.getUser().getId();
         AssessmentResponseDTO dto = assessmentService.addAssessment(assessmentRequest, userId);       
         return ResponseEntity.created(URI.create("/api/avaliacoes/" + dto.id())).body(dto);
+    }
+    
+    @PostMapping("/autoavaliacao")
+    public ResponseEntity<AssessmentResponseDTO> addAutoAssessment(
+            @Valid @RequestBody AutoAssessmentRequestDTO autoAssessmentRequest) {
+        
+        AssessmentResponseDTO dto = autoAssessmentService.processAutoAssessment(autoAssessmentRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
     
 }

@@ -5,7 +5,6 @@ import dev.trabalho.xfragil.entities.Patient;
 import dev.trabalho.xfragil.entities.Users;
 import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTOUser;
 import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientResponseDTO;
-import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 @Component

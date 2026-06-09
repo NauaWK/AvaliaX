@@ -1,6 +1,7 @@
 
 package dev.trabalho.xfragil.services;
 
+import dev.trabalho.xfragil.entities.Guardian;
 import dev.trabalho.xfragil.entities.Patient;
 import dev.trabalho.xfragil.entities.Users;
 import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTOAdmin;
@@ -19,6 +20,7 @@ public class PatientService {
     
     private final PatientRepository patientRepo;
     private final PatientMapper patientMapper;
+    private final PatientGuardianService patientGuardianService;
     private final GuardianService guardianService;
     private final UserService userService;
 
@@ -26,10 +28,12 @@ public class PatientService {
             PatientRepository patientRepo, 
             PatientMapper patientMapper, 
             GuardianService guardianService, 
+            PatientGuardianService patientGuardianService, 
             UserService userService) {
         this.patientRepo = patientRepo;
         this.patientMapper = patientMapper;
         this.guardianService = guardianService;
+        this.patientGuardianService = patientGuardianService;
         this.userService = userService;
     }
     
@@ -61,12 +65,15 @@ public class PatientService {
         if(patientAlreadyExists(normalizedCpf) || guardianService.guardianAlreadyExists(normalizedCpf)) throw new DuplicatedObjectException("O CPF " + normalizedCpf + " já está cadastrado!");
         
         Users user = userService.findUserByUserId(userId);
+        Guardian guardian = guardianService.createOrFind(patientRequest.responsavel());
                 
         Patient patient = patientMapper.toPatient(patientRequest, user);
         patient.setCPF(normalizedCpf);
         patient.setActive(true);
-        
         patientRepo.save(patient);
+        
+        patientGuardianService.linkPatientToGuardian(patient, guardian);
+        
         return patientMapper.toDto(patient);
     }
     

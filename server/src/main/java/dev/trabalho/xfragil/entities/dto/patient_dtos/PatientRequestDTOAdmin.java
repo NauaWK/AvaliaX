@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import dev.trabalho.xfragil.utils.customAnnotations.CPF_annotation.CPF;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Past;
 import java.time.LocalDate;
 
@@ -34,6 +35,7 @@ public record PatientRequestDTOAdmin(
         
         Boolean ativo,
         
+        @Valid
         GuardianRequestDTO responsavel
         
         ) {}

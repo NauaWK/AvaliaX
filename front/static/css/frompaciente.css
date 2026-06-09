@@ -293,18 +293,30 @@ body{
     outline:none;
 }
 
-.options{
+.options-estado{
     list-style:none;
-    max-height:250px;
+    max-height:160px;
     overflow-y:auto;
 }
 
-.options li{
+.options-estado li{
     padding:12px 15px;
     cursor:pointer;
 }
 
-.options li:hover{
+.options-estado li:hover{
     background:#eff6ff;
     color:#2563eb;
+}
+
+.erro{
+    display:block;
+    margin-top:4px;
+    color:#dc2626;
+    font-size:13px;
+    min-height:16px;
+}
+
+.input-erro{
+    border-color:#dc2626 !important;
 }

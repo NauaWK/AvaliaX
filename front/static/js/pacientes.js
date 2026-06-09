@@ -3,6 +3,9 @@ const token = localStorage.getItem("token");
 if (!token) {
     window.location.href = "login.html"
 }
+
+
+
 //Nome usuario
 const payload = JSON.parse(atob(token.split('.')[1]));
 
@@ -23,88 +26,117 @@ function logout() {
     window.location.href = "login.html"
 }
 
+function calcularIdade(dataNascimento) {
+  const hoje = new Date();
+  const nascimento = new Date(dataNascimento);
 
+  let idade = hoje.getFullYear() - nascimento.getFullYear();
+  const m = hoje.getMonth() - nascimento.getMonth();
 
-//sistema de busca
-const input = document.getElementById("buscarPaciente");
-const resultado = document.getElementById("resultado");
-
-let pacientes = [];
-
-async function carregarPacientes() {
-  try {
-
-    const response = await fetch("http://localhost:8080/api/pacientes", {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    });
-
-
-    pacientes = await response.json();
-
-    mostrarPacientes(pacientes);
-
-  } catch (erro) {
-    console.error("Erro ao buscar pacientes:", erro);
-  }
-}
-
-function mostrarPacientes(lista) {
-
-  resultado.innerHTML = "";
-
-  if (lista.length === 0) {
-
-    const aviso = document.createElement("p");
-    aviso.textContent = "Nenhum paciente encontrado.";
-
-    resultado.appendChild(aviso);
-
-    return;
+  if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
+    idade--;
   }
 
-  lista.forEach(paciente => {
-
-    const card = document.createElement("div");
-    card.classList.add("paciente-card");
-
-    const nome = document.createElement("h2");
-    nome.textContent = paciente.nome;
-
-    const info = document.createElement("div");
-    info.classList.add("paciente-info");
-
-    const idade = document.createElement("p");
-    idade.textContent = `Idade: ${paciente.idade}`;
-
-    const genero = document.createElement("p");
-    genero.textContent = `Gênero: ${paciente.genero}`;
-
-    const guardiao = document.createElement("p");
-    guardiao.textContent = `Guardião: ${paciente.guardiao}`;
-
-    info.appendChild(idade);
-    info.appendChild(genero);
-    info.appendChild(guardiao);
-
-    card.appendChild(nome);
-    card.appendChild(info);
-
-    resultado.appendChild(card);
-  });
+  return idade;
 }
 
-input.addEventListener("input", () => {
 
-  const texto = input.value.toLowerCase();
 
-  const filtrados = pacientes.filter(paciente =>
-    paciente.nome.toLowerCase().includes(texto)
-  );
+const btnBuscar = document.getElementById("btnBuscar");
+const cpfInput = document.getElementById("cpfPaciente");
+const buscaContainer = document.querySelector(".busca-container");
 
-  mostrarPacientes(filtrados);
-});
+btnBuscar.addEventListener("click", buscarPaciente);
 
-carregarPacientes();
+async function buscarPaciente() {
+
+    const cpf = cpfInput.value.trim();
+
+    if (!cpf) {
+        alert("Digite um CPF");
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `http://localhost:8080/api/pacientes/${cpf}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Paciente não encontrado");
+        }
+
+        const paciente = await response.json();
+
+        mostrarPaciente(paciente);
+
+        buscaContainer.classList.add("buscou");
+
+    } catch (erro) {
+
+        resultado.innerHTML = `
+            <p>Paciente não encontrado.</p>
+        `;
+
+        console.error(erro);
+    }
+}
+
+function mostrarPaciente(paciente) {
+    resultado.classList.remove("mostrar");
+
+    document.getElementById("resultado").style.display = "block";
+
+    document.getElementById("nomePaciente").innerText =
+        paciente.nome;
+
+    document.getElementById("idadePaciente").innerText =
+        calcularIdade(paciente.dataNascimento);
+
+    document.getElementById("generoPaciente").innerText =
+        paciente.genero;
+
+    document.getElementById("maePaciente").innerText =
+        paciente.nomeMae;
+
+    document.getElementById("paiPaciente").innerText =
+        paciente.nomePai;
+
+    resultado.style.display = "flex";
+
+    setTimeout(() => {
+        resultado.classList.add("mostrar");
+    }, 10);
+  }
+
+const btnEditar = document.getElementById("btnEditar")
+
+btnEditar.addEventListener("click", editarPaciente)
+
+function editarPaciente() {
+
+    localStorage.setItem(
+        "cpfPacienteEditar",
+        cpfInput.value
+    );
+
+    window.location.href =
+        "formpaciente.html?modo=editar";
+}
+
+function iniciarAvaliacao() {
+
+    localStorage.setItem(
+        "cpfPacienteAvaliacao",
+        cpfInput.value
+    );
+
+    window.location.href =
+        "avaliacao.html";
+}

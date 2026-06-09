@@ -46,13 +46,63 @@
 
     </div>
 
-    <div class="search">
-      <input id="buscarPaciente" type="text" placeholder="Buscar paciente..." />
+      <div class="busca-container">
+
+      <h2>Buscar Paciente</h2>
+
+        <div class="search">
+            <input
+                id="cpfPaciente"
+                type="text"
+                placeholder="Digite o CPF do paciente"
+            >
+
+            <button id="btnBuscar" class="btn">
+                Buscar
+            </button>
+        </div>
+
+      </div>
+
+  <div id="resultado" class="paciente-card" style="display:none;">
+
+    <h2 id="nomePaciente"></h2>
+
+    <div class="dados-paciente">
+
+      <p>
+          <strong>Idade:</strong>
+          <span id="idadePaciente"></span>
+      </p>
+
+      <p>
+          <strong>Gênero:</strong>
+          <span id="generoPaciente"></span>
+      </p>
+
+      <p>
+          <strong>Mãe:</strong>
+          <span id="maePaciente"></span>
+      </p>
+
+      <p>
+          <strong>Pai:</strong>
+          <span id="paiPaciente"></span>
+      </p>
+
     </div>
 
-    <div class="card" id="resultado">
-      
+    <div class="acoes-paciente">
+        <button id="btnEditar" class="btn-editar">
+            Editar Paciente
+        </button>
+
+        <button id="btnAvaliacao" class="btn-avaliacao">
+            Iniciar Avaliação
+        </button>
     </div>
+
+</div>
 
   </main>
   <script src="../static/js/pacientes.js"></script>

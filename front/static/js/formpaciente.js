@@ -1,3 +1,47 @@
+const token = localStorage.getItem("token");
+
+if (!token) {
+    window.location.href = "login.html"
+}
+
+//modo edição
+const params = new URLSearchParams(window.location.search);
+const modo = params.get("modo");
+
+const cpfEditar = localStorage.getItem("cpfPacienteEditar");
+
+if (modo === "editar" && cpfEditar) {
+    carregarPacienteParaEditar(cpfEditar);
+}
+
+async function carregarPacienteParaEditar(cpf) {
+    const response = await fetch(`http://localhost:8080/api/pacientes/${cpf}`, {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        alert("Erro ao carregar paciente.");
+        return;
+    }
+
+    const paciente = await response.json();
+
+    document.getElementById("nomePaciente").value = paciente.nome;
+    document.getElementById("cpfPaciente").value = cpf;
+    document.getElementById("dataNascimento").value = paciente.dataNascimento;
+    document.getElementById("nomeMae").value = paciente.nomeMae;
+    document.getElementById("nomePai").value = paciente.nomePai || "";
+
+    document.getElementById("sexo").value = paciente.genero;
+
+    const textoSexo = paciente.genero === "M" ? "Masculino" : "Feminino";
+    document.querySelector("#sexoSelect .selected-value").textContent = textoSexo;
+
+    document.querySelector(".btn-salvar").textContent = "Salvar alterações";
+}
+
 
 //dropdow sexobiologico
 const customSelect = document.querySelector("#sexoSelect");
@@ -93,3 +137,110 @@ document.addEventListener("click", e => {
     }
 
 });
+
+const formulario = document.querySelector(".formulario");
+
+formulario.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const paciente = {
+        nome: document.getElementById("nomePaciente").value,
+        CPF_paciente: document.getElementById("cpfPaciente").value,
+        genero: document.getElementById("sexo").value,
+        dataNascimento: document.getElementById("dataNascimento").value,
+        nomeMae: document.getElementById("nomeMae").value,
+        nomePai: document.getElementById("nomePai").value,
+
+        responsavel: {
+            nome: document.getElementById("responsavel").value,
+            CPF_responsavel: document.getElementById("cpf").value,
+            grauParentesco: document.getElementById("parentesco").value,
+            cidade: document.getElementById("cidade").value,
+            estado: document.getElementById("estado").value,
+            pais: document.getElementById("pais").value,
+            whatsapp: document.getElementById("whatsapp").value,
+            telefone1: document.getElementById("telefone1").value,
+            telefone2: document.getElementById("telefone2").value,
+            email: document.getElementById("email").value
+        }
+    };
+
+    console.log(paciente);
+try {
+
+    const url = modo === "editar"
+        ? `http://localhost:8080/api/pacientes/${cpfEditar}`
+        : "http://localhost:8080/api/pacientes";
+
+    const metodo = modo === "editar"
+        ? "PATCH"
+        : "POST";
+
+    const response = await fetch(url, {
+        method: metodo,
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(paciente)
+    });
+
+    if (!response.ok) {
+
+        const erros = await response.json();
+
+        console.log("ERROS DO BACK:");
+        console.log(erros);
+
+        mostrarErros(erros);
+
+        return;
+    }
+
+    const data = await response.json();
+
+    console.log(data);
+    localStorage.removeItem("cpfPacienteEditar");
+    window.location.href = "pacientes.html";
+
+} catch (erro) {
+
+    console.error("ERRO NO FETCH:");
+    console.error(erro);
+
+}           
+});
+
+
+function limparErros() {
+
+    document.querySelectorAll(".erro").forEach(el => {
+        el.textContent = "";
+    });
+
+    document.querySelectorAll(".input-erro").forEach(el => {
+        el.classList.remove("input-erro");
+    });
+
+}
+
+function mostrarErros(erros) {
+
+    limparErros();
+
+    erros.field_errors.forEach(erro => {
+
+        console.log(erro);
+
+        const campoErro = document.getElementById(
+            `erro-${erro.field}`
+        );
+
+        if (campoErro) {
+            campoErro.textContent =
+                erro.defaultErrorMessage;
+        }
+
+    });
+
+}

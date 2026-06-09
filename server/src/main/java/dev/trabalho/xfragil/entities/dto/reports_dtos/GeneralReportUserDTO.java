@@ -7,14 +7,14 @@ import java.util.List;
 
 public record GeneralReportUserDTO(
         
-    List<SymptomRankingDTO> rankingSintomas,
-        
-    SymptomGenderDTO sintomaMaisMarcadoPorGenero,
-    
-    Double scoreMedioAvaliacoes,
-    
-    Double porcentagemTesteIndicado,
-    
-    Double porcentagemInconclusivo
+        List<SymptomRankingDTO> rankingSintomas,
+
+        SymptomGenderDTO sintomaMaisMarcadoPorGenero,
+
+        Double scoreMedioAvaliacoes,
+
+        Double porcentagemTesteIndicado,
+
+        Double porcentagemInconclusivo
         
     ) {}

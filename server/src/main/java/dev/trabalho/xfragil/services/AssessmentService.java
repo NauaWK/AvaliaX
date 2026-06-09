@@ -12,7 +12,6 @@ import dev.trabalho.xfragil.entities.dto.symptom_dto.SymptomRequestDTO;
 import dev.trabalho.xfragil.repositories.AssessmentRepository;
 import dev.trabalho.xfragil.repositories.AssessmentSymptomRepository;
 import dev.trabalho.xfragil.repositories.SymptomRepository;
-import dev.trabalho.xfragil.repositories.UserRepository;
 import dev.trabalho.xfragil.utils.enums.Origin;
 import dev.trabalho.xfragil.utils.enums.Result;
 import dev.trabalho.xfragil.utils.mappers.AssessmentMapper;
@@ -30,23 +29,20 @@ public class AssessmentService {
     private final PatientService patientService;
     private final UserService userService;
     private final SymptomRepository symptomRepo;
-    private final UserRepository userRepo;
     private final AssessmentSymptomRepository assessmentSymptomRepo;
 
-    public AssessmentService(AssessmentRepository assessmentRepo, 
+    public AssessmentService(
+            AssessmentRepository assessmentRepo, 
             AssessmentMapper assessmentMapper, 
-            PatientService patientService,
-            UserService userService,
-            SymptomRepository symptomRepo, 
-            AssessmentSymptomRepository assessmentSymptomRepo,
-            UserRepository userRepo) {
+            PatientService patientService, 
+            UserService userService, SymptomRepository symptomRepo, 
+            AssessmentSymptomRepository assessmentSymptomRepo) {
         this.assessmentRepo = assessmentRepo;
         this.assessmentMapper = assessmentMapper;
         this.patientService = patientService;
         this.userService = userService;
         this.symptomRepo = symptomRepo;
         this.assessmentSymptomRepo = assessmentSymptomRepo;
-        this.userRepo = userRepo;
     }
     
     public List<AssessmentResponseDTO> getAssessments()

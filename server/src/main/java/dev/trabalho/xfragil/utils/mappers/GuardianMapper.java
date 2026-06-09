@@ -29,7 +29,6 @@ public class GuardianMapper {
         return new GuardianResponseDTO(
                 guardian.getId(),
                 guardian.getName(),
-                guardian.getCPF(),
                 guardian.getRelationshipDegree(),
                 guardian.getCity(),
                 guardian.getState(),

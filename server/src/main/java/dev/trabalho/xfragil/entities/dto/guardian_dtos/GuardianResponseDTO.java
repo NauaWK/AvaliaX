@@ -4,7 +4,6 @@ public record GuardianResponseDTO(
 
         Integer id,
         String nome,
-        String CPF,
         String grauParentesco,
         String cidade,
         String estado,

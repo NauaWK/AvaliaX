@@ -1,6 +1,7 @@
 
 package dev.trabalho.xfragil.entities.dto.patient_dtos;
 
+import dev.trabalho.xfragil.entities.dto.guardian_dtos.GuardianRequestDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import dev.trabalho.xfragil.utils.customAnnotations.CPF_annotation.CPF;
@@ -29,6 +30,8 @@ public record PatientRequestDTOUser(
         String nomeMae,
         
         @Size(max = 100, message = "O nome do pai não pode ultrapassar 100 caracteres!")
-        String nomePai
+        String nomePai,
+        
+        GuardianRequestDTO responsavel
         
         ) {}

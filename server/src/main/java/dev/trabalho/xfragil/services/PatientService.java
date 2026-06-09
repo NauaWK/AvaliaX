@@ -9,7 +9,6 @@ import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientResponseDTO;
 import dev.trabalho.xfragil.exception.customExceptions.DuplicatedObjectException;
 import dev.trabalho.xfragil.exception.customExceptions.ObjectNotFoundException;
 import dev.trabalho.xfragil.repositories.PatientRepository;
-import dev.trabalho.xfragil.repositories.UserRepository;
 import dev.trabalho.xfragil.utils.mappers.PatientMapper;
 import java.util.List;
 import java.util.Optional;
@@ -20,13 +19,17 @@ public class PatientService {
     
     private final PatientRepository patientRepo;
     private final PatientMapper patientMapper;
-    private final UserRepository userRepo;
+    private final GuardianService guardianService;
     private final UserService userService;
 
-    public PatientService(PatientRepository patientRepo, PatientMapper patientMapper, UserRepository userRepo, UserService userService) {
+    public PatientService(
+            PatientRepository patientRepo, 
+            PatientMapper patientMapper, 
+            GuardianService guardianService, 
+            UserService userService) {
         this.patientRepo = patientRepo;
         this.patientMapper = patientMapper;
-        this.userRepo = userRepo;
+        this.guardianService = guardianService;
         this.userService = userService;
     }
     
@@ -55,7 +58,7 @@ public class PatientService {
     public PatientResponseDTO addPatient(PatientRequestDTOUser patientRequest, Integer userId)
     {
         String normalizedCpf = patientRequest.CPF_paciente().replaceAll("\\D", "");
-        if(patientAlreadyExists(normalizedCpf)) throw new DuplicatedObjectException("O paciente com CPF " + normalizedCpf + " já existe!");
+        if(patientAlreadyExists(normalizedCpf) || guardianService.guardianAlreadyExists(normalizedCpf)) throw new DuplicatedObjectException("O CPF " + normalizedCpf + " já está cadastrado!");
         
         Users user = userService.findUserByUserId(userId);
                 

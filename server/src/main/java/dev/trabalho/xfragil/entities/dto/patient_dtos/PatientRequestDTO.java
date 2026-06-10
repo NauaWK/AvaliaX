@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import java.time.LocalDate;
 
-public record PatientRequestDTOUser(
+public record PatientRequestDTO(
         
         @NotBlank(message = "Nome do paciente é obrigatório!")
         @Size(max = 100, message = "O nome não pode ultrapassar 100 caracteres!")

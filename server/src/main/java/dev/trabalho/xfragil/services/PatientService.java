@@ -4,12 +4,18 @@ package dev.trabalho.xfragil.services;
 import dev.trabalho.xfragil.entities.Guardian;
 import dev.trabalho.xfragil.entities.Patient;
 import dev.trabalho.xfragil.entities.Users;
-import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTOAdmin;
-import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTOUser;
+import dev.trabalho.xfragil.entities.dto.guardian_dtos.GuardianResponseDTO;
+import dev.trabalho.xfragil.entities.dto.patient_dtos.edit_pacient_dtos.PatientRequestEditDTOUser;
+import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTO;
 import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientResponseDTO;
+import dev.trabalho.xfragil.entities.dto.patient_dtos.edit_pacient_dtos.PatientRequestEditDTOAdmin;
+import dev.trabalho.xfragil.entities.dto.patient_dtos.edit_pacient_dtos.PatientResponseEditDTO;
 import dev.trabalho.xfragil.exception.customExceptions.DuplicatedObjectException;
 import dev.trabalho.xfragil.exception.customExceptions.ObjectNotFoundException;
+import dev.trabalho.xfragil.repositories.GuardianRepository;
+import dev.trabalho.xfragil.repositories.PatientGuardianRepository;
 import dev.trabalho.xfragil.repositories.PatientRepository;
+import dev.trabalho.xfragil.utils.mappers.GuardianMapper;
 import dev.trabalho.xfragil.utils.mappers.PatientMapper;
 import java.util.List;
 import java.util.Optional;
@@ -21,45 +27,82 @@ public class PatientService {
     private final PatientRepository patientRepo;
     private final PatientMapper patientMapper;
     private final PatientGuardianService patientGuardianService;
+    private final PatientGuardianRepository patientGuardianRepo;
     private final GuardianService guardianService;
+    private final GuardianRepository guardianRepo;
+    private final GuardianMapper guardianMapper;
     private final UserService userService;
 
     public PatientService(
             PatientRepository patientRepo, 
             PatientMapper patientMapper, 
-            GuardianService guardianService, 
             PatientGuardianService patientGuardianService, 
+            PatientGuardianRepository patientGuardianRepo, 
+            GuardianService guardianService, 
+            GuardianRepository guardianRepo, 
+            GuardianMapper guardianMapper, 
             UserService userService) {
         this.patientRepo = patientRepo;
         this.patientMapper = patientMapper;
-        this.guardianService = guardianService;
         this.patientGuardianService = patientGuardianService;
+        this.patientGuardianRepo = patientGuardianRepo;
+        this.guardianService = guardianService;
+        this.guardianRepo = guardianRepo;
+        this.guardianMapper = guardianMapper;
         this.userService = userService;
     }
     
-    public List<PatientResponseDTO> getPatients()
+    public List<PatientResponseDTO> getPatients() 
     {
-        List<Patient> patients = patientRepo.findAll();
-        
-        List<PatientResponseDTO> dtos = patients.stream()
-               .map(patientMapper::toDto)
-               .toList();
-        
-        return dtos;
+    List<Patient> patients = patientRepo.findAll();
+
+    return patients.stream()
+            .map(patient -> {
+                List<GuardianResponseDTO> guardians = patientGuardianRepo.findByPatient(patient)
+                        .stream()
+                        .map(pg -> guardianMapper.toDto(pg.getGuardian()))
+                        .distinct()
+                        .toList();
+
+                return patientMapper.toDto(patient, guardians);
+            })
+            .toList();
     }
-    
+
     public List<PatientResponseDTO> getPatientsByUserId(Integer userId)
     {
         List<Patient> patients = patientRepo.findByUserIdAndActiveTrue(userId);
         
-        List<PatientResponseDTO> dtos = patients.stream()
-               .map(patientMapper::toDto)
-               .toList();
+        return patients.stream()
+            .map(patient -> {
+                List<GuardianResponseDTO> guardians = patientGuardianRepo.findByPatient(patient)
+                        .stream()
+                        .map(pg -> guardianMapper.toDto(pg.getGuardian()))
+                        .distinct()
+                        .toList();
+
+                return patientMapper.toDto(patient, guardians);
+            })
+            .toList();
+    }
         
-        return dtos;
+    public PatientResponseDTO getPatientByCPF(String cpf) 
+    {
+        String normalizedCpf = cpf.replaceAll("\\D", "");
+
+        Patient p = patientRepo.findByCPFAndActiveTrue(normalizedCpf)
+                .orElseThrow(() -> new ObjectNotFoundException("Paciente com CPF " + cpf + " não encontrado."));
+
+        List<GuardianResponseDTO> guardians = patientGuardianRepo.findByPatient(p)
+                .stream()
+                .map(pg -> guardianMapper.toDto(pg.getGuardian()))
+                .distinct()
+                .toList();
+
+        return patientMapper.toDto(p, guardians);
     }
     
-    public PatientResponseDTO addPatient(PatientRequestDTOUser patientRequest, Integer userId)
+    public PatientResponseDTO addPatient(PatientRequestDTO patientRequest, Integer userId)
     {
         String normalizedCpf = patientRequest.CPF_paciente().replaceAll("\\D", "");
         if(patientAlreadyExists(normalizedCpf) || guardianService.guardianAlreadyExists(normalizedCpf)) throw new DuplicatedObjectException("O CPF " + normalizedCpf + " já está cadastrado!");
@@ -74,54 +117,43 @@ public class PatientService {
         
         patientGuardianService.linkPatientToGuardian(patient, guardian);
         
-        return patientMapper.toDto(patient);
+        return patientMapper.toDto(patient, List.of(guardianMapper.toDto(guardian)));
     }
-    
-    public PatientResponseDTO getPatientByCPF(String cpf)
-    {
-        String normalizedCpf = cpf.replaceAll("\\D", "");
         
-        Patient p = patientRepo.findByCPFAndActiveTrue(normalizedCpf)
-                .orElseThrow(() -> new ObjectNotFoundException("Paciente com CPF " + cpf + " não encontrado."));
-        
-        return patientMapper.toDto(p);
-    }
-    
-    public PatientResponseDTO editPatientAsAdmin(String CPF, PatientRequestDTOAdmin patientRequest)
+    public PatientResponseEditDTO editPatientAsUser(String CPF, PatientRequestEditDTOUser patientRequest)
     {
+        String normalizedPatientCpf = CPF.replaceAll("\\D", "");
+        Patient p = findPatientByCPFUser(normalizedPatientCpf);
 
-        String normalizedCpf = patientRequest.CPF_paciente().replaceAll("\\D", "");
-        Patient p = findPatientByCPF(normalizedCpf);
-        
         p.setName(patientRequest.nome());
-        p.setCPF(normalizedCpf);
+        p.setCPF(normalizedPatientCpf);
+        p.setGender(patientRequest.genero());
+        p.setBirthDate(patientRequest.dataNascimento());
+        p.setMomName(patientRequest.nomeMae());
+        p.setDadName(patientRequest.nomePai());
+        patientRepo.save(p);
+        
+        return patientMapper.toEditDto(p);
+    }
+    
+    public PatientResponseEditDTO editPatientAsAdmin(String CPF, PatientRequestEditDTOAdmin patientRequest)
+    {
+        String normalizedPatientCpf = CPF.replaceAll("\\D", "");
+        Patient p = findPatientByCPFUser(normalizedPatientCpf);
+      
+        p.setName(patientRequest.nome());
+        p.setCPF(normalizedPatientCpf);
         p.setGender(patientRequest.genero());
         p.setBirthDate(patientRequest.dataNascimento());
         p.setMomName(patientRequest.nomeMae());
         p.setDadName(patientRequest.nomePai());
         p.setActive(patientRequest.ativo() != null ? patientRequest.ativo() : p.isActive());
-        
         patientRepo.save(p);
-        return patientMapper.toDto(p);
+        
+        return patientMapper.toEditDto(p);
     }
     
-    public PatientResponseDTO editPatientAsUser(String CPF, PatientRequestDTOUser patientRequest)
-    {
-        String normalizedCpf = patientRequest.CPF_paciente().replaceAll("\\D", "");
-        Patient p = findPatientByCPFUser(normalizedCpf);
-        
-        p.setName(patientRequest.nome());
-        p.setCPF(normalizedCpf);
-        p.setGender(patientRequest.genero());
-        p.setBirthDate(patientRequest.dataNascimento());
-        p.setMomName(patientRequest.nomeMae());
-        p.setDadName(patientRequest.nomePai());
-        
-        patientRepo.save(p);
-        return patientMapper.toDto(p);
-    }
-    
-    public Patient createOrFind(PatientRequestDTOUser dto)
+    public Patient createOrFind(PatientRequestDTO dto)
     {
         String normalizedCpf = dto.CPF_paciente().replaceAll("\\D", "");
         Optional<Patient> optionalPatient = patientRepo.findByCPF(normalizedCpf);

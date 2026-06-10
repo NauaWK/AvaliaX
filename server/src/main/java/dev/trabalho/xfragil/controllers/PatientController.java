@@ -1,9 +1,11 @@
 
 package dev.trabalho.xfragil.controllers;
 
-import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTOAdmin;
-import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTOUser;
+import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTO;
 import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientResponseDTO;
+import dev.trabalho.xfragil.entities.dto.patient_dtos.edit_pacient_dtos.PatientRequestEditDTOAdmin;
+import dev.trabalho.xfragil.entities.dto.patient_dtos.edit_pacient_dtos.PatientRequestEditDTOUser;
+import dev.trabalho.xfragil.entities.dto.patient_dtos.edit_pacient_dtos.PatientResponseEditDTO;
 import dev.trabalho.xfragil.security.UserDetailsImpl;
 import dev.trabalho.xfragil.services.PatientService;
 import jakarta.validation.Valid;
@@ -61,7 +63,7 @@ public class PatientController {
     }
     
     @PostMapping
-    public ResponseEntity<PatientResponseDTO> addPatient(@RequestBody @Valid PatientRequestDTOUser patientRequest, 
+    public ResponseEntity<PatientResponseDTO> addPatient(@RequestBody @Valid PatientRequestDTO patientRequest, 
             Authentication auth)
     {
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
@@ -72,18 +74,18 @@ public class PatientController {
     }
     
     @PatchMapping("/admin/{cpf}")
-    public ResponseEntity<PatientResponseDTO> editPatientAsAdmin(@PathVariable @CPF String cpf,
-            @RequestBody @Valid PatientRequestDTOAdmin patientRequest)
+    public ResponseEntity<PatientResponseEditDTO> editPatientAsAdmin(@PathVariable @CPF String cpf,
+            @RequestBody @Valid PatientRequestEditDTOAdmin patientRequest)
     {
-    PatientResponseDTO dto = patientService.editPatientAsAdmin(cpf, patientRequest);
+        PatientResponseEditDTO dto = patientService.editPatientAsAdmin(cpf, patientRequest);
         return ResponseEntity.ok(dto);
     }
     
     @PatchMapping("/{cpf}")
-    public ResponseEntity<PatientResponseDTO> editPatientAsUser(@PathVariable @CPF String cpf,
-            @RequestBody @Valid PatientRequestDTOUser patientRequest)
+    public ResponseEntity<PatientResponseEditDTO> editPatientAsUser(@PathVariable @CPF String cpf,
+            @RequestBody @Valid PatientRequestEditDTOUser patientRequest)
     {
-        PatientResponseDTO dto = patientService.editPatientAsUser(cpf, patientRequest);
+        PatientResponseEditDTO dto = patientService.editPatientAsUser(cpf, patientRequest);
         return ResponseEntity.ok(dto);
     }
     

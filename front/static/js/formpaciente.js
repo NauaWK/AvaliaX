@@ -12,7 +12,7 @@ const cpfEditar = localStorage.getItem("cpfPacienteEditar");
 
 if (modo === "editar" && cpfEditar) {
     carregarPacienteParaEditar(cpfEditar);
-}
+}   
 
 async function carregarPacienteParaEditar(cpf) {
     const response = await fetch(`http://localhost:8080/api/pacientes/${cpf}`, {
@@ -27,6 +27,7 @@ async function carregarPacienteParaEditar(cpf) {
     }
 
     const paciente = await response.json();
+    console.log(JSON.stringify(paciente, null, 2));
 
     document.getElementById("nomePaciente").value = paciente.nome;
     document.getElementById("cpfPaciente").value = cpf;
@@ -40,6 +41,28 @@ async function carregarPacienteParaEditar(cpf) {
     document.querySelector("#sexoSelect .selected-value").textContent = textoSexo;
 
     document.querySelector(".btn-salvar").textContent = "Salvar alterações";
+
+
+    console.log(paciente);
+    const responsavel = paciente.responsavel;
+
+    console.log("PACIENTE COMPLETO:", paciente);
+    console.log("RESPONSAVEL:", paciente.responsavel);
+    if (responsavel) {
+        document.getElementById("responsavel").value = responsavel.nome || "";
+        document.getElementById("cpf").value = responsavel.CPF_responsavel || "";
+        document.getElementById("parentesco").value = responsavel.grauParentesco || "";
+        document.getElementById("cidade").value = responsavel.cidade || "";
+        document.getElementById("estado").value = responsavel.estado || "";
+        document.getElementById("pais").value = responsavel.pais || "";
+        document.getElementById("whatsapp").value = responsavel.whatsapp || "";
+        document.getElementById("telefone1").value = responsavel.telefone1 || "";
+        document.getElementById("telefone2").value = responsavel.telefone2 || "";
+        document.getElementById("email").value = responsavel.email || "";
+
+        document.querySelector("#estadoSelect .selected-value").textContent =
+            responsavel.estado || "Selecione um estado";
+    }
 }
 
 

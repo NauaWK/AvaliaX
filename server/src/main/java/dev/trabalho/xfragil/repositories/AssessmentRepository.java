@@ -14,7 +14,8 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Integer>
 
     Long countByUserIdAndResult(Integer userId, Result result);
     
-    @Query(value = "SELECT AVG(score) from avaliacoes WHERE id_usuario = :userId", nativeQuery = true)
+    @Query(value = "SELECT AVG(score) from avaliacoes "
+            + "WHERE id_usuario = :userId", nativeQuery = true)
     Double findAverageScoreByUserId(@Param("userId") Integer userId);
     
     @Query(value = "SELECT * FROM avaliacoes "
@@ -29,7 +30,35 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Integer>
             + "DESC LIMIT 5", nativeQuery = true)
     List<Assessment> findRecentAssessmentsByUserId(@Param("userId") Integer userId);
     
-    //<-- esses métodos são para o admin -->
+    @Query(value = "SELECT COUNT(*) FROM avaliacoes a "
+            + "WHERE a.id_paciente = :patientId", nativeQuery = true)
+    Long countByPatient(@Param("patientId") Integer patientId);
+    
+    @Query(value = "SELECT COUNT(*) FROM avaliacoes a "
+            + "WHERE a.id_paciente = :patientId AND a.origem = 'PROFISSIONAL'", nativeQuery = true)
+    Long countProfissionalAssessmentByPatient(@Param("patientId") Integer patientId);
+
+    @Query(value = "SELECT COUNT(*) FROM avaliacoes a "
+            + "WHERE a.id_paciente = :patientId AND a.origem = 'RESPONSAVEL'", nativeQuery = true)
+    Long countGuardianAssessmentsByPatient(@Param("patientId") Integer patientId);
+
+    @Query(value = "SELECT AVG(a.score) FROM avaliacoes a "
+            + "WHERE a.id_paciente = :patientId", nativeQuery = true)
+    Double findAvgScoreByPatient(@Param("patientId") Integer patientId);
+
+    @Query(value = """
+        SELECT s.descricao, COUNT(*) AS qtd
+        FROM avaliacoes a
+        JOIN avaliacao_sintoma avs ON a.id_avaliacao = avs.id_avaliacao
+        JOIN sintomas s ON s.id_sintoma = avs.id_sintoma
+        WHERE a.id_paciente = :patientId AND avs.presente = 1
+        GROUP BY s.descricao
+        ORDER BY qtd DESC
+        """, nativeQuery = true)
+    List<Object[]> findSymptomRankingByPatient(@Param("patientId") Integer patientId);
+    
+    
+    //<----- esses métodos são para o admin ----->
     Long countByResult(Result result); 
     
     @Query(value = "SELECT * FROM avaliacoes "
@@ -37,7 +66,7 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Integer>
             + "DESC LIMIT 5", nativeQuery = true)
     List<Assessment> findRecentAssessments();
     
-    @Query(value = "SELECT AVG(score) from avaliacoes", nativeQuery = true)
+    @Query(value = "SELECT AVG(score) FROM avaliacoes", nativeQuery = true)
     Double findAverageScoreGlobal();
     
 }

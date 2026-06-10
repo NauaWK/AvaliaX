@@ -7,6 +7,8 @@ import dev.trabalho.xfragil.entities.dto.guardian_dtos.GuardianResponseDTO;
 import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientRequestDTO;
 import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientResponseDTO;
 import dev.trabalho.xfragil.entities.dto.patient_dtos.edit_pacient_dtos.PatientResponseEditDTO;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +21,7 @@ public class PatientMapper {
             p.getId(),
             p.getName(),
             p.getGender(),
-            p.getBirthDate(),
+            Period.between(p.getBirthDate(), LocalDate.now()).getYears(),
             p.getMomName(),
             p.getDadName(),
             p.isActive(),
@@ -33,7 +35,7 @@ public class PatientMapper {
             p.getId(),
             p.getName(),
             p.getGender(),
-            p.getBirthDate(),
+            Period.between(p.getBirthDate(), LocalDate.now()).getYears(),
             p.getMomName(),
             p.getDadName(),
             p.isActive()

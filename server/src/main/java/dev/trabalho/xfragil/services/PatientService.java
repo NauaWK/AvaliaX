@@ -139,7 +139,7 @@ public class PatientService {
     public PatientResponseEditDTO editPatientAsAdmin(String CPF, PatientRequestEditDTOAdmin patientRequest)
     {
         String normalizedPatientCpf = CPF.replaceAll("\\D", "");
-        Patient p = findPatientByCPFUser(normalizedPatientCpf);
+        Patient p = findPatientByCPF(normalizedPatientCpf);
       
         p.setName(patientRequest.nome());
         p.setCPF(normalizedPatientCpf);

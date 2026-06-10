@@ -10,11 +10,13 @@ public record GeneralReportUserDTO(
         List<SymptomRankingDTO> rankingSintomas,
 
         SymptomGenderDTO sintomaMaisMarcadoPorGenero,
-
-        Double scoreMedioAvaliacoes,
+        
+        Long totalAvaliacoes,
 
         Double porcentagemTesteIndicado,
 
-        Double porcentagemInconclusivo
+        Double porcentagemInconclusivo,
+        
+        Double scoreMedioAvaliacoes
         
     ) {}

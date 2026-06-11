@@ -43,12 +43,20 @@ public class AssessmentController {
         boolean isAdmin = roles.stream()
                            .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
         
+        return ResponseEntity.ok(assessmentService.getAllAssessments(userId, isAdmin));
+    }
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<AssessmentResponseDTO> getAssessmentById(Authentication auth, @PathVariable Integer id)
+    {
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        Integer userId = userDetails.getUser().getId();    
         
-        List<AssessmentResponseDTO> dtos = isAdmin 
-                ? assessmentService.getAssessments() 
-                : assessmentService.getAssessmentsByUserId(userId);
+        Collection<? extends GrantedAuthority> roles = auth.getAuthorities();        
+        boolean isAdmin = roles.stream()
+                           .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
         
-        return ResponseEntity.ok(dtos);
+        return ResponseEntity.ok(assessmentService.getAssessmentById(id, userId, isAdmin));
     }
     
     @PostMapping

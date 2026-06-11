@@ -50,9 +50,11 @@ public class AssessmentService {
         this.assessmentSymptomRepo = assessmentSymptomRepo;
     }
     
-    public List<AssessmentResponseDTO> getAssessments()
+    public List<AssessmentResponseDTO> getAllAssessments(Integer userId, boolean isAdmin)
     {
-        List<Assessment> assessments = assessmentRepo.findAll();
+        List<Assessment> assessments = isAdmin
+                                        ? assessmentRepo.findAll()
+                                        : assessmentRepo.findByUserId(userId);
 
         return assessments.stream()
                .map( a -> {
@@ -62,16 +64,15 @@ public class AssessmentService {
                .toList();
     }
     
-    public List<AssessmentResponseDTO> getAssessmentsByUserId(Integer userId)
+    public AssessmentResponseDTO getAssessmentById(Integer assessmentId, Integer userId, boolean isAdmin)
     {
-        List<Assessment> assessments = assessmentRepo.findByUserId(userId);
-
-        return assessments.stream()
-                .map( a -> {
-                    List<String> symptoms = symptomRepo.findSymptomsByAssessment(a.getId());
-                    return assessmentMapper.toDto(a, symptoms);
-                })
-                .toList();
+        Assessment a = isAdmin 
+                        ? getAssessmentById(assessmentId, null)
+                        : getAssessmentById(assessmentId, userId);
+        
+        List<String> symptoms = symptomRepo.findSymptomsByAssessment(a.getId());
+        
+        return assessmentMapper.toDto(a, symptoms);
     }
     
     public AssessmentResponseDTO addAssessment(AssessmentRequestDTO assessmentRequest, Integer userId) 
@@ -116,11 +117,9 @@ public class AssessmentService {
                                                   Integer userId,
                                                   boolean isAdmin) {
 
-        Assessment assessment = isAdmin
-                ? assessmentRepo.findById(assessmentId)
-                    .orElseThrow(() -> new ObjectNotFoundException("Avaliação com ID " + assessmentId + " não encontrada!"))
-                : assessmentRepo.findByIdAndUserId(assessmentId, userId)
-                    .orElseThrow(() -> new ObjectNotFoundException("Avaliação com ID " + assessmentId + " não encontrada!"));
+        Assessment assessment = isAdmin 
+                        ? getAssessmentById(assessmentId, null)
+                        : getAssessmentById(assessmentId, userId);
 
         Patient patient = assessment.getPatient();
         boolean isMan = patient.getGender().equalsIgnoreCase("M");
@@ -156,7 +155,7 @@ public class AssessmentService {
             }
         }
 
-        // Agora calcula o score com base em TODOS os vínculos (antigos + novos)
+        //agora calcula o score com base em TODOS os vínculos (antigos + novos)
         BigDecimal score = calculateScore(existingRelations, isMan);
 
         Result result = (isMan && score.compareTo(MAN_LIMIAR) >= 0) ||
@@ -216,6 +215,16 @@ public class AssessmentService {
                 .toList();
         List<Symptom> symptoms = symptomRepo.findByNameIn(nomes);
         return symptoms.stream().collect(Collectors.toMap(Symptom::getName, s -> s));
+    }
+    
+    
+    private Assessment getAssessmentById(Integer assessmentId, Integer userId)
+    {
+        return userId == null 
+                ? assessmentRepo.findById(assessmentId)
+                        .orElseThrow(() -> new ObjectNotFoundException("Avaliação com ID " + assessmentId + " não encontrada!"))
+                : assessmentRepo.findByIdAndUserId(assessmentId, userId)
+                    .orElseThrow(() -> new ObjectNotFoundException("Avaliação com ID " + assessmentId + " não encontrada!"));
     }
     
 }

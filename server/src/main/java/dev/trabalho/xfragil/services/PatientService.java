@@ -90,8 +90,22 @@ public class PatientService {
     {
         String normalizedCpf = cpf.replaceAll("\\D", "");
 
-        Patient p = patientRepo.findByCPFAndActiveTrue(normalizedCpf)
-                .orElseThrow(() -> new ObjectNotFoundException("Paciente com CPF " + cpf + " não encontrado."));
+        Patient p = findPatientByCPFUser(normalizedCpf);
+
+        List<GuardianResponseDTO> guardians = patientGuardianRepo.findByPatient(p)
+                .stream()
+                .map(pg -> guardianMapper.toDto(pg.getGuardian()))
+                .distinct()
+                .toList();
+
+        return patientMapper.toDto(p, guardians);
+    }
+
+    public PatientResponseDTO getPatientByCPFAdmin(String cpf)
+    {
+        String normalizedCpf = cpf.replaceAll("\\D", "");
+
+        Patient p = findPatientByCPF(normalizedCpf);
 
         List<GuardianResponseDTO> guardians = patientGuardianRepo.findByPatient(p)
                 .stream()

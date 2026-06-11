@@ -61,6 +61,13 @@ public class PatientController {
         PatientResponseDTO dto = patientService.getPatientByCPF(cpf);
         return ResponseEntity.ok(dto);
     }
+
+    @GetMapping("/admin/{cpf}")
+    public ResponseEntity<PatientResponseDTO> getPatientByCPFAdmin(@PathVariable @CPF String cpf)
+    {
+        PatientResponseDTO dto = patientService.getPatientByCPFAdmin(cpf);
+        return ResponseEntity.ok(dto);
+    }
     
     @PostMapping
     public ResponseEntity<PatientResponseDTO> addPatient(@RequestBody @Valid PatientRequestDTO patientRequest, 

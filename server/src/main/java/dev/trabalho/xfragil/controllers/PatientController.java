@@ -43,15 +43,12 @@ public class PatientController {
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
         Integer userId = userDetails.getUser().getId();    
         
-        Collection<? extends GrantedAuthority> roles = auth.getAuthorities();        
+        Collection<? extends GrantedAuthority> roles = auth.getAuthorities();
+
         boolean isAdmin = roles.stream()
                            .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
-        
-        
-        List<PatientResponseDTO> dtos = isAdmin 
-                ? patientService.getPatients() 
-                : patientService.getPatientsByUserId(userId);
-        
+
+        List<PatientResponseDTO> dtos = patientService.getPatients(userId, isAdmin);
         return ResponseEntity.ok(dtos);
     }
     

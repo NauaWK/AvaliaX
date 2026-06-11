@@ -2,6 +2,7 @@
 package dev.trabalho.xfragil.controllers;
 
 import dev.trabalho.xfragil.entities.dto.assessment_dtos.AssessmentRequestDTO;
+import dev.trabalho.xfragil.entities.dto.assessment_dtos.AssessmentRequestEditDTO;
 import dev.trabalho.xfragil.entities.dto.assessment_dtos.AssessmentResponseDTO;
 import dev.trabalho.xfragil.entities.dto.autoassessment_dtos.AutoAssessmentRequestDTO;
 import dev.trabalho.xfragil.security.UserDetailsImpl;
@@ -10,16 +11,14 @@ import dev.trabalho.xfragil.services.AutoAssessmentService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
@@ -69,5 +68,22 @@ public class AssessmentController {
         AssessmentResponseDTO dto = autoAssessmentService.processAutoAssessment(autoAssessmentRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
-    
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<AssessmentResponseDTO> updateAssessment(
+            @PathVariable Integer id,
+            @Valid @RequestBody AssessmentRequestEditDTO request,
+            Authentication auth)
+    {
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        Integer userId = userDetails.getUser().getId();
+
+        Collection<? extends GrantedAuthority> roles = auth.getAuthorities();
+        boolean isAdmin = roles.stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+
+        AssessmentResponseDTO dto = assessmentService.updateAssessment(id, request, userId, isAdmin);
+        return ResponseEntity.ok(dto);
+    }
+
 }

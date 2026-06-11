@@ -62,5 +62,12 @@ public interface SymptomRepository extends JpaRepository<Symptom, Integer>{
     """, nativeQuery = true)
     List<Object[]> findSymptomRankingGlobal();
 
+    @Query(value = """
+        SELECT s.descricao FROM avaliacao_sintoma avs
+        JOIN sintomas s ON avs.id_sintoma = s.id_sintoma
+        JOIN avaliacoes a ON avs.id_avaliacao = a.id_avaliacao
+        WHERE avs.presente = 1 AND avs.id_avaliacao = :assessmentId
+    """, nativeQuery = true)
+    List<String >findSymptomsByAssessment(@Param("assessmentId") Integer assessmentId);
 
 }

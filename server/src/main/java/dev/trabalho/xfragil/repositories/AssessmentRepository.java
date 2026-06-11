@@ -4,6 +4,8 @@ package dev.trabalho.xfragil.repositories;
 import dev.trabalho.xfragil.entities.Assessment;
 import dev.trabalho.xfragil.utils.enums.Result;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,6 +25,8 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Integer>
             + "OR origem = 'RESPONSAVEL'", 
             nativeQuery = true)
     List<Assessment> findByUserId(@Param("userId") Integer userId);
+
+    Optional<Assessment> findByIdAndUserId(Integer id, Integer userId);
     
         @Query(value = "SELECT * FROM avaliacoes "
             + "WHERE id_usuario = :userId "

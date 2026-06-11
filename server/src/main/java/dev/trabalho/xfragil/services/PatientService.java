@@ -52,28 +52,13 @@ public class PatientService {
         this.userService = userService;
     }
     
-    public List<PatientResponseDTO> getPatients() 
+    public List<PatientResponseDTO> getPatients(Integer userId, Boolean isAdmin)
     {
-    List<Patient> patients = patientRepo.findAll();
+    List<Patient> patients = isAdmin
+        ? patientRepo.findAll()
+        : patientRepo.findByUserIdAndActiveTrue(userId);
 
     return patients.stream()
-            .map(patient -> {
-                List<GuardianResponseDTO> guardians = patientGuardianRepo.findByPatient(patient)
-                        .stream()
-                        .map(pg -> guardianMapper.toDto(pg.getGuardian()))
-                        .distinct()
-                        .toList();
-
-                return patientMapper.toDto(patient, guardians);
-            })
-            .toList();
-    }
-
-    public List<PatientResponseDTO> getPatientsByUserId(Integer userId)
-    {
-        List<Patient> patients = patientRepo.findByUserIdAndActiveTrue(userId);
-        
-        return patients.stream()
             .map(patient -> {
                 List<GuardianResponseDTO> guardians = patientGuardianRepo.findByPatient(patient)
                         .stream()

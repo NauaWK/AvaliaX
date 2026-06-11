@@ -103,6 +103,70 @@
     </div>
 
 </div>
+ <div class="modal-overlay" id="modalEditarPaciente">
+        <div class="modal-editar">
+            <button class="btn-fechar-modal" id="fecharModalEditar">×</button>
+
+            <h2>Editar Paciente</h2>
+
+            <form id="formEditarPaciente">
+                <h3>Dados do Paciente</h3>
+
+                <label>
+                    Nome do Paciente *
+                    <input type="text" id="editNomePaciente" required>
+                </label>
+
+                <label>
+                    Data de Nascimento *
+                    <input type="date" id="editDataNascimento" required>
+                </label>
+
+                
+
+                <label>
+                    Sexo Biológico *
+                    <select id="editGeneroPaciente" required>
+                        <option value="">Selecione</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Feminino</option>
+                    </select>
+                </label>
+
+                <h3>Dados dos Pais</h3>
+
+                <label>
+                    Nome da Mãe *
+                    <input type="text" id="editNomeMae" required>
+                </label>
+
+                <label>
+                    Nome do Pai
+                    <input type="text" id="editNomePai">
+                </label>
+                
+                <div id="campoAtivoContainer">
+                    <label>
+                        Status do Paciente
+                        <select id="editAtivo">
+                            <option value="true">Ativo</option>
+                            <option value="false">Inativo</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="modal-acoes">
+                    <button type="button" class="btn-cancelar" id="cancelarEdicaoPaciente">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn-salvar">
+                        Salvar alterações
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
   </main>
   <script src="../static/js/pacientes.js"></script>

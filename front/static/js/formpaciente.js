@@ -4,66 +4,6 @@ if (!token) {
     window.location.href = "login.html"
 }
 
-//modo edição
-const params = new URLSearchParams(window.location.search);
-const modo = params.get("modo");
-
-const cpfEditar = localStorage.getItem("cpfPacienteEditar");
-
-if (modo === "editar" && cpfEditar) {
-    carregarPacienteParaEditar(cpfEditar);
-}   
-
-async function carregarPacienteParaEditar(cpf) {
-    const response = await fetch(`http://localhost:8080/api/pacientes/${cpf}`, {
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
-    });
-
-    if (!response.ok) {
-        alert("Erro ao carregar paciente.");
-        return;
-    }
-
-    const paciente = await response.json();
-    console.log(JSON.stringify(paciente, null, 2));
-
-    document.getElementById("nomePaciente").value = paciente.nome;
-    document.getElementById("cpfPaciente").value = cpf;
-    document.getElementById("dataNascimento").value = paciente.dataNascimento;
-    document.getElementById("nomeMae").value = paciente.nomeMae;
-    document.getElementById("nomePai").value = paciente.nomePai || "";
-
-    document.getElementById("sexo").value = paciente.genero;
-
-    const textoSexo = paciente.genero === "M" ? "Masculino" : "Feminino";
-    document.querySelector("#sexoSelect .selected-value").textContent = textoSexo;
-
-    document.querySelector(".btn-salvar").textContent = "Salvar alterações";
-
-
-    console.log(paciente);
-    const responsavel = paciente.responsavel;
-
-    console.log("PACIENTE COMPLETO:", paciente);
-    console.log("RESPONSAVEL:", paciente.responsavel);
-    if (responsavel) {
-        document.getElementById("responsavel").value = responsavel.nome || "";
-        document.getElementById("cpf").value = responsavel.CPF_responsavel || "";
-        document.getElementById("parentesco").value = responsavel.grauParentesco || "";
-        document.getElementById("cidade").value = responsavel.cidade || "";
-        document.getElementById("estado").value = responsavel.estado || "";
-        document.getElementById("pais").value = responsavel.pais || "";
-        document.getElementById("whatsapp").value = responsavel.whatsapp || "";
-        document.getElementById("telefone1").value = responsavel.telefone1 || "";
-        document.getElementById("telefone2").value = responsavel.telefone2 || "";
-        document.getElementById("email").value = responsavel.email || "";
-
-        document.querySelector("#estadoSelect .selected-value").textContent =
-            responsavel.estado || "Selecione um estado";
-    }
-}
 
 
 //dropdow sexobiologico
@@ -191,13 +131,8 @@ formulario.addEventListener("submit", async (e) => {
     console.log(paciente);
 try {
 
-    const url = modo === "editar"
-        ? `http://localhost:8080/api/pacientes/${cpfEditar}`
-        : "http://localhost:8080/api/pacientes";
-
-    const metodo = modo === "editar"
-        ? "PATCH"
-        : "POST";
+    const url = "http://localhost:8080/api/pacientes";
+    const metodo = "POST";
 
     const response = await fetch(url, {
         method: metodo,
@@ -222,8 +157,6 @@ try {
 
     const data = await response.json();
 
-    console.log(data);
-    localStorage.removeItem("cpfPacienteEditar");
     window.location.href = "pacientes.html";
 
 } catch (erro) {

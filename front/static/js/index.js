@@ -53,21 +53,12 @@ fetch("http://localhost:8080/api/dashboard", {
         divAvaliacaoRecente.textContent = "Nenhuma avaliação encontrada."
     }else {
         //codigo comentado so para teste
-        /* pacientes.forEach(paciente => {
+        pacientes.forEach(paciente => {
                 const li = document.createElement('li');  
                 li.classList.add("card-avaliacao")     
                 li.textContent = `${paciente.paciente} Atendido em: ${paciente.dataAvaliacao}`;
                 listaElemento.appendChild(li);
-            });*/
-            for (let i = 0; i < 10; i++) {
-    
-
-    pacientes.forEach(paciente => {
-        const li = document.createElement('li');  
-        li.classList.add("card-avaliacao");     
-        li.textContent = `${paciente.paciente} Atendido em: ${paciente.dataAvaliacao}`;
-        listaElemento.appendChild(li);
-    });
+            });
 
 }
     }

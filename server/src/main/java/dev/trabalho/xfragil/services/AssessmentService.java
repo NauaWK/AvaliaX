@@ -48,23 +48,25 @@ public class AssessmentService {
     public List<AssessmentResponseDTO> getAssessments()
     {
         List<Assessment> assessments = assessmentRepo.findAll();
-        
-        List<AssessmentResponseDTO> dtos = assessments.stream()
-               .map(assessmentMapper::toDto)
+
+        return assessments.stream()
+               .map( a -> {
+                   List<String> symptoms = symptomRepo.findSymptomsByAssessment(a.getId());
+                   return assessmentMapper.toDto(a, symptoms);
+               })
                .toList();
-        
-        return dtos;
     }
     
     public List<AssessmentResponseDTO> getAssessmentsByUserId(Integer userId)
     {
         List<Assessment> assessments = assessmentRepo.findByUserId(userId);
-        
-        List<AssessmentResponseDTO> dtos = assessments.stream()
-               .map(assessmentMapper::toDto)
-               .toList();
-        
-        return dtos;
+
+        return assessments.stream()
+                .map( a -> {
+                    List<String> symptoms = symptomRepo.findSymptomsByAssessment(a.getId());
+                    return assessmentMapper.toDto(a, symptoms);
+                })
+                .toList();
     }
     
     public AssessmentResponseDTO addAssessment(AssessmentRequestDTO assessmentRequest, Integer userId) 
@@ -102,7 +104,8 @@ public class AssessmentService {
 
         persistSymptoms(assessment, assessmentRequest.sintomas(), symptomMap);
 
-        return assessmentMapper.toDto(assessment);
+        List<String> symptoms = symptomRepo.findSymptomsByAssessment(assessment.getId());
+        return assessmentMapper.toDto(assessment, symptoms);
     }
     
     private BigDecimal calculateScore(AssessmentRequestDTO assessmentRequest, boolean isMan, Map<String, Symptom> symptomMap) 

@@ -8,12 +8,14 @@ import dev.trabalho.xfragil.entities.dto.assessment_dtos.AssessmentResponseDTO;
 import dev.trabalho.xfragil.utils.enums.Result;
 import dev.trabalho.xfragil.utils.enums.Origin;
 import java.math.BigDecimal;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 @Component
 public class AssessmentMapper {
     
-    public AssessmentResponseDTO toDto(Assessment a) {
+    public AssessmentResponseDTO toDto(Assessment a, List<String> symptoms) {
         return new AssessmentResponseDTO(
                 a.getId(),
                 a.getPatient().getName(),
@@ -30,7 +32,8 @@ public class AssessmentMapper {
                 a.getHasSiblings(),
                 a.getDisabilityHistory(),
                 a.getMenopauseHistory(),
-                a.getAtaxiaHistory()
+                a.getAtaxiaHistory(),
+                symptoms
         );
     }
     

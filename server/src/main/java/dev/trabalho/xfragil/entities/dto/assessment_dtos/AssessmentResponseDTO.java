@@ -6,6 +6,7 @@ import dev.trabalho.xfragil.utils.enums.Answer;
 import dev.trabalho.xfragil.utils.enums.ExamResult;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public record AssessmentResponseDTO(
 
@@ -24,6 +25,7 @@ public record AssessmentResponseDTO(
         Answer possuiIrmaos,
         Answer antecedentesDeficiencia,
         Answer antecedentesMenopausa,
-        Answer antecedentesAtaxia
+        Answer antecedentesAtaxia,
+        List<String> sintomas
 
     ) {}

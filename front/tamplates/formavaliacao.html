@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação</title>
+    <link rel="stylesheet" href="../static/css/formavaliacao.css">
+</head>
+<body>
+
+<main class="container">
+    <form id="formAvaliacao" class="form-card">
+
+        <div class="form-header">
+            <h1>Questionário de Avaliação</h1>
+            <p>Preencha as informações clínicas do paciente.</p>
+        </div>
+
+        <section class="question">
+            <label>Já fez exame de DNA para detectar a Síndrome do X Frágil? *</label>
+            <div class="radio-group">
+                <label><input type="radio" name="fezExameDNA" value="false" required> Não</label>
+                <label><input type="radio" name="fezExameDNA" value="true"> Sim</label>
+            </div>
+        </section>
+
+        <section class="question">
+            <label>Tem interesse em fazer o exame de DNA para X Frágil?</label>
+            <div class="radio-group">
+                <label><input type="radio" name="interesseExameDNA" value="false"> Não</label>
+                <label><input type="radio" name="interesseExameDNA" value="true"> Sim</label>
+            </div>
+        </section>
+
+        <section class="question">
+            <label>Se SIM, qual o resultado?</label>
+            <select name="resultadoDNA">
+                <option value="">Selecione</option>
+                <option value="MUTACAO_COMPLETA">Mutação Completa (+200 repetições)</option>
+                <option value="PRE_MUTACAO">Pré-mutação (55 a 199 repetições)</option>
+                <option value="ZONA_GRAY">Zona Gray/Intermediária (45 a 54 repetições)</option>
+                <option value="MOSAICISMO">Mosaicismo</option>
+                <option value="NEGATIVO">Negativo para XF (até 39 repetições)</option>
+                <option value="NAO_SEI">Não Sei</option>
+            </select>
+        </section>
+
+        <section class="question">
+            <label>Possui diagnóstico de AUTISMO? *</label>
+            <div class="radio-group">
+                <label><input type="radio" name="autismo" value="false" required> Não</label>
+                <label><input type="radio" name="autismo" value="true"> Sim</label>
+            </div>
+        </section>
+
+        <section class="question">
+            <label>Tem irmãos? *</label>
+            <div class="radio-group">
+                <label><input type="radio" name="irmaos" value="false" required> Não</label>
+                <label><input type="radio" name="irmaos" value="true"> Sim</label>
+            </div>
+        </section>
+
+        <section class="question">
+            <label>Há alguém na família com deficiência intelectual, atraso de desenvolvimento, dificuldades de aprendizagem ou autismo? *</label>
+            <div class="radio-group">
+                <label><input type="radio" name="historicoFamiliarNeuro" value="false" required> Não</label>
+                <label><input type="radio" name="historicoFamiliarNeuro" value="true"> Sim</label>
+                <label><input type="radio" name="historicoFamiliarNeuro" value="NAO_SEI"> Não Sei</label>
+            </div>
+        </section>
+
+        <section class="question">
+            <label>Há antecedentes na família com diagnóstico de menopausa precoce? *</label>
+            <div class="radio-group">
+                <label><input type="radio" name="menopausaPrecoce" value="false" required> Não</label>
+                <label><input type="radio" name="menopausaPrecoce" value="true"> Sim</label>
+                <label><input type="radio" name="menopausaPrecoce" value="NAO_SEI"> Não Sei</label>
+            </div>
+        </section>
+
+        <section class="question">
+            <label>Há antecedentes na família com ataxia e tremores? *</label>
+            <div class="radio-group">
+                <label><input type="radio" name="ataxiaTremores" value="false" required> Não</label>
+                <label><input type="radio" name="ataxiaTremores" value="true"> Sim</label>
+                <label><input type="radio" name="ataxiaTremores" value="NAO_SEI"> Não Sei</label>
+            </div>
+        </section>
+
+        <section class="question">
+            <label>Assinale os sinais ou sintomas observados: *</label>
+
+            <div class="checkbox-grid">
+                <label><input type="checkbox" name="sintomas" value="DEMOROU_FALAR"> Demorou para falar</label>
+                <label><input type="checkbox" name="sintomas" value="DIFICULDADE_APRENDIZADO"> Dificuldades no aprendizado</label>
+                <label><input type="checkbox" name="sintomas" value="DEFICIT_ATENCAO"> Déficit de atenção</label>
+                <label><input type="checkbox" name="sintomas" value="DEFICIENCIA_INTELECTUAL"> Deficiência Intelectual</label>
+                <label><input type="checkbox" name="sintomas" value="HIPERATIVIDADE"> Hiperatividade</label>
+                <label><input type="checkbox" name="sintomas" value="AGRESSIVIDADE"> Agressividade</label>
+                <label><input type="checkbox" name="sintomas" value="EVITA_CONTATO_VISUAL"> Evita contato visual</label>
+                <label><input type="checkbox" name="sintomas" value="EVITA_CONTATO_FISICO"> Evita contato físico</label>
+                <label><input type="checkbox" name="sintomas" value="MOVIMENTOS_REPETITIVOS"> Movimentos repetitivos</label>
+                <label><input type="checkbox" name="sintomas" value="HIPEREXTENSIBILIDADE"> Articulações flexíveis</label>
+                <label><input type="checkbox" name="sintomas" value="TESTICULOS_GRANDES"> Testículos maiores que o normal</label>
+                <label><input type="checkbox" name="sintomas" value="FACE_ALONGADA"> Face alongada / mandíbula / orelhas</label>
+                <label><input type="checkbox" name="sintomas" value="NENHUM"> Não apresenta sintomas</label>
+                <label><input type="checkbox" name="sintomas" value="OUTROS"> Outro(s)</label>
+            </div>
+        </section>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-salvar">Salvar Avaliação</button>
+            <button type="reset" class="btn-limpar">Limpar</button>
+        </div>
+
+    </form>
+</main>
+
+<script src="../static/js/formavaliacao.js"></script>
+</body>
+</html>

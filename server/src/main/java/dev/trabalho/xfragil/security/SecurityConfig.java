@@ -33,7 +33,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    AuthenticationEntryPoint authenticationEntryPoint,
                                                    AccessDeniedHandler accessDeniedHandler) throws Exception {
-        http
+        http     
             .cors(cors -> {})
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -44,6 +44,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/login").permitAll()
                 .requestMatchers("/api/avaliacoes/autoavaliacao").permitAll()
+                    
+                //Swagger UI e docs
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                     
                 .requestMatchers("/api/dashboard/**").hasAnyRole("ADMIN", "USER")
                 .requestMatchers("/api/usuarios/**").hasRole("ADMIN")

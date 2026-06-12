@@ -1,16 +1,25 @@
 
 package dev.trabalho.xfragil.entities.dto.patient_dtos;
 
-import java.time.LocalDate;
+import dev.trabalho.xfragil.entities.dto.guardian_dtos.GuardianResponseDTO;
+import java.util.List;
 
 public record PatientResponseDTO(
         
         Integer id,
+        
         String nome,
+        
         String genero,
-        LocalDate dataNascimento,
+        
+        Integer idade,
+        
         String nomeMae,
+        
         String nomePai,
-        Boolean ativo
+        
+        Boolean ativo,
+        
+        List<GuardianResponseDTO> responsaveis
         
         ) {}

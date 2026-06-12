@@ -4,6 +4,7 @@ import dev.trabalho.xfragil.entities.dto.symptom_dto.SymptomRequestDTO;
 import dev.trabalho.xfragil.utils.customAnnotations.CPF_annotation.CPF;
 import dev.trabalho.xfragil.utils.enums.Answer;
 import dev.trabalho.xfragil.utils.enums.ExamResult;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
@@ -37,7 +38,8 @@ public record AssessmentRequestDTO(
 
         @NotNull(message = "Antecedentes de ataxia são obrigatórios")
         Answer antecedentesAtaxia,
-
+        
+        @Valid
         List<SymptomRequestDTO> sintomas
 
     ) {}

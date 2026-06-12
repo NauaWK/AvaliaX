@@ -3,6 +3,14 @@ const token = localStorage.getItem("token");
 if (!token) {
     window.location.href = "login.html"
 }
+
+
+function usuarioEhAdmin() {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.role === "ADMIN";
+}
+
+
 //Nome usuario
 const payload = JSON.parse(atob(token.split('.')[1]));
 
@@ -18,190 +26,231 @@ const btnLogout = document.getElementById("logout")
 btnLogout.addEventListener("click", logout)
 
 function logout() {
-    localStorage.removeItem("token")
+    localStorage.removeItem("token");
+    localStorage.removeItem("cpfPacienteAvaliacao");
+    localStorage.removeItem("cpfPacienteEditar");
 
-    window.location.href = "login.html"
+    window.location.href = "login.html";
+}
+
+function calcularIdade(dataNascimento) {
+  const hoje = new Date();
+  const nascimento = new Date(dataNascimento);
+
+  let idade = hoje.getFullYear() - nascimento.getFullYear();
+  const m = hoje.getMonth() - nascimento.getMonth();
+
+  if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
+    idade--;
+  }
+
+  return idade;
 }
 
 
-// abrir e fechar o modal (tela do formulario)
-const abrirModal = document.getElementById("btn");
-const fecharModal = document.getElementById("fecharModal");
-const overlay = document.getElementById("overlay");
 
-abrirModal.addEventListener("click", () => {
-    overlay.style.display = "flex";
-});
+const btnBuscar = document.getElementById("btnBuscar");
+const cpfInput = document.getElementById("cpfPaciente");
+const buscaContainer = document.querySelector(".busca-container");
 
-fecharModal.addEventListener("click", () => {
-    overlay.style.display = "none";
-});
+btnBuscar.addEventListener("click", buscarPaciente);
 
-// Fecha ao clicar fora do formulário
-overlay.addEventListener("click", (e) => {
-    if(e.target === overlay){
-        overlay.style.display = "none";
+async function buscarPaciente() {
+
+    const cpf = cpfInput.value.trim();
+
+    if (!cpf) {
+        alert("Digite um CPF");
+        return;
     }
-});
-//adicionar paciente
-const formPaciente = document.getElementById("formPaciente");
-
-formPaciente.addEventListener("submit", async (e) => {
-
-    e.preventDefault();
-
-    const nome = document.getElementById("nome").value;
-    const idade = document.getElementById("idade").value;
-    const cpf = document.getElementById("cpf").value;
-    const guardiao = document.getElementById("guardiao").value;
-
-    const generoSelecionado = document.querySelector(
-        'input[name="genero"]:checked'
-    );
-
-   
-
-    const genero = generoSelecionado
-        ? generoSelecionado.value
-        : null;
-
-    const paciente = {
-        nome: nome,
-        CPF: cpf,
-        genero: genero,
-        idade: Number(idade),
-        guardiao: guardiao
-    };
-
-    console.log("Paciente enviado:", paciente);
 
     try {
 
-            
-            const response = await fetch(
-            "http://localhost:8080/api/pacientes",
+        const response = await fetch(
+            `http://localhost:8080/api/pacientes/${cpf}`,
             {
-                method: "POST",
-
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-
-                body: JSON.stringify(paciente)
+                    Authorization: `Bearer ${token}`
+                }
             }
         );
+        
 
         if (!response.ok) {
-
-          const texto = await response.text();
-
-          console.log("Status:", response.status);
-          console.log("Resposta:", texto);
-
-          alert(`Erro ${response.status}`);
-
-          return;
+            throw new Error("Paciente não encontrado");
         }
-        const novoPaciente = await response.json();
 
-        console.log("Paciente cadastrado:", novoPaciente);
+        const paciente = await response.json();
 
-        overlay.style.display = "none";
+        mostrarPaciente(paciente);
 
-        formPaciente.reset();
-
-        carregarPacientes();
+        buscaContainer.classList.add("buscou");
+        pacienteAtual = paciente;
+        cpfAntigoPaciente = cpf;
 
     } catch (erro) {
 
-        console.error(erro);
+        resultado.innerHTML = `
+            <p>Paciente não encontrado.</p>
+        `;
 
-        alert("Erro ao cadastrar paciente");
+        console.error(erro);
+    }
+}
+
+function mostrarPaciente(paciente) {
+    resultado.classList.remove("mostrar");
+
+    document.getElementById("resultado").style.display = "block";
+
+    document.getElementById("nomePaciente").innerText =
+        paciente.nome;
+
+    document.getElementById("idadePaciente").innerText =
+        calcularIdade(paciente.dataNascimento);
+
+    document.getElementById("generoPaciente").innerText =
+        paciente.genero;
+
+    document.getElementById("maePaciente").innerText =
+        paciente.nomeMae;
+
+    document.getElementById("paiPaciente").innerText =
+        paciente.nomePai;
+
+    resultado.style.display = "flex";
+
+    setTimeout(() => {
+        resultado.classList.add("mostrar");
+    }, 10);
+  }
+
+const btnEditar = document.getElementById("btnEditar");
+
+btnEditar.addEventListener("click", function () {
+    if (!pacienteAtual) {
+        alert("Busque um paciente primeiro.");
+        return;
+    }
+
+    abrirModalEditarPaciente(pacienteAtual);
+});
+
+const btnAvaliacao = document.getElementById("btnAvaliacao")
+btnAvaliacao.addEventListener("click" , iniciarAvaliacao)
+
+function iniciarAvaliacao() {
+    if (!pacienteAtual) {
+        alert("Busque um paciente primeiro.");
+        return;
+    }
+
+    localStorage.setItem("cpfPacienteAvaliacao", cpfAntigoPaciente);
+
+    window.location.href = "formavaliacao.html";
+}
+let pacienteAtual = null;
+let cpfAntigoPaciente = null;
+
+// model 
+const modalEditarPaciente = document.getElementById("modalEditarPaciente");
+const formEditarPaciente = document.getElementById("formEditarPaciente");
+
+const fecharModalEditar = document.getElementById("fecharModalEditar");
+const cancelarEdicaoPaciente = document.getElementById("cancelarEdicaoPaciente");
+
+const editNomePaciente = document.getElementById("editNomePaciente");
+const editDataNascimento = document.getElementById("editDataNascimento");
+const editGeneroPaciente = document.getElementById("editGeneroPaciente");
+const editNomeMae = document.getElementById("editNomeMae");
+const editNomePai = document.getElementById("editNomePai");
+
+const campoAtivoContainer = document.getElementById("campoAtivoContainer");
+const editAtivo = document.getElementById("editAtivo");
+
+function abrirModalEditarPaciente(paciente) {
+    pacienteAtual = paciente;
+    cpfAntigoPaciente = paciente.CPF_paciente || paciente.cpfPaciente || paciente.cpf || cpfAntigoPaciente;
+
+    editNomePaciente.value = paciente.nome || "";
+    editDataNascimento.value = paciente.dataNascimento || "";
+    
+    editGeneroPaciente.value = paciente.genero || "";
+    editNomeMae.value = paciente.nomeMae || "";
+    editNomePai.value = paciente.nomePai || "";
+
+    campoAtivoContainer.style.display = usuarioEhAdmin() ? "block" : "none";
+
+    if (usuarioEhAdmin()) {
+        editAtivo.value = String(paciente.ativo);
+    }
+
+    modalEditarPaciente.classList.add("ativo");
+}
+
+function fecharModal() {
+    modalEditarPaciente.classList.remove("ativo");
+}
+
+fecharModalEditar.addEventListener("click", fecharModal);
+cancelarEdicaoPaciente.addEventListener("click", fecharModal);
+
+modalEditarPaciente.addEventListener("click", function (event) {
+    if (event.target === modalEditarPaciente) {
+        fecharModal();
     }
 });
 
+// form da edição 
+formEditarPaciente.addEventListener("submit", async function (event) {
+    event.preventDefault();
 
-//sistema de busca
-const input = document.getElementById("buscarPaciente");
-const resultado = document.getElementById("resultado");
+    
 
-let pacientes = [];
+    const pacienteEditado = {
+    nome: editNomePaciente.value,
+    genero: editGeneroPaciente.value,
+    dataNascimento: editDataNascimento.value,
+    nomeMae: editNomeMae.value,
+    nomePai: editNomePai.value
+    };
 
-async function carregarPacientes() {
-  try {
+    if (usuarioEhAdmin()) {
+        pacienteEditado.ativo = editAtivo.value === "true";
+    }
 
-    const response = await fetch("http://localhost:8080/api/pacientes", {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    });
+    try {
+        const endpoint = usuarioEhAdmin()
+        ? `http://localhost:8080/api/pacientes/admin/${cpfAntigoPaciente}`
+        : `http://localhost:8080/api/pacientes/${cpfAntigoPaciente}`;
+        const response = await fetch(endpoint, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(pacienteEditado)
+        });
 
+        if (!response.ok) {
+            const erro = await response.json();
+            console.log("Erro ao editar:", erro);
+            alert("Erro ao editar paciente.");
+            return;
+        }
 
-    pacientes = await response.json();
+        const pacienteAtualizado = await response.json();
 
-    mostrarPacientes(pacientes);
+        alert("Paciente atualizado com sucesso!");
+        fecharModal();
 
-  } catch (erro) {
-    console.error("Erro ao buscar pacientes:", erro);
-  }
-}
+        pacienteAtual = {
+            ...pacienteAtual,
+            ...pacienteAtualizado
+        };
 
-function mostrarPacientes(lista) {
-
-  resultado.innerHTML = "";
-
-  if (lista.length === 0) {
-
-    const aviso = document.createElement("p");
-    aviso.textContent = "Nenhum paciente encontrado.";
-
-    resultado.appendChild(aviso);
-
-    return;
-  }
-
-  lista.forEach(paciente => {
-
-    const card = document.createElement("div");
-    card.classList.add("paciente-card");
-
-    const nome = document.createElement("h2");
-    nome.textContent = paciente.nome;
-
-    const info = document.createElement("div");
-    info.classList.add("paciente-info");
-
-    const idade = document.createElement("p");
-    idade.textContent = `Idade: ${paciente.idade}`;
-
-    const genero = document.createElement("p");
-    genero.textContent = `Gênero: ${paciente.genero}`;
-
-    const guardiao = document.createElement("p");
-    guardiao.textContent = `Guardião: ${paciente.guardiao}`;
-
-    info.appendChild(idade);
-    info.appendChild(genero);
-    info.appendChild(guardiao);
-
-    card.appendChild(nome);
-    card.appendChild(info);
-
-    resultado.appendChild(card);
-  });
-}
-
-input.addEventListener("input", () => {
-
-  const texto = input.value.toLowerCase();
-
-  const filtrados = pacientes.filter(paciente =>
-    paciente.nome.toLowerCase().includes(texto)
-  );
-
-  mostrarPacientes(filtrados);
+    } catch (error) {
+        console.log("Erro no fetch:", error);
+        alert("Erro ao conectar com o servidor.");
+    }
 });
-
-carregarPacientes();

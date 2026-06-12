@@ -39,55 +39,133 @@
 
       <div>
         <h1>Pacientes</h1>
-        <p>Gerencie sua lista de pacientes</p>
+        <p>Gerencie seus pacientes</p>
       </div>
 
-      <button class="btn" id="btn">+ Novo paciente</button>
+      <a href="formpaciente.html"><button class="btn">+ Novo paciente</button></a>
 
     </div>
 
-    <div class="search">
-      <input id="buscarPaciente" type="text" placeholder="Buscar paciente..." />
-    </div>
+      <div class="busca-container">
 
-    <div class="card" id="resultado">
-      
-    </div>
+      <h2>Buscar Paciente</h2>
 
-    
-    <div class="overlay" id="overlay">
-        
-        
-        <div class="modal">
-            <span class="fechar" id="fecharModal">&times;</span>
+        <div class="search">
+            <input
+                id="cpfPaciente"
+                type="text"
+                placeholder="Digite o CPF do paciente"
+            >
 
-            <h2>Cadastrar Paciente</h2>
-            
-            <form id="formPaciente">
-              <div class="form-campos">
-                <input type="text" id="nome" class="input-texto" placeholder="Nome">
-                <input type="number" id="idade" class="input-texto" placeholder="Idade">
-                <input type="text" id="cpf" class="input-texto" placeholder="CPF">
-                <input type="text" id="guardiao" class="input-texto" placeholder="Guardião">
-
-                <h3>Genero</h3>
-                <div class="genero">
-                  <label for="masculino" class="radio-card">
-                    <input type="radio" name="genero" id="masculino" value="M">
-                          Masculino
-                  </label>
-
-                  <label for="feminino" class="radio-card">
-                    <input type="radio" name="genero" id="feminino" value="F">
-                      Feminino
-                  </label>
-                </div>
-
-                <button type="submit" class="btn-submit">Salvar</button>
-              </div>
-            </form>
+            <button id="btnBuscar" class="btn">
+                Buscar
+            </button>
         </div>
 
+      </div>
+
+  <div id="resultado" class="paciente-card" style="display:none;">
+
+    <h2 id="nomePaciente"></h2>
+
+    <div class="dados-paciente">
+
+      <p>
+          <strong>Idade:</strong>
+          <span id="idadePaciente"></span>
+      </p>
+
+      <p>
+          <strong>Gênero:</strong>
+          <span id="generoPaciente"></span>
+      </p>
+
+      <p>
+          <strong>Mãe:</strong>
+          <span id="maePaciente"></span>
+      </p>
+
+      <p>
+          <strong>Pai:</strong>
+          <span id="paiPaciente"></span>
+      </p>
+
+    </div>
+
+    <div class="acoes-paciente">
+        <button id="btnEditar" class="btn-editar">
+            Editar Paciente
+        </button>
+
+        <button id="btnAvaliacao" class="btn-avaliacao">
+            Iniciar Avaliação
+        </button>
+    </div>
+
+</div>
+ <div class="modal-overlay" id="modalEditarPaciente">
+        <div class="modal-editar">
+            <button class="btn-fechar-modal" id="fecharModalEditar">×</button>
+
+            <h2>Editar Paciente</h2>
+
+            <form id="formEditarPaciente">
+                <h3>Dados do Paciente</h3>
+
+                <label>
+                    Nome do Paciente *
+                    <input type="text" id="editNomePaciente" required>
+                </label>
+
+                <label>
+                    Data de Nascimento *
+                    <input type="date" id="editDataNascimento" required>
+                </label>
+
+                
+
+                <label>
+                    Sexo Biológico *
+                    <select id="editGeneroPaciente" required>
+                        <option value="">Selecione</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Feminino</option>
+                    </select>
+                </label>
+
+                <h3>Dados dos Pais</h3>
+
+                <label>
+                    Nome da Mãe *
+                    <input type="text" id="editNomeMae" required>
+                </label>
+
+                <label>
+                    Nome do Pai
+                    <input type="text" id="editNomePai">
+                </label>
+                
+                <div id="campoAtivoContainer">
+                    <label>
+                        Status do Paciente
+                        <select id="editAtivo">
+                            <option value="true">Ativo</option>
+                            <option value="false">Inativo</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="modal-acoes">
+                    <button type="button" class="btn-cancelar" id="cancelarEdicaoPaciente">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn-salvar">
+                        Salvar alterações
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
   </main>

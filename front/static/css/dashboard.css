@@ -10,6 +10,9 @@ body {
     background-color: #f5f7fa;
     color: #1f2d3d;
 }
+.admin-only {
+    display: none;
+}
 
 .sidebar {
     width: 280px;

@@ -23,6 +23,7 @@
                 <a href="avaliacoes.html"><li>📝 Avaliações</li></a>
                 <a href="relatorios.html"><li>📄 Relatórios</li></a>
                 <a href="usuarios.html"><li>👤 Usuários</li></a>
+
             </ul>
         </div>
         <div class="user-box">
@@ -126,9 +127,41 @@
         <button id="btnAvaliacao" class="btn-avaliacao">
             Iniciar Avaliação
         </button>
+
+        <button id="btnExcluir" class="btn-excluir">
+            Excluir Paciente
+        </button>
     </div>
 
 </div>
+        <div class="modal-overlay" id="modalExcluirPaciente">
+            <div class="modal-confirmacao">
+                <button class="btn-fechar-modal" id="fecharModalExcluir">×</button>
+
+                <div class="icone-perigo">!</div>
+
+                <h2>Excluir paciente?</h2>
+
+                <p>
+                    Se você excluir o paciente somente o <strong>admin</strong> podera restaurá-lo.
+                </p>
+
+                <div class="aviso-exclusao">
+                    <strong id="nomePacienteExcluir"></strong>
+                    <span>Tem certeza que deseja inativar este paciente?</span>
+                </div>
+
+                <div class="modal-acoes">
+                    <button type="button" class="btn-cancelar" id="cancelarExclusao">
+                        Cancelar
+                    </button>
+
+                    <button type="button" class="btn-excluir-final" id="confirmarExclusao">
+                        Sim, excluir paciente
+                    </button>
+                </div>
+            </div>
+        </div>
  <div class="modal-overlay" id="modalEditarPaciente">
         <div class="modal-editar">
             <button class="btn-fechar-modal" id="fecharModalEditar">×</button>
@@ -195,6 +228,7 @@
     </div>
 
   </main>
+  <script src="../static/js/menuAdmin.js"></script>
   <script src="../static/js/pacientes.js"></script>
 </body>
 </html>

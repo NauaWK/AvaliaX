@@ -11,6 +11,9 @@ body {
   color: #1e293b;
   overflow: hidden;
 }
+.admin-only {
+    display: none;
+}
 
 .sidebar {
     width: 280px;

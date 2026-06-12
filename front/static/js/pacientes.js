@@ -471,3 +471,110 @@ formEditarPaciente.addEventListener("submit", async function (event) {
         alert("Erro ao conectar com o servidor.");
     }
 });
+
+//modal de excluir paciente
+const btnExcluir = document.getElementById("btnExcluir");
+
+const modalExcluirPaciente = document.getElementById("modalExcluirPaciente");
+const fecharModalExcluir = document.getElementById("fecharModalExcluir");
+const cancelarExclusao = document.getElementById("cancelarExclusao");
+const confirmarExclusao = document.getElementById("confirmarExclusao");
+
+const nomePacienteExcluir = document.getElementById("nomePacienteExcluir");
+
+btnExcluir.addEventListener("click", abrirModalExcluirPaciente);
+
+function abrirModalExcluirPaciente() {
+    if (!pacienteAtual) {
+        alert("Busque um paciente primeiro.");
+        return;
+    }
+
+    nomePacienteExcluir.innerText = pacienteAtual.nome || "Paciente sem nome";
+
+    modalExcluirPaciente.classList.add("ativo");
+}
+
+function fecharModalExcluirPaciente() {
+    modalExcluirPaciente.classList.remove("ativo");
+}
+
+fecharModalExcluir.addEventListener("click", fecharModalExcluirPaciente);
+cancelarExclusao.addEventListener("click", fecharModalExcluirPaciente);
+
+modalExcluirPaciente.addEventListener("click", function (event) {
+    if (event.target === modalExcluirPaciente) {
+        fecharModalExcluirPaciente();
+    }
+});
+
+confirmarExclusao.addEventListener("click", excluirPaciente);
+
+async function excluirPaciente() {
+    if (!pacienteAtual) {
+        alert("Nenhum paciente selecionado.");
+        return;
+    }
+
+    const cpfPaciente = cpfAntigoPaciente || pegarCpfPaciente(pacienteAtual);
+
+    if (!cpfPaciente) {
+        alert("CPF do paciente não encontrado.");
+        return;
+    }
+
+    const pacienteInativado = {
+        nome: pacienteAtual.nome,
+        genero: pacienteAtual.genero,
+        dataNascimento: pacienteAtual.dataNascimento,
+        nomeMae: pacienteAtual.nomeMae,
+        nomePai: pacienteAtual.nomePai || "",
+        ativo: false
+    };
+
+    console.log("CPF usado para excluir:", cpfPaciente);
+    console.log("Dados enviados para excluir:", pacienteInativado);
+
+    try {
+        const endpoint = usuarioEhAdmin()
+            ? `http://localhost:8080/api/pacientes/admin/${cpfPaciente}`
+            : `http://localhost:8080/api/pacientes/${cpfPaciente}`;
+
+        console.log("Endpoint usado:", endpoint);
+
+        const response = await fetch(endpoint, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(pacienteInativado)
+        });
+
+        console.log("Status da exclusão:", response.status);
+
+        if (!response.ok) {
+            let erroTexto = await response.text();
+
+            console.log("Resposta de erro da exclusão:", erroTexto);
+
+            alert("Erro ao excluir paciente. Veja o console para mais detalhes.");
+            return;
+        }
+
+        alert("Paciente excluído com sucesso!");
+
+        fecharModalExcluirPaciente();
+
+        pacienteAtual = null;
+        cpfAntigoPaciente = null;
+        cpfInput.value = "";
+
+        voltarParaLista();
+        carregarListaPacientes();
+
+    } catch (error) {
+        console.log("Erro no fetch:", error);
+        alert("Erro ao conectar com o servidor.");
+    }
+}

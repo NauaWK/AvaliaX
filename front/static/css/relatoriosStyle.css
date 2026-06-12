@@ -10,6 +10,10 @@ body {
     color: #1e293b;
     min-height: 100vh;
 }
+.admin-only {
+    display: none;
+}
+
 .sidebar {
     width: 280px;
     height: 100vh;

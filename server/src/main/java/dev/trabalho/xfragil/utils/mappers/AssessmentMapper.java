@@ -3,6 +3,7 @@ package dev.trabalho.xfragil.utils.mappers;
 import dev.trabalho.xfragil.entities.Assessment;
 import dev.trabalho.xfragil.entities.Patient;
 import dev.trabalho.xfragil.entities.Users;
+import dev.trabalho.xfragil.entities.dto.assessment_dtos.AssessmentOverviewDTO;
 import dev.trabalho.xfragil.entities.dto.assessment_dtos.AssessmentRequestDTO;
 import dev.trabalho.xfragil.entities.dto.assessment_dtos.AssessmentResponseDTO;
 import dev.trabalho.xfragil.utils.enums.Result;
@@ -33,6 +34,18 @@ public class AssessmentMapper {
                 a.getDisabilityHistory(),
                 a.getMenopauseHistory(),
                 a.getAtaxiaHistory(),
+                symptoms
+        );
+    }
+    
+    public AssessmentOverviewDTO toOverviewDto(Assessment a, List<String> symptoms){
+        return new AssessmentOverviewDTO(
+                a.getUser().getName(),
+                a.getOrigin(),
+                a.getAssessmentDate(),
+                a.getScore(),
+                a.getResult(),
+                a.getDetails(),
                 symptoms
         );
     }

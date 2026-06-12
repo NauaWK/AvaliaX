@@ -79,6 +79,14 @@ body {
     margin-bottom: 5px;
 }
 
+#info-user{
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    width: fit-content;
+    text-transform: capitalize;
+}
+
 .logout {
     margin-top: 15px;
     color: #2196f3;
@@ -146,10 +154,9 @@ body {
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 16px;
-    min-height: 160px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    max-height: calc(100vh - 220px);
+    overflow-y: auto;
+    display: block;
     color: #94a3b8;
     font-size: 15px;
 }
@@ -187,6 +194,7 @@ body {
     color: #94a3b8;
     font-size: 15px;
     padding: 40px;
+    text-align: center;
 }
 
 .badge {

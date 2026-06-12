@@ -20,7 +20,7 @@
             <ul class="menu">
                 <a href="index.html"><li>📊 Painel</li></a>
                 <a href="pacientes.html"><li class="active">👥 Pacientes</li></a>
-                <a href=""><li>📝 Avaliações</li></a>
+                <a href="avaliacoes.html"><li>📝 Avaliações</li></a>
                 <a href=""><li>📄 Relatórios</li></a>
                 <a href=""><li>👤 Usuarios</li></a>
             </ul>
@@ -28,7 +28,7 @@
         <div class="user-box">
             <div class="info-user" id="info-user">
                 
-            </div>
+        </div>
             <div class="logout" id="logout">↩ Sair</div>
         </div>
     </aside>
@@ -46,23 +46,49 @@
 
     </div>
 
-      <div class="busca-container">
+        <div class="conteudo-pacientes">
 
-      <h2>Buscar Paciente</h2>
+            <div class="busca-container">
 
-        <div class="search">
-            <input
-                id="cpfPaciente"
-                type="text"
-                placeholder="Digite o CPF do paciente"
-            >
+                <div class="busca-topo">
+                    <h2>Buscar Paciente</h2>
+                    <p>Pesquise pelo CPF do paciente.</p>
+                </div>
 
-            <button id="btnBuscar" class="btn">
-                Buscar
-            </button>
+                <div class="search">
+                    <input
+                        id="cpfPaciente"
+                        type="text"
+                        placeholder="Digite o CPF do paciente"
+                    >
+
+                    <button id="btnBuscar" class="btn">
+                        Buscar
+                    </button>
+
+                    <button id="btnLimparBusca" class="btn-secundario" style="display:none;">
+                        Limpar
+                    </button>
+                </div>
+
+            </div>
+
+            <div id="mensagemBusca" class="mensagem-busca" style="display:none;"></div>
+
+            <section id="listaPacientesContainer" class="lista-pacientes-container">
+
+                <div class="lista-header">
+                    <div>
+                        <h2>Pacientes cadastrados</h2>
+                        <p id="totalPacientes">Carregando pacientes...</p>
+                    </div>
+                </div>
+
+                <div id="listaPacientes" class="lista-pacientes"></div>
+
+            </section>
+
         </div>
-
-      </div>
 
   <div id="resultado" class="paciente-card" style="display:none;">
 

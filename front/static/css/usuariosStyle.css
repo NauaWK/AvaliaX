@@ -206,10 +206,10 @@ body {
     color: #0369a1;
 }
 
-.btn-excluir {
+.btn-editar {
     background: none;
-    border: 1px solid #fecaca;
-    color: #ef4444;
+    border: 1px solid #bfdbfe;
+    color: #1677ff;
     padding: 6px 12px;
     border-radius: 8px;
     cursor: pointer;
@@ -217,7 +217,23 @@ body {
     transition: 0.2s;
 }
 
-.btn-excluir:hover {
+.btn-editar:hover {
+    background: #eff6ff;
+}
+
+.btn-excluir-modal {
+    background: none;
+    border: 1px solid #fecaca;
+    color: #ef4444;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.btn-excluir-modal:hover {
     background: #fef2f2;
 }
 

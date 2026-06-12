@@ -22,7 +22,15 @@ const abrirModal  = document.getElementById('btn');
 const fecharModal = document.getElementById('fecharModal');
 const overlay     = document.getElementById('overlay');
 
+let usuarioEditandoId = null;
+
 abrirModal.addEventListener('click', () => {
+    usuarioEditandoId = null;
+    document.getElementById('modalTitulo').textContent = 'Cadastrar Usuário';
+    document.getElementById('btnExcluirModal').style.display = 'none';
+    document.getElementById('formUsuario').reset();
+    document.getElementById('senha').required = true;
+    clearMsg();
     overlay.style.display = 'flex';
 });
 
@@ -34,8 +42,29 @@ overlay.addEventListener('click', (e) => {
 
 function fechar() {
     overlay.style.display = 'none';
+    usuarioEditandoId = null;
     document.getElementById('formUsuario').reset();
     clearMsg();
+}
+
+function abrirModalEdicao(usuario) {
+    usuarioEditandoId = usuario.id;
+    document.getElementById('modalTitulo').textContent = 'Editar Usuário';
+    document.getElementById('nome').value  = usuario.nome;
+    document.getElementById('login').value = usuario.login;
+    document.getElementById('email').value = usuario.email ?? '';
+    document.getElementById('senha').value = '';
+    document.getElementById('senha').required = false;
+
+    const perfil = usuario.perfil === 'ADMIN' ? 'ADMIN' : 'USER';
+    document.querySelector(`input[name="perfil"][value="${perfil}"]`).checked = true;
+
+    const btnExcluir = document.getElementById('btnExcluirModal');
+    btnExcluir.style.display = 'block';
+    btnExcluir.onclick = () => excluirUsuario(usuario.id, usuario.login);
+
+    clearMsg();
+    overlay.style.display = 'flex';
 }
 
 function showMsg(texto, tipo) {
@@ -53,7 +82,7 @@ function clearMsg() {
 function headers() {
     return {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
     };
 }
 
@@ -101,7 +130,7 @@ function renderizarUsuarios(lista) {
                         <td>${u.email ?? '—'}</td>
                         <td><span class="badge ${u.perfil === 'ADMIN' ? 'badge-admin' : 'badge-user'}">${u.perfil}</span></td>
                         <td>
-                            <button class="btn-excluir" onclick="excluirUsuario(${u.id}, '${u.login}')">Excluir</button>
+                            <button class="btn-editar" onclick='abrirModalEdicao(${JSON.stringify(u)})'>Editar</button>
                         </td>
                     </tr>
                 `).join('')}
@@ -133,16 +162,24 @@ document.getElementById('formUsuario').addEventListener('submit', async (e) => {
     btn.textContent = 'Salvando...';
 
     try {
-        const res = await fetch(`${API_BASE}/api/usuarios`, {
-            method: 'POST',
-            headers: headers(),
-            body: JSON.stringify({ nome, login, email: email || null, senha, perfil })
-        });
+        const isEdicao = usuarioEditandoId !== null;
+
+        const body = { nome, login, email: email || null, perfil };
+        if (senha) body.senha = senha;
+
+        const res = await fetch(
+            isEdicao ? `${API_BASE}/api/usuarios/${usuarioEditandoId}` : `${API_BASE}/api/usuarios`,
+            {
+                method: isEdicao ? 'PATCH' : 'POST',
+                headers: headers(),
+                body: JSON.stringify(isEdicao ? body : { ...body, senha })
+            }
+        );
 
         const data = await res.json();
 
         if (!res.ok) {
-            showMsg(data.message || 'Erro ao cadastrar usuário.', 'error');
+            showMsg(data.message || 'Erro ao salvar usuário.', 'error');
             return;
         }
 
@@ -188,6 +225,7 @@ async function excluirUsuario(id, loginUsuario) {
             return;
         }
 
+        fechar();
         carregarUsuarios();
     } catch (err) {
         alert('Não foi possível conectar ao servidor.');

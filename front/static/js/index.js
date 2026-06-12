@@ -64,7 +64,7 @@ fetch("http://localhost:8080/api/dashboard", {
     }
 
 
-})
+)
 .catch(error => {
     console.error(error);
 });

@@ -5,6 +5,7 @@ import dev.trabalho.xfragil.entities.dto.assessment_dtos.AssessmentResponseDTO;
 import dev.trabalho.xfragil.entities.dto.dashboard_dto.DashboardResponseDTO;
 import dev.trabalho.xfragil.repositories.AssessmentRepository;
 import dev.trabalho.xfragil.repositories.PatientRepository;
+import dev.trabalho.xfragil.repositories.SymptomRepository;
 import dev.trabalho.xfragil.utils.enums.Result;
 import dev.trabalho.xfragil.utils.mappers.AssessmentMapper;
 import java.util.List;
@@ -16,11 +17,17 @@ public class DashboardService {
     private final PatientRepository patientRepo;
     private final AssessmentRepository assessmentRepo;
     private final AssessmentMapper assessmentMapper;
+    private final SymptomRepository symptomRepo;
 
-    public DashboardService(PatientRepository patientRepo, AssessmentRepository assessmentRepo, AssessmentMapper assessmentMapper) {
+    public DashboardService(
+            PatientRepository patientRepo,
+                            AssessmentRepository assessmentRepo,
+                            AssessmentMapper assessmentMapper,
+                            SymptomRepository symptomRepo) {
         this.patientRepo = patientRepo;
         this.assessmentRepo = assessmentRepo;
         this.assessmentMapper = assessmentMapper;
+        this.symptomRepo = symptomRepo;
     }
 
     public DashboardResponseDTO getDashboardDataByUser(Integer userId) 
@@ -33,7 +40,10 @@ public class DashboardService {
 
         List<AssessmentResponseDTO> assessmentDtos = recentAssessments
                 .stream()
-                .map(assessmentMapper::toDto)
+                .map( a -> {
+                    List<String> symptoms = symptomRepo.findSymptomsByAssessment(a.getId());
+                    return assessmentMapper.toDto(a, symptoms);
+                })
                 .toList();
 
         return new DashboardResponseDTO(
@@ -55,7 +65,10 @@ public class DashboardService {
 
         List<AssessmentResponseDTO> assessmentDtos = recentAssessments
                 .stream()
-                .map(assessmentMapper::toDto)
+                .map( a -> {
+                    List<String> symptoms = symptomRepo.findSymptomsByAssessment(a.getId());
+                    return assessmentMapper.toDto(a, symptoms);
+                })
                 .toList();
 
         return new DashboardResponseDTO(

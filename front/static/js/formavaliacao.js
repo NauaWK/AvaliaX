@@ -29,7 +29,9 @@ function converterValor(valor) {
 function pegarSintomas() {
     const checkboxes = document.querySelectorAll('input[name="sintomas"]:checked');
 
-    return Array.from(checkboxes).map(checkbox => checkbox.value);
+    return Array.from(checkboxes)
+        .map(checkbox => checkbox.value)
+        .filter(sintoma => sintoma !== "NENHUM");
 }
 
 function mostrarErro(mensagem) {
@@ -52,6 +54,10 @@ formAvaliacao.addEventListener("submit", async function (event) {
         mostrarErro("Selecione pelo menos uma opção em sinais ou sintomas.");
         return;
     }
+    if (pegarRadio("interesseExameDNA") === null) {
+        alert("Informe se há interesse em fazer o exame de DNA.");
+        return;
+    }
 
     const avaliacao = {
         CPF_paciente: cpfPaciente,
@@ -68,7 +74,8 @@ formAvaliacao.addEventListener("submit", async function (event) {
         antecedentesAtaxia: converterResposta(pegarRadio("ataxiaTremores")),
 
         sintomas: pegarSintomas().map(sintoma => ({
-            nome: sintoma
+            nome: sintoma,
+            presente: true
         }))
     };
 

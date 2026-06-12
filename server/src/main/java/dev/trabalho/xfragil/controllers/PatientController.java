@@ -52,7 +52,14 @@ public class PatientController {
         return ResponseEntity.ok(dtos);
     }
     
-    @GetMapping("/{cpf}")
+    @GetMapping("/id/{id}")
+    public ResponseEntity<PatientResponseDTO> getPatientById(@PathVariable Integer id)
+    {
+        PatientResponseDTO dto = patientService.getPatientById(id);
+        return ResponseEntity.ok(dto);
+    }
+    
+    @GetMapping("/cpf/{cpf}")
     public ResponseEntity<PatientResponseDTO> getPatientByCPF(@PathVariable @CPF String cpf)
     {
         PatientResponseDTO dto = patientService.getPatientByCPF(cpf);

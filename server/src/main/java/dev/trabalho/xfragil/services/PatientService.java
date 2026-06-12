@@ -70,6 +70,20 @@ public class PatientService {
             })
             .toList();
     }
+    
+    public PatientResponseDTO getPatientById(Integer id) 
+    {
+        Patient p = patientRepo.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Paciente com ID " + id + " não encontrado!"));
+
+        List<GuardianResponseDTO> guardians = patientGuardianRepo.findByPatient(p)
+                .stream()
+                .map(pg -> guardianMapper.toDto(pg.getGuardian()))
+                .distinct()
+                .toList();
+
+        return patientMapper.toDto(p, guardians);
+    }
         
     public PatientResponseDTO getPatientByCPF(String cpf) 
     {

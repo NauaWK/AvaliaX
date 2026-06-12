@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios</title>
+    <link rel="stylesheet" href="../static/css/relatoriosStyle.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div>
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <div class="logo-text">
+                    <h2>AvaliaX</h2>
+                    <p>TRIAGEM CLÍNICA</p>
+                </div>
+            </div>
+            <ul class="menu">
+                <a href="index.html"><li>📊 Painel</li></a>
+                <a href="pacientes.html"><li>👥 Pacientes</li></a>
+                <a href="avaliacoes.html"><li>📝 Avaliações</li></a>
+                <a href="relatorios.html"><li class="active">📄 Relatórios</li></a>
+                <a href=""><li>👤 Usuarios</li></a>
+            </ul>
+        </div>
+        <div class="user-box">
+            <div class="info-user" id="info-user">
+                
+            </div>
+            <div class="logout" id="logout">↩ Sair</div>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="header">
+            <h1>Relatórios</h1>
+            <p>Resumo geral das avaliações e relatório individual dos pacientes.</p>
+        </header>
+
+        <div id="mensagem" class="mensagem"></div>
+
+        <section class="cards">
+            <div class="card">
+                <span>Total de avaliações</span>
+                <strong id="totalAvaliacoes">0</strong>
+            </div>
+
+            <div class="card">
+                <span>Teste indicado</span>
+                <strong id="porcentagemTesteIndicado">0%</strong>
+            </div>
+
+            <div class="card">
+                <span>Inconclusivos</span>
+                <strong id="porcentagemInconclusivo">0%</strong>
+            </div>
+
+            <div class="card">
+                <span>Score médio</span>
+                <strong id="scoreMedioAvaliacoes">0</strong>
+            </div>
+        </section>
+
+        <section class="grid">
+            <div class="box">
+                <h2>Ranking de sintomas</h2>
+                <div class="grafico-area">
+                    <canvas id="graficoSintomas"></canvas>
+                </div>
+            </div>
+
+            <div class="box">
+                <h2>Resultados</h2>
+                <div class="grafico-wrap pequeno">
+                    <canvas id="graficoResultados"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid-relatorios">
+
+            <div class="coluna-esquerda">
+
+                <div class="box">
+                    <h2>Sintoma mais marcado por gênero</h2>
+
+                    <div class="genero-area">
+                        <div>
+                            <span>Masculino</span>
+                            <strong id="sintomaHomens">-</strong>
+                            <p id="quantidadeHomens">0 marcações</p>
+                        </div>
+
+                        <div>
+                            <span>Feminino</span>
+                            <strong id="sintomaMulheres">-</strong>
+                            <p id="quantidadeMulheres">0 marcações</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="buscar">
+                    <div>
+                        <h2>Relatório individual</h2>
+                        <p>Digite o CPF do paciente para gerar o relatório.</p>
+                    </div>
+
+                    <div class="buscar-form">
+                        <input type="text" id="cpfPaciente" placeholder="CPF do paciente" maxlength="14">
+                        <button id="btnBuscarPaciente">Buscar</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="box">
+                <h2>Tabela de sintomas</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sintoma</th>
+                            <th>Quantidade</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tabelaSintomas">
+                        <tr>
+                            <td colspan="2">Carregando...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+
+        <section id="areaRelatorio" class="relatorio hidden">
+            <div id="relatorioPDF" class="folha">
+                <div class="topo-relatorio">
+                    <div>
+                        <h2>Relatório do Paciente</h2>
+                        <p>AvaliaX - Triagem Clínica</p>
+                    </div>
+
+                    <div>
+                        <span>Data de emissão</span>
+                        <strong id="dataEmissao">-</strong>
+                    </div>
+                </div>
+
+                <h3>Dados do paciente</h3>
+
+                <div class="dados">
+                    <div>
+                        <span>Nome</span>
+                        <strong id="nomePaciente">-</strong>
+                    </div>
+
+                    <div>
+                        <span>Idade</span>
+                        <strong id="idadePaciente">-</strong>
+                    </div>
+
+                    <div>
+                        <span>Gênero</span>
+                        <strong id="generoPaciente">-</strong>
+                    </div>
+
+                    <div>
+                        <span>Nome da mãe</span>
+                        <strong id="nomeMae">-</strong>
+                    </div>
+
+                    <div>
+                        <span>Nome do pai</span>
+                        <strong id="nomePai">-</strong>
+                    </div>
+                </div>
+
+                <h3>Resumo das avaliações</h3>
+
+                <div class="dados">
+                    <div>
+                        <span>Total de avaliações</span>
+                        <strong id="totalAvaliacoesPaciente">0</strong>
+                    </div>
+
+                    <div>
+                        <span>Feitas por profissional</span>
+                        <strong id="avaliacoesProfissional">0</strong>
+                    </div>
+
+                    <div>
+                        <span>Feitas por responsável</span>
+                        <strong id="avaliacoesResponsavel">0</strong>
+                    </div>
+
+                    <div>
+                        <span>Média de score</span>
+                        <strong id="mediaScore">0</strong>
+                    </div>
+                </div>
+
+                <h3>Top 3 sintomas</h3>
+
+                <div id="top3Sintomas" class="top3">
+                    <p>Nenhum sintoma encontrado.</p>
+                </div>
+
+                <div class="assinatura">
+                    <div></div>
+                    <p>Assinatura do profissional responsável</p>
+                </div>
+            </div>
+
+            <div class="botoes-relatorio">
+                <button id="btnImprimir" class="btn-secundario">Imprimir</button>
+                <button id="btnPDF" class="btn-principal">Baixar PDF</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="../static/js/relatorios.js"></script>
+</body>
+</html>

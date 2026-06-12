@@ -1,0 +1,422 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  display: flex;
+  background: #f4f7fb;
+  color: #1e293b;
+  overflow: hidden;
+}
+
+.sidebar {
+    width: 280px;
+    height: 100vh;
+    background: #ffffff;
+    border-right: 1px solid #e0e6ed;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 15px;
+    flex-shrink: 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.logo-text h2 {
+    font-size: 18px;
+    color: #2196f3;
+}
+
+.logo-text p {
+    font-size: 10px;
+    color: gray;
+}
+
+.menu {
+    list-style: none;
+}
+
+.menu li {
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #4a5568;
+    transition: 0.3s;
+}
+
+.menu a {
+    text-decoration: none;
+}
+
+.menu li.active,
+.menu li:hover {
+    background: #e3f2fd;
+    color: #2196f3;
+    font-weight: bold;
+}
+
+
+
+.menu li a:hover {
+    background: #e3f2fd;
+    color: #2196f3;
+    font-weight: bold;
+}
+
+.user-box {
+    border-top: 1px solid #e0e6ed;
+    padding-top: 15px;
+    font-size: 13px;
+    color: #555;
+}
+
+
+#info-user{
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    width: fit-content;
+    text-transform: capitalize;
+}
+
+.logout {
+    margin-top: 15px;
+    color: #2196f3;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.logout:hover{
+    color: #f52121;
+}
+
+.conteudo {
+  flex: 1;
+  height: 100vh;
+  padding: 35px;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.topo,
+.cards-resumo,
+.filtros {
+  flex-shrink: 0;
+}
+
+.topo h1 {
+  font-size: 30px;
+  color: #0f172a;
+}
+
+.topo p {
+  color: #64748b;
+  margin-top: 5px;
+}
+
+.cards-resumo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.resumo-card {
+  background: white;
+  padding: 22px;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+}
+
+.resumo-card span {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.resumo-card strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 32px;
+  color: #0f172a;
+}
+
+.filtros {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.filtros input,
+.filtros select {
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1px solid #dbe2ea;
+  outline: none;
+  background: white;
+}
+
+.filtros input {
+  flex: 1;
+}
+
+.lista-avaliacoes {
+  flex: 1;
+  min-height: 0;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  align-content: start;
+  gap: 18px;
+
+  overflow-y: auto;
+  padding-top: 6px;
+  padding-right: 8px;
+  padding-bottom: 10px;
+}
+
+.lista-avaliacoes::-webkit-scrollbar {
+  width: 8px;
+}
+
+.lista-avaliacoes::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.lista-avaliacoes::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.avaliacao-card {
+  background: white;
+  border-radius: 18px;
+  padding: 22px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.avaliacao-card:hover {
+  transform: translateY(-3px);
+  border-color: #2196f3;
+}
+
+.avaliacao-card h3 {
+  margin-bottom: 12px;
+  color: #0f172a;
+}
+
+.avaliacao-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 9px;
+  color: #475569;
+  font-size: 14px;
+}
+
+.badge {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.badge.teste {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge.inconclusivo {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.mensagem-vazia {
+  color: #64748b;
+  grid-column: 1 / -1;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  z-index: 100;
+}
+
+.modal-overlay.ativo {
+  display: flex;
+}
+
+.modal {
+  background: white;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 22px;
+  padding: 28px;
+  position: relative;
+}
+
+.btn-fechar {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  border: none;
+  background: #f1f5f9;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.modal h2 {
+  margin-bottom: 20px;
+}
+
+.modal h3 {
+  margin-top: 25px;
+  margin-bottom: 12px;
+}
+
+.detalhes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.detalhes-grid p,
+.texto-detalhes {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 12px;
+  color: #334155;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 8px 11px;
+  border-radius: 999px;
+  background: #e8f3ff;
+  color: #0f7bdc;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.modal-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.btn-editar,
+.btn-salvar {
+  border: none;
+  background: #2196f3;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-secundario {
+  border: none;
+  background: #e2e8f0;
+  color: #334155;
+  padding: 12px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.form-editar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-editar label {
+  font-weight: bold;
+  color: #334155;
+  margin-top: 8px;
+}
+
+.form-editar select,
+.form-editar textarea {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #dbe2ea;
+  outline: none;
+}
+
+.form-editar textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.radio-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.radio-option,
+.checkbox-option {
+  background: #f8fafc;
+  border: 1px solid #dbe2ea;
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.escondido {
+  display: none;
+}
+

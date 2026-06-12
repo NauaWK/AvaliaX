@@ -15,6 +15,7 @@ body {
     padding: 40px 20px;
     display: flex;
     justify-content: center;
+    align-items: flex-start;
 }
 
 .form-card {
@@ -29,6 +30,8 @@ body {
 
 .form-header {
     margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .form-header h1 {
@@ -39,6 +42,7 @@ body {
 
 .form-header p {
     color: #64748b;
+    font-size: 15px;
 }
 
 .question {
@@ -66,6 +70,7 @@ body {
     padding: 12px 15px;
     cursor: pointer;
     transition: 0.2s;
+    color: #334155;
 }
 
 .radio-group label:hover,
@@ -80,17 +85,33 @@ input[type="checkbox"] {
     accent-color: #2563eb;
 }
 
-select {
+select,
+textarea {
     width: 100%;
     padding: 13px;
     border-radius: 12px;
     border: 1px solid #dbe2ea;
     font-size: 15px;
     outline: none;
+    background: #ffffff;
+    color: #1e293b;
+    transition: 0.2s;
 }
 
-select:focus {
+select:focus,
+textarea:focus {
     border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+textarea::placeholder {
+    color: #94a3b8;
 }
 
 .checkbox-grid {
@@ -103,15 +124,25 @@ select:focus {
     display: flex;
     gap: 12px;
     margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid #e2e8f0;
+    flex-wrap: wrap;
 }
 
-button {
+.btn-salvar,
+.btn-limpar,
+.btn-voltar {
     border: none;
     padding: 13px 22px;
     border-radius: 12px;
     font-weight: bold;
     cursor: pointer;
     transition: 0.2s;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-salvar {
@@ -132,12 +163,41 @@ button {
     background: #cbd5e1;
 }
 
+.btn-voltar {
+    background: #f8fafc;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+
+.btn-voltar:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
 @media (max-width: 700px) {
-    .checkbox-grid {
-        grid-template-columns: 1fr;
+    .container {
+        padding: 25px 12px;
     }
 
     .form-card {
         padding: 25px;
+    }
+
+    .form-header h1 {
+        font-size: 24px;
+    }
+
+    .checkbox-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-salvar,
+    .btn-limpar,
+    .btn-voltar {
+        width: 100%;
     }
 }

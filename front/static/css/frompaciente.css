@@ -320,3 +320,37 @@ body{
 .input-erro{
     border-color:#dc2626 !important;
 }
+
+.toast {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    min-width: 280px;
+    max-width: 380px;
+    padding: 16px 18px;
+    border-radius: 14px;
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.22);
+    opacity: 0;
+    transform: translateX(120%);
+    transition: 0.35s ease;
+    z-index: 9999;
+}
+
+.toast.mostrar {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast.sucesso {
+    background: #22c55e;
+}
+
+.toast.erro {
+    background: #ef4444;
+}
+
+.toast.aviso {
+    background: #f59e0b;
+}

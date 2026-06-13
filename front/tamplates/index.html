@@ -2,52 +2,317 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AvaliaX</title>
-  <link rel="stylesheet" href="../static/css/indexStyle.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AvaliaX | Triagem para Síndrome do X Frágil</title>
+  <link rel="stylesheet" href="/front/static/css/index.css">
 </head>
+
 <body>
 
-  <div class="container">
+  <header class="header">
+    <div class="container header-content">
+      <a href="#" class="logo">
+        <div class="logo-icon">X</div>
+        <div class="logo-text">
+          <h1>AvaliaX</h1>
+          <span>TRIAGEM CLÍNICA</span>
+        </div>
+      </a>
 
-    <div class="left">
-      <div class="brand">AvaliaX</div>
-      <div class="tagline">
-        <h2>Triagem clínica<br>para Síndrome do X Frágil</h2>
-        <p>Avalie sinais, registre evidências e identifique pacientes com indicação de teste genético.</p>
-      </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+
+      <nav class="nav" id="navMenu">
+        <a href="#sobre">Sobre</a>
+        <a href="#sinais">Sinais</a>
+        <a href="#como-funciona">Como funciona</a>
+
+        <div class="nav-actions">
+          <a href="login.html" class="btn btn-secondary">Entrar no sistema</a>
+          <a href="autoavaliacao-paciente.html" class="btn btn-primary">Fazer autoavaliação</a>
+        </div>
+      </nav>
     </div>
+  </header>
 
-    <div class="right">
-      <h1>Bem-vindo ao AvaliaX</h1>
-      <p class="sub">Escolha como deseja continuar.</p>
+  <main>
 
-      <div class="opcoes">
+    <section class="hero">
+      <div class="container hero-content">
+        <div>
+          <div class="badge">🧬 Informação e triagem sobre X Frágil</div>
 
-        <a href="login.html" class="opcao-card">
-          <div class="opcao-icone">🩺</div>
-          <div class="opcao-texto">
-            <strong>Sou médico</strong>
-            <span>Acesse o sistema com sua conta profissional</span>
+          <h2>
+            Um sistema para apoiar a identificação de sinais da
+            <span>Síndrome do X Frágil</span>
+          </h2>
+
+          <p>
+            O AvaliaX ajuda profissionais e responsáveis a organizarem informações,
+            responderem questionários e acompanharem avaliações relacionadas a possíveis
+            sinais da Síndrome do X Frágil.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="login.html" class="btn btn-primary">Sou profissional / médico</a>
+            <a href="autoavaliacao.html" class="btn btn-secondary">Quero fazer autoavaliação</a>
           </div>
-          <div class="opcao-seta">→</div>
-        </a>
 
-        <a href="autoavaliacao-paciente.html" class="opcao-card">
-          <div class="opcao-icone">📋</div>
-          <div class="opcao-texto">
-            <strong>Quero fazer uma autoavaliação</strong>
-            <span>Preencha seus dados e responda o questionário clínico</span>
+          <div class="hero-note">
+            <strong>Atenção:</strong>
+            a autoavaliação não substitui consulta médica, avaliação profissional ou exame genético.
+            Ela serve apenas como apoio inicial para organização de informações.
           </div>
-          <div class="opcao-seta">→</div>
-        </a>
+        </div>
 
+        <div class="hero-card">
+          <div class="hero-card-header">
+            <h3>Por que avaliar?</h3>
+            <p>
+              A Síndrome do X Frágil pode apresentar sinais variados no desenvolvimento,
+              comportamento, aprendizagem e fala.
+            </p>
+          </div>
+
+          <div class="mini-list">
+            <div class="mini-item">
+              <div class="mini-icon">👶</div>
+              <div>
+                <h4>Atrasos no desenvolvimento</h4>
+                <p>Dificuldades na fala, aprendizagem ou desenvolvimento motor podem ser observadas.</p>
+              </div>
+            </div>
+
+            <div class="mini-item">
+              <div class="mini-icon">🧠</div>
+              <div>
+                <h4>Comportamento e atenção</h4>
+                <p>Podem aparecer sinais como hiperatividade, ansiedade, impulsividade ou dificuldade social.</p>
+              </div>
+            </div>
+
+            <div class="mini-item">
+              <div class="mini-icon">🧬</div>
+              <div>
+                <h4>Histórico familiar</h4>
+                <p>Informações sobre familiares também podem ajudar na triagem e orientação.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+    </section>
+
+    <section class="section" id="sobre">
+      <div class="container">
+        <div class="section-title">
+          <span>Sobre a síndrome</span>
+          <h2>O que é a Síndrome do X Frágil?</h2>
+          <p>
+            É uma condição genética relacionada ao gene FMR1, podendo afetar o desenvolvimento
+            intelectual, a fala e o comportamento. Por isso, informação e acompanhamento são importantes.
+          </p>
+        </div>
+
+        <div class="cards">
+          <div class="info-card">
+            <div class="card-icon">🧬</div>
+            <h3>Condição genética</h3>
+            <p>
+              A síndrome está relacionada a uma alteração genética que pode interferir na produção
+              de uma proteína importante para o desenvolvimento do sistema nervoso.
+            </p>
+          </div>
+
+          <div class="info-card">
+            <div class="card-icon">📋</div>
+            <h3>Sinais variados</h3>
+            <p>
+              Os sinais não são iguais em todas as pessoas. Por isso, o questionário ajuda a organizar
+              sintomas, histórico e informações importantes.
+            </p>
+          </div>
+
+          <div class="info-card">
+            <div class="card-icon">🩺</div>
+            <h3>Diagnóstico correto</h3>
+            <p>
+              A confirmação depende de avaliação adequada e exame genético. A triagem apenas indica
+              se existem sinais que merecem atenção.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="sinais">
+      <div class="container">
+        <div class="section-title">
+          <span>Sinais de atenção</span>
+          <h2>O que pode ser observado?</h2>
+          <p>
+            Alguns sinais podem aparecer no desenvolvimento, comportamento, aprendizagem e histórico familiar.
+          </p>
+        </div>
+
+        <div class="cards">
+          <div class="info-card">
+            <div class="card-icon">💬</div>
+            <h3>Fala e aprendizagem</h3>
+            <p>
+              Atraso para começar a falar, dificuldades escolares, fala repetitiva ou dificuldade em
+              organizar informações podem ser sinais observados.
+            </p>
+          </div>
+
+          <div class="info-card">
+            <div class="card-icon">🤝</div>
+            <h3>Comportamento social</h3>
+            <p>
+              Dificuldade em manter contato visual, ansiedade, timidez, impulsividade ou dificuldade
+              de socialização podem aparecer em alguns casos.
+            </p>
+          </div>
+
+          <div class="info-card">
+            <div class="card-icon">👨‍👩‍👧</div>
+            <h3>Família</h3>
+            <p>
+              Casos de deficiência intelectual, atraso de desenvolvimento, dificuldades de aprendizagem
+              ou autismo na família podem ser informações importantes.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="acesso">
+      <div class="container">
+        <div class="paths">
+          <div class="path-card">
+            <h3>Área do profissional</h3>
+            <p>
+              Acesso para médicos, profissionais da saúde ou administradores acompanharem pacientes,
+              avaliações e relatórios.
+            </p>
+
+            <ul>
+              <li>Gerenciar pacientes cadastrados</li>
+              <li>Registrar avaliações</li>
+              <li>Visualizar relatórios</li>
+              <li>Acompanhar histórico dos pacientes</li>
+            </ul>
+
+            <a href="login.html" class="btn btn-white">Entrar no sistema</a>
+          </div>
+
+          <div class="path-card">
+            <h3>Autoavaliação</h3>
+            <p>
+              Espaço para responsáveis responderem um questionário inicial com informações sobre sinais,
+              histórico familiar e interesse em exame.
+            </p>
+
+            <ul>
+              <li>Responder perguntas iniciais</li>
+              <li>Informar sinais observados</li>
+              <li>Registrar histórico familiar</li>
+              <li>Receber uma orientação inicial</li>
+            </ul>
+
+            <a href="autoavaliacao.html" class="btn btn-white">Começar autoavaliação</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="como-funciona">
+      <div class="container">
+        <div class="section-title">
+          <span>Como funciona</span>
+          <h2>Triagem simples, organizada e segura</h2>
+          <p>
+            O sistema foi pensado para separar bem o uso profissional da autoavaliação pública.
+          </p>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <h3>Escolha o acesso</h3>
+            <p>
+              O usuário escolhe se deseja entrar no sistema como profissional ou fazer uma autoavaliação.
+            </p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">2</div>
+            <h3>Preencha os dados</h3>
+            <p>
+              As informações são organizadas por paciente, responsável, sintomas e histórico familiar.
+            </p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">3</div>
+            <h3>Responda o questionário</h3>
+            <p>
+              As respostas ajudam a identificar sinais que podem indicar necessidade de atenção.
+            </p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">4</div>
+            <h3>Gere orientação</h3>
+            <p>
+              O sistema apresenta um resultado inicial e permite acompanhamento por profissionais.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="cta">
+          <div>
+            <h2>Comece agora</h2>
+            <p>
+              Entre no sistema se você é profissional ou faça uma autoavaliação inicial para organizar
+              informações importantes sobre sinais da Síndrome do X Frágil.
+            </p>
+          </div>
+
+          <div class="cta-actions">
+            <a href="login.html" class="btn btn-white">Entrar como profissional</a>
+            <a href="autoavaliacao.html" class="btn btn-secondary">Fazer autoavaliação</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <p><strong>AvaliaX</strong> — Sistema de triagem e acompanhamento.</p>
+      <p>Projeto acadêmico sobre Síndrome do X Frágil.</p>
     </div>
+  </footer>
 
-  </div>
+  <script>
+    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+    const navMenu = document.getElementById("navMenu");
 
-  <script src="../static/js/index.js"></script>
+    mobileMenuBtn.addEventListener("click", () => {
+      navMenu.classList.toggle("show");
+
+      if (navMenu.classList.contains("show")) {
+        mobileMenuBtn.textContent = "×";
+      } else {
+        mobileMenuBtn.textContent = "☰";
+      }
+    });
+  </script>
 
 </body>
 </html>

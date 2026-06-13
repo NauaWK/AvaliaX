@@ -1,30 +1,21 @@
 
 package dev.trabalho.xfragil.entities.dto.reports_dtos;
 
+import dev.trabalho.xfragil.entities.dto.assessment_dtos.AssessmentOverviewDTO;
+import dev.trabalho.xfragil.entities.dto.assessment_dtos.AssessmentStatisticsDTO;
+import dev.trabalho.xfragil.entities.dto.patient_dtos.PatientGeneralDataDTO;
 import dev.trabalho.xfragil.entities.dto.symptom_dto.SymptomRankingDTO;
 import java.util.List;
 
 public record PatientReportDTO(
     
-        String nomePaciente,
+        PatientGeneralDataDTO dadosPaciente,
         
-        Integer idade,
+        AssessmentStatisticsDTO dadosAvaliacoesPaciente,
         
-        String genero,
+        List<AssessmentOverviewDTO> avaliacoesRecentes,
         
-        String nomeMae,
-        
-        String nomePai,
-        
-        Long totalAvaliacoes,
-        
-        Long avaliacoesProfissional,
-        
-        Long avaliacoesResponsavel,
-        
-        Double mediaScore,
-        
-        List<SymptomRankingDTO> top3Sintomas
+        List<SymptomRankingDTO> sintomasMaisPresentes
         
     ) {}
 

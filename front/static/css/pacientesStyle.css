@@ -566,6 +566,53 @@ body{
     display: flex;
 }
 
+.modal-info-paciente {
+    background: #ffffff;
+    width: 100%;
+    max-width: 560px;
+    border-radius: 18px;
+    padding: 28px;
+    position: relative;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+}
+
+.modal-info-paciente h2 {
+    color: #0f172a;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.info-grid p {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: #334155;
+    font-size: 14px;
+}
+
+.info-grid strong {
+    display: block;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+
+#infoStatusPaciente.ativo {
+    color: #15803d;
+    font-weight: 800;
+}
+
+#infoStatusPaciente.inativo {
+    color: #b91c1c;
+    font-weight: 800;
+}
+
 .modal-editar {
     background: #ffffff;
     width: 100%;

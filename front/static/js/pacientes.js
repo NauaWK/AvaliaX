@@ -4,6 +4,37 @@ if (!token) {
     window.location.href = "login.html";
 }
 
+const API_PACIENTES = "http://localhost:8080/api/pacientes";
+
+// Rotas baseadas no PatientController novo
+const ROTAS_PACIENTE = {
+    listar: API_PACIENTES,
+
+    buscarPorId(id) {
+        return `${API_PACIENTES}/id/${encodeURIComponent(id)}`;
+    },
+
+    buscarPorCpf(cpf) {
+        if (usuarioEhAdmin()) {
+            return `${API_PACIENTES}/admin/${encodeURIComponent(cpf)}`;
+        }
+
+        return `${API_PACIENTES}/cpf/${encodeURIComponent(cpf)}`;
+    },
+
+    editarPorCpf(cpf) {
+        if (usuarioEhAdmin()) {
+            return `${API_PACIENTES}/admin/${encodeURIComponent(cpf)}`;
+        }
+
+        return `${API_PACIENTES}/${encodeURIComponent(cpf)}`;
+    },
+
+    excluirPorCpf(cpf) {
+            return `${API_PACIENTES}/cpf/${encodeURIComponent(cpf)}`;
+    }
+};
+
 function pegarPayloadToken() {
     try {
         return JSON.parse(atob(token.split(".")[1]));
@@ -16,17 +47,22 @@ function pegarPayloadToken() {
 const payload = pegarPayloadToken();
 
 function usuarioEhAdmin() {
-    return payload.role === "ADMIN";
+    return payload.role === "ADMIN" || payload.role === "ROLE_ADMIN";
 }
 
 // Nome usuário
 const nomeUser = document.getElementById("info-user");
-nomeUser.innerText = payload.sub || "Usuário";
+
+if (nomeUser) {
+    nomeUser.innerText = payload.sub || "Usuário";
+}
 
 // Logout
 const btnLogout = document.getElementById("logout");
 
-btnLogout.addEventListener("click", logout);
+if (btnLogout) {
+    btnLogout.addEventListener("click", logout);
+}
 
 function logout() {
     localStorage.removeItem("token");
@@ -52,37 +88,44 @@ const totalPacientes = document.getElementById("totalPacientes");
 let pacienteAtual = null;
 let cpfAntigoPaciente = null;
 
-btnBuscar.addEventListener("click", buscarPaciente);
+if (btnBuscar) {
+    btnBuscar.addEventListener("click", buscarPacientePorCpf);
+}
 
-cpfInput.addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-        buscarPaciente();
-    }
-});
+if (cpfInput) {
+    cpfInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            buscarPacientePorCpf();
+        }
+    });
 
-cpfInput.addEventListener("input", function () {
-    if (cpfInput.value.trim() === "") {
+    cpfInput.addEventListener("input", function () {
+        if (cpfInput.value.trim() === "") {
+            voltarParaLista();
+        }
+    });
+}
+
+if (btnLimparBusca) {
+    btnLimparBusca.addEventListener("click", function () {
+        cpfInput.value = "";
         voltarParaLista();
-    }
-});
-
-btnLimparBusca.addEventListener("click", function () {
-    cpfInput.value = "";
-    voltarParaLista();
-});
+    });
+}
 
 // Carrega lista assim que abre a página
 carregarListaPacientes();
 
 async function carregarListaPacientes() {
     try {
-        const response = await fetch("http://localhost:8080/api/pacientes", {
+        const response = await fetch(ROTAS_PACIENTE.listar, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
 
         if (!response.ok) {
+            console.log("Status ao carregar lista:", response.status);
             throw new Error("Erro ao carregar lista de pacientes");
         }
 
@@ -97,13 +140,17 @@ async function carregarListaPacientes() {
     } catch (error) {
         console.log("Erro ao carregar pacientes:", error);
 
-        totalPacientes.innerText = "Não foi possível carregar os pacientes.";
+        if (totalPacientes) {
+            totalPacientes.innerText = "Não foi possível carregar os pacientes.";
+        }
 
-        listaPacientes.innerHTML = `
-            <div class="lista-vazia">
-                Erro ao buscar a lista de pacientes.
-            </div>
-        `;
+        if (listaPacientes) {
+            listaPacientes.innerHTML = `
+                <div class="lista-vazia">
+                    Erro ao buscar a lista de pacientes.
+                </div>
+            `;
+        }
     }
 }
 
@@ -125,14 +172,13 @@ function renderizarListaPacientes(pacientes) {
     totalPacientes.innerText = `${pacientes.length} paciente(s) cadastrado(s).`;
 
     pacientes.forEach(function (paciente) {
-        const cpfDoPaciente = pegarCpfPaciente(paciente);
+        const idDoPaciente = pegarIdPaciente(paciente);
+        const ativo = pacienteEstaAtivo(paciente);
 
         const item = document.createElement("div");
-        item.className = cpfDoPaciente
+        item.className = idDoPaciente
             ? "paciente-item clicavel"
             : "paciente-item";
-
-        const ativo = paciente.ativo !== false;
 
         item.innerHTML = `
             <div class="paciente-avatar">
@@ -152,10 +198,10 @@ function renderizarListaPacientes(pacientes) {
             </span>
         `;
 
-        if (cpfDoPaciente) {
+        // Agora o clique na lista busca por ID e abre só o modal básico
+        if (idDoPaciente) {
             item.addEventListener("click", function () {
-                cpfInput.value = cpfDoPaciente;
-                buscarPaciente();
+                buscarPacientePorId(idDoPaciente);
             });
         }
 
@@ -163,7 +209,33 @@ function renderizarListaPacientes(pacientes) {
     });
 }
 
-async function buscarPaciente() {
+// Clique na lista: busca por ID e abre modal simples
+async function buscarPacientePorId(id) {
+    try {
+        const response = await fetch(ROTAS_PACIENTE.buscarPorId(id), {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            console.log("Status da busca por ID:", response.status);
+            throw new Error("Paciente não encontrado pelo ID");
+        }
+
+        const paciente = await response.json();
+
+        esconderMensagemBusca();
+        abrirModalInfoPaciente(paciente);
+
+    } catch (error) {
+        console.log("Erro ao buscar paciente por ID:", error);
+        mostrarMensagemBusca("Não foi possível carregar as informações desse paciente.");
+    }
+}
+
+// Busca principal: CPF, abre card completo com editar, avaliação e exclusão
+async function buscarPacientePorCpf() {
     const cpf = cpfInput.value.trim();
 
     if (!cpf) {
@@ -171,36 +243,37 @@ async function buscarPaciente() {
         return;
     }
 
-    const endpoint = usuarioEhAdmin()
-        ? `http://localhost:8080/api/pacientes/admin/${cpf}`
-        : `http://localhost:8080/api/pacientes/${cpf}`;
-
     try {
-        const response = await fetch(endpoint, {
+        const response = await fetch(ROTAS_PACIENTE.buscarPorCpf(cpf), {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
 
         if (!response.ok) {
-            console.log("Status da busca:", response.status);
+            console.log("Status da busca por CPF:", response.status);
             throw new Error("Paciente não encontrado");
         }
 
         const paciente = await response.json();
 
         pacienteAtual = paciente;
-        cpfAntigoPaciente = cpf;
+        cpfAntigoPaciente = pegarCpfPaciente(paciente) || cpf;
 
         mostrarPaciente(paciente);
         esconderLista();
         esconderMensagemBusca();
 
-        buscaContainer.classList.add("buscou");
-        btnLimparBusca.style.display = "inline-block";
+        if (buscaContainer) {
+            buscaContainer.classList.add("buscou");
+        }
+
+        if (btnLimparBusca) {
+            btnLimparBusca.style.display = "inline-block";
+        }
 
     } catch (erro) {
-        console.error(erro);
+        console.log("Erro ao buscar paciente por CPF:", erro);
 
         esconderLista();
         esconderPaciente();
@@ -217,7 +290,7 @@ function mostrarPaciente(paciente) {
         paciente.nome || "Nome não informado";
 
     document.getElementById("idadePaciente").innerText =
-        paciente.idade || calcularIdade(paciente.dataNascimento) || "Não informado";
+        paciente.idade || "Não informado";
 
     document.getElementById("generoPaciente").innerText =
         formatarGenero(paciente.genero);
@@ -230,30 +303,40 @@ function mostrarPaciente(paciente) {
 
     resultado.style.display = "flex";
 
-    setTimeout(() => {
+    setTimeout(function () {
         resultado.classList.add("mostrar");
     }, 10);
 }
 
 function esconderPaciente() {
+    if (!resultado) return;
+
     resultado.classList.remove("mostrar");
     resultado.style.display = "none";
 }
 
 function esconderLista() {
-    listaPacientesContainer.classList.add("escondido");
+    if (listaPacientesContainer) {
+        listaPacientesContainer.classList.add("escondido");
+    }
 }
 
 function mostrarLista() {
-    listaPacientesContainer.classList.remove("escondido");
+    if (listaPacientesContainer) {
+        listaPacientesContainer.classList.remove("escondido");
+    }
 }
 
 function mostrarMensagemBusca(texto) {
+    if (!mensagemBusca) return;
+
     mensagemBusca.innerText = texto;
     mensagemBusca.style.display = "block";
 }
 
 function esconderMensagemBusca() {
+    if (!mensagemBusca) return;
+
     mensagemBusca.innerText = "";
     mensagemBusca.style.display = "none";
 }
@@ -266,7 +349,23 @@ function voltarParaLista() {
     esconderMensagemBusca();
     mostrarLista();
 
-    btnLimparBusca.style.display = "none";
+    if (buscaContainer) {
+        buscaContainer.classList.remove("buscou");
+    }
+
+    if (btnLimparBusca) {
+        btnLimparBusca.style.display = "none";
+    }
+}
+
+function pegarIdPaciente(paciente) {
+    return (
+        paciente.id ||
+        paciente.idPaciente ||
+        paciente.pacienteId ||
+        paciente.ID ||
+        null
+    );
 }
 
 function pegarCpfPaciente(paciente) {
@@ -277,6 +376,15 @@ function pegarCpfPaciente(paciente) {
         paciente.CPF_paciente ||
         paciente.cpf_paciente ||
         null
+    );
+}
+
+function pacienteEstaAtivo(paciente) {
+    return (
+        paciente.ativo !== false &&
+        paciente.ativo !== 0 &&
+        paciente.ativo !== "false" &&
+        paciente.ativo !== "0"
     );
 }
 
@@ -299,30 +407,22 @@ function formatarGenero(genero) {
     if (genero === "F") return "Feminino";
     return genero || "Não informado";
 }
+function formatarDataNascimento(dataNascimento) {
+    if (!dataNascimento) return "Não informado";
 
-function calcularIdade(dataNascimento) {
-    if (!dataNascimento) return null;
+    const partes = dataNascimento.split("-");
 
-    const nascimento = new Date(dataNascimento);
-    const hoje = new Date();
-
-    let idade = hoje.getFullYear() - nascimento.getFullYear();
-
-    const mesAtual = hoje.getMonth();
-    const diaAtual = hoje.getDate();
-
-    const mesNascimento = nascimento.getMonth();
-    const diaNascimento = nascimento.getDate();
-
-    if (
-        mesAtual < mesNascimento ||
-        (mesAtual === mesNascimento && diaAtual < diaNascimento)
-    ) {
-        idade--;
+    if (partes.length !== 3) {
+        return dataNascimento;
     }
 
-    return idade;
+    const ano = partes[0];
+    const mes = partes[1];
+    const dia = partes[2];
+
+    return `${dia}/${mes}/${ano}`;
 }
+
 
 function escaparHTML(texto) {
     return String(texto)
@@ -333,34 +433,132 @@ function escaparHTML(texto) {
         .replaceAll("'", "&#039;");
 }
 
-// Botões do card
+// Botões do card completo
 const btnEditar = document.getElementById("btnEditar");
-
-btnEditar.addEventListener("click", function () {
-    if (!pacienteAtual) {
-        alert("Busque um paciente primeiro.");
-        return;
-    }
-
-    abrirModalEditarPaciente(pacienteAtual);
-});
-
 const btnAvaliacao = document.getElementById("btnAvaliacao");
+const btnExcluir = document.getElementById("btnExcluir");
 
-btnAvaliacao.addEventListener("click", iniciarAvaliacao);
+if (btnEditar) {
+    btnEditar.addEventListener("click", function () {
+        if (!pacienteAtual) {
+            alert("Busque um paciente por CPF primeiro.");
+            return;
+        }
+
+        abrirModalEditarPaciente(pacienteAtual);
+    });
+}
+
+if (btnAvaliacao) {
+    btnAvaliacao.addEventListener("click", iniciarAvaliacao);
+}
+
+if (btnExcluir) {
+    btnExcluir.addEventListener("click", abrirModalExcluirPaciente);
+}
 
 function iniciarAvaliacao() {
     if (!pacienteAtual) {
-        alert("Busque um paciente primeiro.");
+        alert("Busque um paciente por CPF primeiro.");
         return;
     }
 
-    localStorage.setItem("cpfPacienteAvaliacao", cpfAntigoPaciente);
+    const cpfPaciente = cpfAntigoPaciente || pegarCpfPaciente(pacienteAtual);
+
+    if (!cpfPaciente) {
+        alert("CPF do paciente não encontrado.");
+        return;
+    }
+
+    localStorage.setItem("cpfPacienteAvaliacao", cpfPaciente);
 
     window.location.href = "formavaliacao.html";
 }
 
-// Modal
+// Modal de informações básicas
+const modalInfoPaciente = document.getElementById("modalInfoPaciente");
+const fecharModalInfoPaciente = document.getElementById("fecharModalInfoPaciente");
+const fecharInfoPaciente = document.getElementById("fecharInfoPaciente");
+const infoDataNascimentoPaciente = document.getElementById("infoDataNascimentoPaciente");
+const infoNomePaciente = document.getElementById("infoNomePaciente");
+const infoIdPaciente = document.getElementById("infoIdPaciente");
+const infoIdadePaciente = document.getElementById("infoIdadePaciente");
+const infoGeneroPaciente = document.getElementById("infoGeneroPaciente");
+const infoMaePaciente = document.getElementById("infoMaePaciente");
+const infoPaiPaciente = document.getElementById("infoPaiPaciente");
+const infoStatusPaciente = document.getElementById("infoStatusPaciente");
+
+function abrirModalInfoPaciente(paciente) {
+    if (!modalInfoPaciente) {
+        console.log("Modal de informações básicas não encontrado no HTML.");
+        alert("Modal de informações básicas não encontrado no HTML.");
+        return;
+    }
+    
+
+    const ativo = pacienteEstaAtivo(paciente);
+
+    if (infoNomePaciente) {
+        infoNomePaciente.innerText = paciente.nome || "Nome não informado";
+    }
+
+    if (infoIdPaciente) {
+        infoIdPaciente.innerText = pegarIdPaciente(paciente) || "Não informado";
+    }
+    if (infoDataNascimentoPaciente) {
+        infoDataNascimentoPaciente.innerText = formatarDataNascimento(paciente.dataNascimento);
+    }
+
+    if (infoIdadePaciente) {
+        infoIdadePaciente.innerText =
+            paciente.idade || paciente.idade || "Não informado";
+    }
+
+    if (infoGeneroPaciente) {
+        infoGeneroPaciente.innerText = formatarGenero(paciente.genero);
+    }
+
+    if (infoMaePaciente) {
+        infoMaePaciente.innerText = paciente.nomeMae || "Não informado";
+    }
+
+    if (infoPaiPaciente) {
+        infoPaiPaciente.innerText = paciente.nomePai || "Não informado";
+    }
+
+    if (infoStatusPaciente) {
+        infoStatusPaciente.innerText = ativo ? "Ativo" : "Inativo";
+
+        infoStatusPaciente.classList.remove("ativo", "inativo");
+        infoStatusPaciente.classList.add(ativo ? "ativo" : "inativo");
+    }
+
+    modalInfoPaciente.classList.add("ativo");
+}
+
+function fecharModalInfo() {
+    if (modalInfoPaciente) {
+        modalInfoPaciente.classList.remove("ativo");
+    }
+}
+
+if (fecharModalInfoPaciente) {
+    fecharModalInfoPaciente.addEventListener("click", fecharModalInfo);
+}
+
+if (fecharInfoPaciente) {
+    fecharInfoPaciente.addEventListener("click", fecharModalInfo);
+}
+
+if (modalInfoPaciente) {
+    modalInfoPaciente.addEventListener("click", function (event) {
+        if (event.target === modalInfoPaciente) {
+            fecharModalInfo();
+        }
+    });
+}
+
+// Modal de edição
 const modalEditarPaciente = document.getElementById("modalEditarPaciente");
 const formEditarPaciente = document.getElementById("formEditarPaciente");
 
@@ -378,10 +576,15 @@ const editAtivo = document.getElementById("editAtivo");
 
 function abrirModalEditarPaciente(paciente) {
     pacienteAtual = paciente;
-    console.log("Paciente que chegou no modal:", paciente);
+
     cpfAntigoPaciente =
         pegarCpfPaciente(paciente) ||
         cpfAntigoPaciente;
+
+    if (!cpfAntigoPaciente) {
+        alert("CPF do paciente não encontrado.");
+        return;
+    }
 
     editNomePaciente.value = paciente.nome || "";
     editDataNascimento.value = paciente.dataNascimento || "";
@@ -389,92 +592,106 @@ function abrirModalEditarPaciente(paciente) {
     editNomeMae.value = paciente.nomeMae || "";
     editNomePai.value = paciente.nomePai || "";
 
-    campoAtivoContainer.style.display = usuarioEhAdmin() ? "block" : "none";
+    // Campo ativo só aparece para admin na edição
+    if (campoAtivoContainer) {
+        campoAtivoContainer.style.display = usuarioEhAdmin() ? "block" : "none";
+    }
 
-    if (usuarioEhAdmin()) {
-        editAtivo.value = String(paciente.ativo);
+    if (usuarioEhAdmin() && editAtivo) {
+        editAtivo.value = String(pacienteEstaAtivo(paciente));
     }
 
     modalEditarPaciente.classList.add("ativo");
 }
 
-function fecharModal() {
-    modalEditarPaciente.classList.remove("ativo");
+function fecharModalEditarPaciente() {
+    if (modalEditarPaciente) {
+        modalEditarPaciente.classList.remove("ativo");
+    }
 }
 
-fecharModalEditar.addEventListener("click", fecharModal);
-cancelarEdicaoPaciente.addEventListener("click", fecharModal);
+if (fecharModalEditar) {
+    fecharModalEditar.addEventListener("click", fecharModalEditarPaciente);
+}
 
-modalEditarPaciente.addEventListener("click", function (event) {
-    if (event.target === modalEditarPaciente) {
-        fecharModal();
-    }
-});
+if (cancelarEdicaoPaciente) {
+    cancelarEdicaoPaciente.addEventListener("click", fecharModalEditarPaciente);
+}
+
+if (modalEditarPaciente) {
+    modalEditarPaciente.addEventListener("click", function (event) {
+        if (event.target === modalEditarPaciente) {
+            fecharModalEditarPaciente();
+        }
+    });
+}
 
 // Form da edição
-formEditarPaciente.addEventListener("submit", async function (event) {
-    event.preventDefault();
+if (formEditarPaciente) {
+    formEditarPaciente.addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-    const pacienteEditado = {
-        nome: editNomePaciente.value,
-        genero: editGeneroPaciente.value,
-        dataNascimento: editDataNascimento.value,
-        nomeMae: editNomeMae.value,
-        nomePai: editNomePai.value
-    };
-
-    if (usuarioEhAdmin()) {
-        pacienteEditado.ativo = editAtivo.value === "true";
-    }
-
-    try {
-        const endpoint = usuarioEhAdmin()
-            ? `http://localhost:8080/api/pacientes/admin/${cpfAntigoPaciente}`
-            : `http://localhost:8080/api/pacientes/${cpfAntigoPaciente}`;
-
-        const response = await fetch(endpoint, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(pacienteEditado)
-        });
-
-        if (!response.ok) {
-            const erro = await response.json();
-            console.log("Erro ao editar:", erro);
-            alert("Erro ao editar paciente.");
+        if (!cpfAntigoPaciente) {
+            alert("CPF do paciente não encontrado.");
             return;
         }
 
-        let pacienteAtualizado = {};
-
-        if (response.status !== 204) {
-            pacienteAtualizado = await response.json();
-        }
-
-        alert("Paciente atualizado com sucesso!");
-        fecharModal();
-
-        pacienteAtual = {
-            ...pacienteAtual,
-            ...pacienteEditado,
-            ...pacienteAtualizado
+        const pacienteEditado = {
+            nome: editNomePaciente.value,
+            genero: editGeneroPaciente.value,
+            dataNascimento: editDataNascimento.value,
+            nomeMae: editNomeMae.value,
+            nomePai: editNomePai.value
         };
 
-        mostrarPaciente(pacienteAtual);
-        carregarListaPacientes();
+        // O DTO de admin aceita ativo, o DTO de usuário provavelmente não aceita.
+        if (usuarioEhAdmin()) {
+            pacienteEditado.ativo = editAtivo.value === "true";
+        }
 
-    } catch (error) {
-        console.log("Erro no fetch:", error);
-        alert("Erro ao conectar com o servidor.");
-    }
-});
+        try {
+            const response = await fetch(ROTAS_PACIENTE.editarPorCpf(cpfAntigoPaciente), {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(pacienteEditado)
+            });
 
-//modal de excluir paciente
-const btnExcluir = document.getElementById("btnExcluir");
+            if (!response.ok) {
+                const erroTexto = await response.text();
+                console.log("Erro ao editar:", erroTexto);
+                alert("Erro ao editar paciente.");
+                return;
+            }
 
+            let pacienteAtualizado = {};
+
+            if (response.status !== 204) {
+                pacienteAtualizado = await response.json();
+            }
+
+            alert("Paciente atualizado com sucesso!");
+            fecharModalEditarPaciente();
+
+            pacienteAtual = {
+                ...pacienteAtual,
+                ...pacienteEditado,
+                ...pacienteAtualizado
+            };
+
+            mostrarPaciente(pacienteAtual);
+            carregarListaPacientes();
+
+        } catch (error) {
+            console.log("Erro no fetch:", error);
+            alert("Erro ao conectar com o servidor.");
+        }
+    });
+}
+
+// Modal de excluir paciente
 const modalExcluirPaciente = document.getElementById("modalExcluirPaciente");
 const fecharModalExcluir = document.getElementById("fecharModalExcluir");
 const cancelarExclusao = document.getElementById("cancelarExclusao");
@@ -482,33 +699,44 @@ const confirmarExclusao = document.getElementById("confirmarExclusao");
 
 const nomePacienteExcluir = document.getElementById("nomePacienteExcluir");
 
-btnExcluir.addEventListener("click", abrirModalExcluirPaciente);
-
 function abrirModalExcluirPaciente() {
     if (!pacienteAtual) {
-        alert("Busque um paciente primeiro.");
+        alert("Busque um paciente por CPF primeiro.");
         return;
     }
 
-    nomePacienteExcluir.innerText = pacienteAtual.nome || "Paciente sem nome";
+    if (nomePacienteExcluir) {
+        nomePacienteExcluir.innerText = pacienteAtual.nome || "Paciente sem nome";
+    }
 
     modalExcluirPaciente.classList.add("ativo");
 }
 
 function fecharModalExcluirPaciente() {
-    modalExcluirPaciente.classList.remove("ativo");
+    if (modalExcluirPaciente) {
+        modalExcluirPaciente.classList.remove("ativo");
+    }
 }
 
-fecharModalExcluir.addEventListener("click", fecharModalExcluirPaciente);
-cancelarExclusao.addEventListener("click", fecharModalExcluirPaciente);
+if (fecharModalExcluir) {
+    fecharModalExcluir.addEventListener("click", fecharModalExcluirPaciente);
+}
 
-modalExcluirPaciente.addEventListener("click", function (event) {
-    if (event.target === modalExcluirPaciente) {
-        fecharModalExcluirPaciente();
-    }
-});
+if (cancelarExclusao) {
+    cancelarExclusao.addEventListener("click", fecharModalExcluirPaciente);
+}
 
-confirmarExclusao.addEventListener("click", excluirPaciente);
+if (modalExcluirPaciente) {
+    modalExcluirPaciente.addEventListener("click", function (event) {
+        if (event.target === modalExcluirPaciente) {
+            fecharModalExcluirPaciente();
+        }
+    });
+}
+
+if (confirmarExclusao) {
+    confirmarExclusao.addEventListener("click", excluirPaciente);
+}
 
 async function excluirPaciente() {
     if (!pacienteAtual) {
@@ -523,42 +751,26 @@ async function excluirPaciente() {
         return;
     }
 
-    const pacienteInativado = {
-        nome: pacienteAtual.nome,
-        genero: pacienteAtual.genero,
-        dataNascimento: pacienteAtual.dataNascimento,
-        nomeMae: pacienteAtual.nomeMae,
-        nomePai: pacienteAtual.nomePai || "",
-        ativo: false
-    };
-
-    console.log("CPF usado para excluir:", cpfPaciente);
-    console.log("Dados enviados para excluir:", pacienteInativado);
-
     try {
-        const endpoint = usuarioEhAdmin()
-            ? `http://localhost:8080/api/pacientes/admin/${cpfPaciente}`
-            : `http://localhost:8080/api/pacientes/${cpfPaciente}`;
+        if (confirmarExclusao) {
+            confirmarExclusao.disabled = true;
+            confirmarExclusao.innerText = "Excluindo...";
+        }
 
-        console.log("Endpoint usado:", endpoint);
-
-        const response = await fetch(endpoint, {
-            method: "PATCH",
+        const response = await fetch(ROTAS_PACIENTE.excluirPorCpf(cpfPaciente), {
+            method: "DELETE",
             headers: {
-                "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(pacienteInativado)
+            }
         });
 
         console.log("Status da exclusão:", response.status);
 
         if (!response.ok) {
-            let erroTexto = await response.text();
+            const erroTexto = await response.text();
+            console.log("Erro ao excluir paciente:", erroTexto);
 
-            console.log("Resposta de erro da exclusão:", erroTexto);
-
-            alert("Erro ao excluir paciente. Veja o console para mais detalhes.");
+            alert("Erro ao excluir paciente.");
             return;
         }
 
@@ -576,5 +788,10 @@ async function excluirPaciente() {
     } catch (error) {
         console.log("Erro no fetch:", error);
         alert("Erro ao conectar com o servidor.");
+    } finally {
+        if (confirmarExclusao) {
+            confirmarExclusao.disabled = false;
+            confirmarExclusao.innerText = "Sim, excluir paciente";
+        }
     }
 }

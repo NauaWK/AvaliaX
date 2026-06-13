@@ -62,6 +62,43 @@ Permite cadastro de pacientes, realização de avaliações estruturadas e gera�
 
 ---
 
+## Entidades do Banco de Dados
+
+O banco de dados do AvaliaX foi projetado para suportar avaliações clínicas e o gerenciamento de pacientes, responsáveis e usuários. Abaixo estão as principais entidades:
+
+- **Pacientes**  
+  Armazena informações pessoais dos pacientes, como nome, sexo, data de nascimento, CPF e entre outros dados.
+
+- **Usuários**  
+  Representa os usuários do sistema (administradores e comuns), contendo login, senha, perfil de acesso e status ativo.
+
+- **Responsáveis**  
+  Contém dados dos responsáveis legais pelos pacientes, incluindo nome, CPF, grau de parentesco, cidade, estado e meios de contato (telefone, e-mail, WhatsApp).
+
+- **Paciente_Responsável**  
+  Tabela de relacionamento que vincula pacientes aos seus respectivos responsáveis.
+
+- **Avaliações**  
+  Registra cada avaliação realizada, com informações como data, origem, resultado, score e detalhes adicionais.
+
+- **Avaliação_Sintomas**  
+  Relaciona as avaliações com os sintomas observados em cada paciente.
+
+- **Sintomas**  
+  Lista de sintomas cadastrados, com descrição e pesos diferenciados por sexo, permitindo análises mais precisas.
+
+- **Flyway_Schema_History**  
+  Controla o histórico de migrações do banco de dados, garantindo versionamento e consistência das alterações estruturais.
+
+### Diagrama Entidade-Relacionamento
+
+O modelo lógico do banco de dados AvaliaX pode ser visualizado no diagrama abaixo.  
+Ele mostra as principais entidades (Pacientes, Usuários, Responsáveis, Avaliações, Sintomas, etc.) e seus relacionamentos.
+
+![Diagrama ER AvaliaX](diagrama-ER-avaliax.png)
+
+---
+
 ## Preparação do Banco de Dados
 
 O sistema utiliza **migrações automáticas com Flyway**, mas é necessário criar manualmente o banco vazio antes da primeira execução:

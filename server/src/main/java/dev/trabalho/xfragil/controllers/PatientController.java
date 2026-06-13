@@ -100,7 +100,7 @@ public class PatientController {
         return ResponseEntity.ok(dto);
     }
     
-    @DeleteMapping("/{cpf}")
+    @DeleteMapping("/cpf/{cpf}")
     public ResponseEntity<Void> deletePatient(@PathVariable @CPF String cpf)
     {   
         patientService.deletePatient(cpf); 

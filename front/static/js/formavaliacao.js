@@ -165,8 +165,6 @@ form.addEventListener("submit", async event => {
             return;
         }
 
-        alert(modo === "editar" ? "Avaliação editada com sucesso!" : "Avaliação cadastrada com sucesso!");
-        window.location.href = "avaliacoes.html";
 
     } catch (error) {
         console.error(error);

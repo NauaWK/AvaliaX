@@ -74,7 +74,7 @@ DB_URL=jdbc:mysql://localhost:3306/avaliax
 DB_USER=avaliax_user
 DB_PASS=senha_do_usuario
 ```
-Ajuste porta, nome do banco e credenciais conforme sua configuração.
+→ Ajuste porta, nome do banco e credenciais conforme sua configuração.
 
 ---
 
@@ -89,7 +89,7 @@ Ajuste porta, nome do banco e credenciais conforme sua configuração.
 
 ### Frontend
 
-1. Abra a pasta /front no Visual Studio Code.
+1. Abra a pasta `front` no Visual Studio Code.
 2. Com a extensão Live Server instalada, clique em Go Live para iniciar.
 
 ---
@@ -97,12 +97,12 @@ Ajuste porta, nome do banco e credenciais conforme sua configuração.
 ## Usuários Pré-inseridos
 O sistema já possui dois usuários cadastrados via migrações SQL:
 
-- Admin
+→ Admin
 ```
 Login: admin
 Senha: admin12345-
 ```
-- Usuário Comum
+→ Usuário Comum
 ```
 Login: user
 Senha: user12345-

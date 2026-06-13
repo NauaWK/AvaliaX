@@ -15,6 +15,7 @@ options.querySelectorAll("li").forEach(option => {
         hiddenInput.value = option.dataset.value;
         options.classList.remove("show");
         button.classList.remove("active");
+        limparErro("erro-genero");
     });
 });
 
@@ -43,6 +44,7 @@ estadooptions.forEach(option => {
         estadoSelectedValue.textContent = option.textContent;
         estadoHiddenInput.value = option.dataset.value;
         dropdown.classList.remove("show");
+        limparErro("erro-responsavel.estado");
     });
 });
 
@@ -59,10 +61,66 @@ document.addEventListener("click", e => {
     }
 });
 
+function mostrarErro(id, mensagem) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.textContent = mensagem;
+    }
+}
+
+function limparErro(id) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = "";
+}
+
+function limparTodosErros() {
+    document.querySelectorAll(".erro").forEach(el => el.textContent = "");
+}
+
+function validar() {
+    limparTodosErros();
+    let valido = true;
+
+    const campos = [
+        { id: "nomePaciente",   erroId: "erro-nome",                        msg: "Nome do paciente é obrigatório." },
+        { id: "dataNascimento", erroId: "erro-dataNascimento",              msg: "Data de nascimento é obrigatória." },
+        { id: "cpfPaciente",    erroId: "erro-CPF_paciente",                msg: "CPF do paciente é obrigatório." },
+        { id: "nomeMae",        erroId: "erro-nomeMae",                     msg: "Nome da mãe é obrigatório." },
+        { id: "responsavel",    erroId: "erro-responsavel.nome",            msg: "Nome do responsável é obrigatório." },
+        { id: "parentesco",     erroId: "erro-responsavel.grauParentesco",  msg: "Grau de parentesco é obrigatório." },
+        { id: "cidade",         erroId: "erro-responsavel.cidade",          msg: "Cidade é obrigatória." },
+        { id: "pais",           erroId: "erro-responsavel.pais",            msg: "País é obrigatório." },
+        { id: "telefone1",      erroId: "erro-responsavel.telefone1",       msg: "Telefone para ligações é obrigatório." },
+        { id: "email",          erroId: "erro-responsavel.email",           msg: "E-mail é obrigatório." },
+    ];
+
+    campos.forEach(({ id, erroId, msg }) => {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+            mostrarErro(erroId, msg);
+            valido = false;
+        }
+    });
+
+    if (!document.getElementById("sexo").value) {
+        mostrarErro("erro-genero", "Sexo biológico é obrigatório.");
+        valido = false;
+    }
+
+    if (!document.getElementById("estado").value) {
+        mostrarErro("erro-responsavel.estado", "Estado é obrigatório.");
+        valido = false;
+    }
+
+    return valido;
+}
+
 const formPaciente = document.getElementById("formPaciente");
 
 formPaciente.addEventListener("submit", (e) => {
     e.preventDefault();
+
+    if (!validar()) return;
 
     const paciente = {
         nome: document.getElementById("nomePaciente").value,
@@ -84,16 +142,6 @@ formPaciente.addEventListener("submit", (e) => {
             email: document.getElementById("email").value
         }
     };
-
-    if (!paciente.genero) {
-        alert("Selecione o sexo biológico.");
-        return;
-    }
-
-    if (!paciente.responsavel.estado) {
-        alert("Selecione o estado.");
-        return;
-    }
 
     sessionStorage.setItem("dadosPaciente", JSON.stringify(paciente));
     window.location.href = "autoavaliacao-avaliacao.html";

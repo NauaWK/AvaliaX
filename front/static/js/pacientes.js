@@ -440,10 +440,6 @@ const btnExcluir = document.getElementById("btnExcluir");
 
 if (btnEditar) {
     btnEditar.addEventListener("click", function () {
-        if (!pacienteAtual) {
-            alert("Busque um paciente por CPF primeiro.");
-            return;
-        }
 
         abrirModalEditarPaciente(pacienteAtual);
     });
@@ -465,10 +461,6 @@ function iniciarAvaliacao() {
 
     const cpfPaciente = cpfAntigoPaciente || pegarCpfPaciente(pacienteAtual);
 
-    if (!cpfPaciente) {
-        alert("CPF do paciente não encontrado.");
-        return;
-    }
 
     localStorage.setItem("cpfPacienteAvaliacao", cpfPaciente);
 
@@ -489,11 +481,6 @@ const infoPaiPaciente = document.getElementById("infoPaiPaciente");
 const infoStatusPaciente = document.getElementById("infoStatusPaciente");
 
 function abrirModalInfoPaciente(paciente) {
-    if (!modalInfoPaciente) {
-        console.log("Modal de informações básicas não encontrado no HTML.");
-        alert("Modal de informações básicas não encontrado no HTML.");
-        return;
-    }
     
 
     const ativo = pacienteEstaAtivo(paciente);
@@ -581,10 +568,6 @@ function abrirModalEditarPaciente(paciente) {
         pegarCpfPaciente(paciente) ||
         cpfAntigoPaciente;
 
-    if (!cpfAntigoPaciente) {
-        alert("CPF do paciente não encontrado.");
-        return;
-    }
 
     editNomePaciente.value = paciente.nome || "";
     editDataNascimento.value = paciente.dataNascimento || "";
@@ -672,7 +655,7 @@ if (formEditarPaciente) {
                 pacienteAtualizado = await response.json();
             }
 
-            alert("Paciente atualizado com sucesso!");
+           
             fecharModalEditarPaciente();
 
             pacienteAtual = {
@@ -774,7 +757,6 @@ async function excluirPaciente() {
             return;
         }
 
-        alert("Paciente excluído com sucesso!");
 
         fecharModalExcluirPaciente();
 

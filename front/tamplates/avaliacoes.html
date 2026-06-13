@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avaliações</title>
+  <link rel="stylesheet" href="../static/css/avaliacoesStyle.css">
+</head>
+<body>
+
+  <aside class="sidebar">
+        <div>
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <div class="logo-text">
+                    <h2>AvaliaX</h2>
+                    <p>TRIAGEM CLÍNICA</p>
+                </div>
+            </div>
+            <ul class="menu">
+                <a href="index.html"><li>📊 Painel</li></a>
+                <a href="pacientes.html"><li>👥 Pacientes</li></a>
+                <a href="avaliacoes.html"><li class="active">📝 Avaliações</li></a>
+                <a href="relatorios.html"><li>📄 Relatórios</li></a>
+                <a href="usuarios.html"><li>👤 Usuarios</li></a>
+            </ul>
+        </div>
+        <div class="user-box">
+            <div class="info-user" id="info-user">
+                <strong></strong>
+            </div>
+            <div class="logout" id="logout">↩ Sair</div>
+        </div>
+    </aside>
+
+  <main class="conteudo">
+    <header class="topo">
+      <div>
+        <h1>Histórico de Avaliações</h1>
+        <p>Consulte, visualize e edite avaliações realizadas.</p>
+      </div>
+
+
+    </header>
+
+    <section class="cards-resumo">
+      <div class="resumo-card">
+        <span>Total</span>
+        <strong id="totalAvaliacoes">0</strong>
+      </div>
+
+      <div class="resumo-card">
+        <span>Teste indicado</span>
+        <strong id="totalTesteIndicado">0</strong>
+      </div>
+
+      <div class="resumo-card">
+        <span>Inconclusivas</span>
+        <strong id="totalInconclusivo">0</strong>
+      </div>
+    </section>
+
+    <section class="filtros">
+      <input type="text" id="buscarAvaliacao" placeholder="Buscar por paciente...">
+
+      <select id="filtroResultado">
+        <option value="">Todos os resultados</option>
+        <option value="TESTE_INDICADO">Teste indicado</option>
+        <option value="INCONCLUSIVO">Inconclusivo</option>
+      </select>
+    </section>
+
+    <section id="listaAvaliacoes" class="lista-avaliacoes">
+      <p class="mensagem-vazia">Carregando avaliações...</p>
+    </section>
+  </main>
+
+  <div id="modalAvaliacao" class="modal-overlay">
+    <div class="modal">
+      <button class="btn-fechar" id="fecharModal">×</button>
+
+      <div id="modoDetalhes">
+        <h2 id="detalhePaciente">Detalhes da Avaliação</h2>
+
+        <div class="detalhes-grid">
+          <p><strong>Paciente:</strong> <span id="detPaciente"></span></p>
+          <p><strong>Usuário:</strong> <span id="detUsuario"></span></p>
+          <p><strong>Data:</strong> <span id="detData"></span></p>
+          <p><strong>Origem:</strong> <span id="detOrigem"></span></p>
+          <p><strong>Score:</strong> <span id="detScore"></span></p>
+          <p><strong>Resultado:</strong> <span id="detResultado"></span></p>
+        </div>
+
+        <h3>Questionário</h3>
+
+        <div class="detalhes-grid">
+          <p><strong>Teste DNA:</strong> <span id="detTesteDna"></span></p>
+          <p><strong>Interesse no exame:</strong> <span id="detInteresseExame"></span></p>
+          <p><strong>Resultado do exame:</strong> <span id="detResultadoExame"></span></p>
+          <p><strong>Diagnóstico autismo:</strong> <span id="detAutismo"></span></p>
+          <p><strong>Possui irmãos:</strong> <span id="detIrmaos"></span></p>
+          <p><strong>Antecedentes deficiência:</strong> <span id="detDeficiencia"></span></p>
+          <p><strong>Antecedentes menopausa:</strong> <span id="detMenopausa"></span></p>
+          <p><strong>Antecedentes ataxia:</strong> <span id="detAtaxia"></span></p>
+        </div>
+
+        <h3>Sintomas presentes</h3>
+        <div id="detSintomas" class="tags"></div>
+
+        <h3>Detalhes</h3>
+        <p id="detDetalhes" class="texto-detalhes"></p>
+
+        <div class="modal-acoes">
+          <button id="btnEditar" class="btn-editar">Editar avaliação</button>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+  <script src="../static/js/avaliacoes.js"></script>
+</body>
+</html>

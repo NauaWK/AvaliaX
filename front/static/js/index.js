@@ -52,7 +52,6 @@ fetch("http://localhost:8080/api/dashboard", {
     if (pacientes.length == 0) {
         divAvaliacaoRecente.textContent = "Nenhuma avaliação encontrada."
     }else {
-        //codigo comentado so para teste
         pacientes.forEach(paciente => {
                 const li = document.createElement('li');  
                 li.classList.add("card-avaliacao")     

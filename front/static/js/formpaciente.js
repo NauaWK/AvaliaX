@@ -144,25 +144,31 @@ try {
     });
 
     if (!response.ok) {
-
         const erros = await response.json();
 
         console.log("ERROS DO BACK:");
         console.log(erros);
 
         mostrarErros(erros);
+        mostrarToast("Verifique os campos do formulário.", "erro");
 
         return;
     }
 
-    const data = await response.json();
+    await response.json();
 
-    window.location.href = "pacientes.html";
+    mostrarToast("Paciente cadastrado com sucesso!", "sucesso");
+
+    setTimeout(() => {
+        window.location.href = "pacientes.html";
+    }, 1500);
 
 } catch (erro) {
 
     console.error("ERRO NO FETCH:");
     console.error(erro);
+
+    mostrarToast("Erro ao conectar com o servidor.", "erro");
 
 }           
 });
@@ -199,4 +205,14 @@ function mostrarErros(erros) {
 
     });
 
+}
+function mostrarToast(mensagem, tipo = "sucesso") {
+    const toast = document.getElementById("toast");
+
+    toast.textContent = mensagem;
+    toast.className = `toast ${tipo} mostrar`;
+
+    setTimeout(() => {
+        toast.classList.remove("mostrar");
+    }, 2500);
 }

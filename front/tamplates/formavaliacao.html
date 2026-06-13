@@ -12,29 +12,31 @@
     <form id="formAvaliacao" class="form-card">
 
         <div class="form-header">
-            <h1>Questionário de Avaliação</h1>
-            <p>Preencha as informações clínicas do paciente.</p>
+            <h1 id="tituloFormulario">Questionário de Avaliação</h1>
+            <p id="subtituloFormulario">Preencha as informações clínicas do paciente.</p>
         </div>
 
         <section class="question">
             <label>Já fez exame de DNA para detectar a Síndrome do X Frágil? *</label>
             <div class="radio-group">
-                <label><input type="radio" name="fezExameDNA" value="false" required> Não</label>
-                <label><input type="radio" name="fezExameDNA" value="true"> Sim</label>
+                <label><input type="radio" name="testeDna" value="NAO" required> Não</label>
+                <label><input type="radio" name="testeDna" value="SIM"> Sim</label>
+                <label><input type="radio" name="testeDna" value="NAO_SEI"> Não sei</label>
             </div>
         </section>
 
         <section class="question">
             <label>Tem interesse em fazer o exame de DNA para X Frágil?</label>
             <div class="radio-group">
-                <label><input type="radio" name="interesseExameDNA" value="false"> Não</label>
-                <label><input type="radio" name="interesseExameDNA" value="true"> Sim</label>
+                <label><input type="radio" name="interesseExame" value="NAO"> Não</label>
+                <label><input type="radio" name="interesseExame" value="SIM"> Sim</label>
+                <label><input type="radio" name="interesseExame" value="NAO_SEI"> Não sei</label>
             </div>
         </section>
 
         <section class="question">
-            <label>Se SIM, qual o resultado?</label>
-            <select name="resultadoDNA">
+            <label for="resultadoExame">Se SIM, qual o resultado?</label>
+            <select id="resultadoExame" name="resultadoExame">
                 <option value="">Selecione</option>
                 <option value="MUTACAO_COMPLETA">Mutação Completa (+200 repetições)</option>
                 <option value="PRE_MUTACAO">Pré-mutação (55 a 199 repetições)</option>
@@ -48,69 +50,75 @@
         <section class="question">
             <label>Possui diagnóstico de AUTISMO? *</label>
             <div class="radio-group">
-                <label><input type="radio" name="autismo" value="false" required> Não</label>
-                <label><input type="radio" name="autismo" value="true"> Sim</label>
+                <label><input type="radio" name="diagnosticoAutismo" value="NAO" required> Não</label>
+                <label><input type="radio" name="diagnosticoAutismo" value="SIM"> Sim</label>
+                <label><input type="radio" name="diagnosticoAutismo" value="NAO_SEI"> Não sei</label>
             </div>
         </section>
 
         <section class="question">
             <label>Tem irmãos? *</label>
             <div class="radio-group">
-                <label><input type="radio" name="irmaos" value="false" required> Não</label>
-                <label><input type="radio" name="irmaos" value="true"> Sim</label>
+                <label><input type="radio" name="possuiIrmaos" value="NAO" required> Não</label>
+                <label><input type="radio" name="possuiIrmaos" value="SIM"> Sim</label>
+                <label><input type="radio" name="possuiIrmaos" value="NAO_SEI"> Não sei</label>
             </div>
         </section>
 
         <section class="question">
             <label>Há alguém na família com deficiência intelectual, atraso de desenvolvimento, dificuldades de aprendizagem ou autismo? *</label>
             <div class="radio-group">
-                <label><input type="radio" name="historicoFamiliarNeuro" value="false" required> Não</label>
-                <label><input type="radio" name="historicoFamiliarNeuro" value="true"> Sim</label>
-                <label><input type="radio" name="historicoFamiliarNeuro" value="NAO_SEI"> Não Sei</label>
+                <label><input type="radio" name="antecedentesDeficiencia" value="NAO" required> Não</label>
+                <label><input type="radio" name="antecedentesDeficiencia" value="SIM"> Sim</label>
+                <label><input type="radio" name="antecedentesDeficiencia" value="NAO_SEI"> Não sei</label>
             </div>
         </section>
 
         <section class="question">
             <label>Há antecedentes na família com diagnóstico de menopausa precoce? *</label>
             <div class="radio-group">
-                <label><input type="radio" name="menopausaPrecoce" value="false" required> Não</label>
-                <label><input type="radio" name="menopausaPrecoce" value="true"> Sim</label>
-                <label><input type="radio" name="menopausaPrecoce" value="NAO_SEI"> Não Sei</label>
+                <label><input type="radio" name="antecedentesMenopausa" value="NAO" required> Não</label>
+                <label><input type="radio" name="antecedentesMenopausa" value="SIM"> Sim</label>
+                <label><input type="radio" name="antecedentesMenopausa" value="NAO_SEI"> Não sei</label>
             </div>
         </section>
 
         <section class="question">
             <label>Há antecedentes na família com ataxia e tremores? *</label>
             <div class="radio-group">
-                <label><input type="radio" name="ataxiaTremores" value="false" required> Não</label>
-                <label><input type="radio" name="ataxiaTremores" value="true"> Sim</label>
-                <label><input type="radio" name="ataxiaTremores" value="NAO_SEI"> Não Sei</label>
+                <label><input type="radio" name="antecedentesAtaxia" value="NAO" required> Não</label>
+                <label><input type="radio" name="antecedentesAtaxia" value="SIM"> Sim</label>
+                <label><input type="radio" name="antecedentesAtaxia" value="NAO_SEI"> Não sei</label>
             </div>
         </section>
 
         <section class="question">
-            <label>Assinale os sinais ou sintomas observados: *</label>
+            <label>Assinale os sinais ou sintomas observados:</label>
+            <div id="sintomasContainer" class="checkbox-grid"></div>
+        </section>
 
-            <div class="checkbox-grid">
-                <label><input type="checkbox" name="sintomas" value="Atraso na fala"> Demorou para falar</label>
-                <label><input type="checkbox" name="sintomas" value="Dificuldades de aprendizado"> Dificuldades no aprendizado</label>
-                <label><input type="checkbox" name="sintomas" value="Déficit de atenção"> Déficit de atenção</label>
-                <label><input type="checkbox" name="sintomas" value="Deficiência intelectual"> Deficiência Intelectual</label>
-                <label><input type="checkbox" name="sintomas" value="Hiperatividade"> Hiperatividade</label>
-                <label><input type="checkbox" name="sintomas" value="Agressividade"> Agressividade</label>
-                <label><input type="checkbox" name="sintomas" value="Evita contato visual"> Evita contato visual</label>
-                <label><input type="checkbox" name="sintomas" value="Evita contato físico"> Evita contato físico</label>
-                <label><input type="checkbox" name="sintomas" value="Movimentos repetitivos"> Movimentos repetitivos</label>
-                <label><input type="checkbox" name="sintomas" value="Hipermobilidade articular"> Articulações flexíveis</label>
-                <label><input type="checkbox" name="sintomas" value="Macroorquidismo"> Testículos maiores que o normal</label>
-                <label><input type="checkbox" name="sintomas" value="Face alongada/orelhas"> Face alongada / mandíbula / orelhas</label>
-                <label><input type="checkbox" name="sintomas" value="NENHUM"> Não apresenta sintomas</label>
-            </div>
+        <section class="question">
+            <label for="detalhes">Detalhes / observações</label>
+            <textarea 
+                id="detalhes" 
+                name="detalhes" 
+                maxlength="255" 
+                placeholder="Digite observações sobre a avaliação..."
+            ></textarea>
         </section>
 
         <div class="form-actions">
-            <button type="submit" class="btn-salvar">Salvar Avaliação</button>
-            <button type="reset" class="btn-limpar">Limpar</button>
+            <button type="submit" class="btn-salvar" id="btnSalvarAvaliacao">
+                Salvar Avaliação
+            </button>
+
+            <button type="reset" class="btn-limpar">
+                Limpar
+            </button>
+
+            <a href="avaliacoes.html" class="btn-voltar">
+                Voltar
+            </a>
         </div>
 
     </form>

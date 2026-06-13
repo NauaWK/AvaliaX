@@ -16,6 +16,8 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Integer>
 
     Long countByUserIdAndResult(Integer userId, Result result);
     
+    Long countByPatientIdAndResult(Integer patientId, Result result);
+    
     @Query(value = "SELECT AVG(score) from avaliacoes "
             + "WHERE id_usuario = :userId", nativeQuery = true)
     Double findAverageScoreByUserId(@Param("userId") Integer userId);
@@ -33,6 +35,10 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Integer>
             + "ORDER BY data_avaliacao "
             + "DESC LIMIT 5", nativeQuery = true)
     List<Assessment> findRecentAssessmentsByUserId(@Param("userId") Integer userId);
+    
+    Optional<Assessment> findTopByPatientIdOrderByAssessmentDateDesc(Integer patientId);
+    
+    List<Assessment> findTop3ByPatientIdOrderByAssessmentDateDesc(Integer patientId);
     
     @Query(value = "SELECT COUNT(*) FROM avaliacoes a "
             + "WHERE a.id_paciente = :patientId", nativeQuery = true)

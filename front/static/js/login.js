@@ -42,7 +42,7 @@ async function handleSubmit() {
     }
 
     localStorage.setItem('token', data.token);
-    window.location.href = 'index.html';
+    window.location.href = 'dashboard.html';
   } catch (err) {
     showMsg('Não foi possível conectar ao servidor.', 'error');
   } finally {

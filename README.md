@@ -52,6 +52,8 @@ Permite cadastro de pacientes, realização de avaliações estruturadas e gera�
 
 - JDK 21 ou superior.
 
+- Visual Studio Code com extensão Live Server;
+
 - MySQL instalado previamente.
 
 - Git (opcional, recomendado).

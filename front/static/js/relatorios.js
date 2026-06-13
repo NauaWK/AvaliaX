@@ -113,6 +113,7 @@ async function buscarRelatorioPaciente() {
         }
 
         const dados = await response.json();
+        console.log("JSON relatório paciente:", dados);
 
         relatorioAtual = dados;
         preencherRelatorioPaciente(dados);
@@ -311,22 +312,51 @@ function criarGraficoResultados(dados) {
 function preencherRelatorioPaciente(dados) {
     document.getElementById("areaRelatorio").classList.remove("hidden");
 
-    document.getElementById("dataEmissao").textContent = new Date().toLocaleDateString("pt-BR");
+    console.log("Dados recebidos no preencherRelatorioPaciente:", dados);
 
-    document.getElementById("nomePaciente").textContent = dados.nomePaciente || "-";
-    document.getElementById("idadePaciente").textContent = dados.idade ? `${dados.idade} anos` : "-";
-    document.getElementById("generoPaciente").textContent = formatarGenero(dados.genero);
-    document.getElementById("nomeMae").textContent = dados.nomeMae || "-";
-    document.getElementById("nomePai").textContent = dados.nomePai || "-";
+    const relatorio = dados.data || dados.relatorio || dados;
 
-    document.getElementById("totalAvaliacoesPaciente").textContent = formatarNumero(dados.totalAvaliacoes);
-    document.getElementById("avaliacoesProfissional").textContent = formatarNumero(dados.avaliacoesProfissional);
-    document.getElementById("avaliacoesResponsavel").textContent = formatarNumero(dados.avaliacoesResponsavel);
-    document.getElementById("mediaScore").textContent = formatarDecimal(dados.mediaScore);
+    const paciente = relatorio.dadosPaciente || {};
+    const avaliacoes = relatorio.dadosAvaliacoesPaciente || {};
+    const sintomasMaisPresentes = relatorio.sintomasMaisPresentes || [];
+    const avaliacoesRecentes = relatorio.avaliacoesRecentes || [];
 
-    preencherTop3(dados.top3Sintomas);
+    setTexto("dataEmissao", new Date().toLocaleDateString("pt-BR"));
+
+    // Dados do paciente
+    setTexto("nomePaciente", paciente.nome || "-");
+    setTexto("dataNascimentoPaciente", formatarData(paciente.dataNascimento));
+    setTexto("idadePaciente", paciente.idade ? `${paciente.idade} anos` : "-");
+    setTexto("generoPaciente", formatarGenero(paciente.genero));
+    setTexto("nomeMae", paciente.nomeMae || "-");
+    setTexto("nomePai", paciente.nomePai || "-");
+
+    // Dados novos
+    setTexto("responsavelPaciente", paciente.responsavel || "-");
+    setTexto("telefonePaciente", formatarTelefone(paciente.telefone));
+    setTexto("emailPaciente", paciente.email || "-");
+
+    // Questionário clínico
+    setTexto("testeDna", formatarResposta(paciente.testeDna));
+    setTexto("interesseExame", formatarResposta(paciente.interesseExame));
+    setTexto("resultadoExame", formatarResposta(paciente.resultadoExame));
+    setTexto("diagnosticoAutismo", formatarResposta(paciente.diagnosticoAutismo));
+    setTexto("possuiIrmaos", formatarResposta(paciente.possuiIrmaos));
+    setTexto("antecedentesDeficiencia", formatarResposta(paciente.antecedentesDeficiencia));
+    setTexto("antecedentesMenopausa", formatarResposta(paciente.antecedentesMenopausa));
+    setTexto("antecedentesAtaxia", formatarResposta(paciente.antecedentesAtaxia));
+
+    // Resumo das avaliações
+    setTexto("totalAvaliacoesPaciente", formatarNumero(avaliacoes.totalAvaliacoes));
+    setTexto("avaliacoesProfissional", formatarNumero(avaliacoes.avaliacoesProfissional));
+    setTexto("avaliacoesResponsavel", formatarNumero(avaliacoes.avaliacoesResponsavel));
+    setTexto("avaliacoesTesteIndicado", formatarNumero(avaliacoes.avaliacoesTesteIndicado));
+    setTexto("avaliacoesInconclusivas", formatarNumero(avaliacoes.avaliacoesInconclusivas));
+    setTexto("mediaScore", formatarDecimal(avaliacoes.mediaScore));
+
+    preencherTop3(sintomasMaisPresentes);
+    preencherAvaliacoesRecentes(avaliacoesRecentes);
 }
-
 function preencherTop3(top3) {
     const container = document.getElementById("top3Sintomas");
     container.innerHTML = "";
@@ -336,11 +366,84 @@ function preencherTop3(top3) {
         return;
     }
 
-    top3.forEach((item, index) => {
+    top3.slice(0, 3).forEach((item, index) => {
         container.innerHTML += `
             <div class="sintoma-item">
-                <span>${index + 1}. ${item.nome}</span>
+                <span>${index + 1}. ${escaparHTML(item.nome)}</span>
                 <strong>${formatarNumero(item.quantidade)} marcações</strong>
+            </div>
+        `;
+    });
+}
+function preencherAvaliacoesRecentes(avaliacoes) {
+    const container = document.getElementById("avaliacoesRecentes");
+
+    if (!container) {
+        console.warn('Elemento com id "avaliacoesRecentes" não encontrado no HTML.');
+        return;
+    }
+
+    container.innerHTML = "";
+
+    if (!avaliacoes || avaliacoes.length === 0) {
+        container.innerHTML = "<p>Nenhuma avaliação encontrada.</p>";
+        return;
+    }
+
+    avaliacoes.forEach((avaliacao) => {
+        const sintomas = avaliacao.sintomas || [];
+
+        const sintomasHTML = sintomas.length > 0
+            ? sintomas.map(sintoma => `
+                <span class="sintoma-tag">${escaparHTML(sintoma)}</span>
+            `).join("")
+            : "<span class='sintoma-tag'>Nenhum sintoma informado</span>";
+
+        const classeResultado = avaliacao.resultado === "TESTE_INDICADO"
+            ? "indicado"
+            : "inconclusivo";
+
+        container.innerHTML += `
+            <div class="avaliacao-card">
+                <div class="avaliacao-topo">
+                    <div>
+                        <strong>${escaparHTML(avaliacao.profissional || "Profissional não informado")}</strong>
+                        <span>${formatarOrigem(avaliacao.origem)}</span>
+                    </div>
+
+                    <span class="badge-resultado ${classeResultado}">
+                        ${formatarResultado(avaliacao.resultado)}
+                    </span>
+                </div>
+
+                <div class="avaliacao-info">
+                    <div>
+                        <span>Data</span>
+                        <strong>${formatarData(avaliacao.data)}</strong>
+                    </div>
+
+                    <div>
+                        <span>Score</span>
+                        <strong>${formatarDecimal(avaliacao.score)}</strong>
+                    </div>
+
+                    <div>
+                        <span>Resultado</span>
+                        <strong>${formatarResultado(avaliacao.resultado)}</strong>
+                    </div>
+                </div>
+
+                <strong>Sintomas marcados</strong>
+
+                <div class="sintomas-lista">
+                    ${sintomasHTML}
+                </div>
+
+                ${
+                    avaliacao.detalhes
+                        ? `<div class="detalhes-avaliacao">${escaparHTML(avaliacao.detalhes)}</div>`
+                        : ""
+                }
             </div>
         `;
     });
@@ -417,7 +520,7 @@ async function baixarPDF() {
             heightLeft -= pageHeight;
         }
 
-        const nome = relatorioAtual.nomePaciente || "paciente";
+        const nome = relatorioAtual.dadosPaciente?.nome || "paciente";
         const nomeArquivo = `relatorio-${nome.replaceAll(" ", "-").toLowerCase()}.pdf`;
 
         pdf.save(nomeArquivo);
@@ -481,4 +584,111 @@ function mascaraCPF(valor) {
     valor = valor.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
 
     return valor;
+}
+
+function formatarData(data) {
+    if (!data) {
+        return "-";
+    }
+
+    const partes = data.split("-");
+
+    if (partes.length !== 3) {
+        return data;
+    }
+
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
+function formatarTelefone(telefone) {
+    if (!telefone) {
+        return "-";
+    }
+
+    const numeros = String(telefone).replace(/\D/g, "");
+
+    if (numeros.length === 11) {
+        return `(${numeros.slice(0, 2)}) ${numeros.slice(2, 7)}-${numeros.slice(7)}`;
+    }
+
+    if (numeros.length === 10) {
+        return `(${numeros.slice(0, 2)}) ${numeros.slice(2, 6)}-${numeros.slice(6)}`;
+    }
+
+    return telefone;
+}
+
+function formatarResposta(valor) {
+    if (!valor) {
+        return "-";
+    }
+
+    const respostas = {
+        SIM: "Sim",
+        NAO: "Não",
+        NAO_SEI: "Não sei",
+        TESTE_INDICADO: "Teste indicado",
+        INCONCLUSIVO: "Inconclusivo",
+        PROFISSIONAL: "Profissional",
+        RESPONSAVEL: "Responsável",
+        MUTACAO_COMPLETA: "Mutação completa",
+        PRE_MUTACAO: "Pré-mutação",
+        ZONA_GRAY: "Zona gray/intermediária",
+        MOSAICISMO: "Mosaicismo",
+        NEGATIVO: "Negativo",
+    };
+
+    return respostas[valor] || String(valor).replaceAll("_", " ");
+}
+
+function formatarResultado(resultado) {
+    if (!resultado) {
+        return "-";
+    }
+
+    if (resultado === "TESTE_INDICADO") {
+        return "Teste indicado";
+    }
+
+    if (resultado === "INCONCLUSIVO") {
+        return "Inconclusivo";
+    }
+
+    return formatarResposta(resultado);
+}
+
+function formatarOrigem(origem) {
+    if (!origem) {
+        return "-";
+    }
+
+    if (origem === "PROFISSIONAL") {
+        return "Profissional";
+    }
+
+    if (origem === "RESPONSAVEL") {
+        return "Responsável";
+    }
+
+    return formatarResposta(origem);
+}
+
+function escaparHTML(texto) {
+    return String(texto || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function setTexto(id, valor) {
+    const elemento = document.getElementById(id);
+
+    if (!elemento) {
+        console.warn(`Elemento com id "${id}" não encontrado no HTML.`);
+        return;
+    }
+
+    elemento.textContent = valor ?? "-";
 }

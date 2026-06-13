@@ -131,6 +131,21 @@ DB_PASS=senha_do_usuario
 1. Abra a pasta `front` no Visual Studio Code.
 2. Com a extensão Live Server instalada, clique em Go Live para iniciar.
 
+---   
+
+## 📖 Guia de Uso para Profissionais de Saúde
+
+O AvaliaX conta com um guia detalhado em PDF voltado para profissionais de saúde.  
+Este documento explica como utilizar o sistema na prática clínica, incluindo:
+
+- **[Acesso ao sistema](ca://s?q=Detalhar_acesso_ao_sistema)**: login, perfis de usuário (comum e administrador) e permissões.  
+- **[Cadastro de pacientes](ca://s?q=Detalhar_cadastro_de_pacientes)**: inserção de dados básicos, autocadastro por responsáveis e gerenciamento de usuários.  
+- **[Realização de avaliações](ca://s?q=Detalhar_realizacao_de_avaliacoes)**: formulários objetivos e de sintomas, cálculo automático de score e geração de resultados.  
+- **[Relatórios](ca://s?q=Detalhar_relatorios)**: estatísticas globais, relatórios individuais por paciente e exportação em PDF para compartilhamento.  
+
+📂 O guia está disponível no repositório como:  
+`Guia de Uso para Profissionais de Saúde - AvaliaX.pdf`
+
 ---
 
 ## Usuários Pré-inseridos

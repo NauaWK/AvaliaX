@@ -33,10 +33,10 @@ Permite cadastro de pacientes, realização de avaliações estruturadas e gera�
 - **Front-end:** HTML5, CSS3 e JavaScript.
    
 - **Back-end:** Java 21, ecossistema Spring (Spring Boot, Spring Security, Spring Data, Bean Validation) para API e Java JWT (JJWT) para token JWT.
-  
-- **Banco de Dados:** MySQL 8.x.
 
 - **ORM:** Hibernate (Spring Data JPA).
+  
+- **Banco de Dados:** MySQL 8.x.
 
 - **Migrações:** Flyway (scripts versionados).
 

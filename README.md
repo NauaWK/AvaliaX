@@ -30,9 +30,9 @@ Permite cadastro de pacientes, realização de avaliações estruturadas e gera�
 
 ## Tecnologias Utilizadas
 
-- **Front-end:** HTML5, CSS3, JavaScript (REST API).
+- **Front-end:** HTML5, CSS3 e JavaScript.
    
-- **Back-end:** Java 21 (Spring Boot 3.x).
+- **Back-end:** Java 21, ecossistema Spring (Spring Boot, Spring Security, Spring Data, Bean Validation) para API e Java JWT (JJWT) para token JWT.
   
 - **Banco de Dados:** MySQL 8.x.
 

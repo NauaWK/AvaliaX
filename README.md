@@ -148,6 +148,8 @@ Este documento explica como utilizar o sistema na prática clínica, incluindo:
 
 ---
 
+Funcionalidades do site: https://www.youtube.com/watch?v=erRbgQEHYgw
+
 ## Usuários Pré-inseridos
 O sistema já possui dois usuários cadastrados via migrações SQL:
 

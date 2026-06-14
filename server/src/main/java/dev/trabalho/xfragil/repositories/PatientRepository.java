@@ -10,7 +10,12 @@ import org.springframework.data.repository.query.Param;
 
 public interface PatientRepository extends JpaRepository<Patient, Integer>{
     
-    Long countByUserIdAndActiveTrue(Integer userId);
+    
+    @Query(value = "SELECT COUNT(*) FROM pacientes " +
+               "WHERE (id_usuario = :userId OR id_usuario IS NULL) " +
+               "AND ativo = true", 
+       nativeQuery = true)
+    Long countByUserId(@Param("userId") Integer userId);
     
     Optional<Patient> findByCPF(String CPF);
     

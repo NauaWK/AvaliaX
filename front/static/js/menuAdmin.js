@@ -1,3 +1,4 @@
+console.log("Menu Admin carregado");
 (function () {
     const token = localStorage.getItem("token");
 

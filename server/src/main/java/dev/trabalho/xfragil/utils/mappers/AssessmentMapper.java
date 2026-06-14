@@ -40,7 +40,7 @@ public class AssessmentMapper {
     
     public AssessmentOverviewDTO toOverviewDto(Assessment a, List<String> symptoms){
         return new AssessmentOverviewDTO(
-                a.getUser().getName(),
+                a.getUser() != null ? a.getUser().getName() : "Realizada por responsável",
                 a.getOrigin(),
                 a.getAssessmentDate(),
                 a.getScore(),

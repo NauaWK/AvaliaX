@@ -12,14 +12,22 @@ import org.springframework.data.repository.query.Param;
 
 public interface AssessmentRepository extends JpaRepository<Assessment, Integer>{
     
-    Long countByUserId(Integer userId);
-
-    Long countByUserIdAndResult(Integer userId, Result result);
     
+    @Query(value = "SELECT COUNT(*) FROM avaliacoes "
+            + "WHERE (id_usuario = :userId OR id_usuario IS NULL)"
+            , nativeQuery = true)
+    Long countByUserId(@Param("userId") Integer userId);
+    
+    @Query(value = "SELECT COUNT(*) FROM avaliacoes " +
+               "WHERE (id_usuario = :userId OR id_usuario IS NULL) " +
+               "AND resultado = :result",
+       nativeQuery = true)
+    Long countByUserIdAndResult(@Param("userId") Integer userId, @Param("result") Result result);
+
     Long countByPatientIdAndResult(Integer patientId, Result result);
     
     @Query(value = "SELECT AVG(score) from avaliacoes "
-            + "WHERE id_usuario = :userId", nativeQuery = true)
+            + "WHERE (id_usuario = :userId OR id_usuario IS NULL)", nativeQuery = true)
     Double findAverageScoreByUserId(@Param("userId") Integer userId);
     
     @Query(value = "SELECT * FROM avaliacoes "
@@ -27,11 +35,15 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Integer>
             + "OR origem = 'RESPONSAVEL'", 
             nativeQuery = true)
     List<Assessment> findByUserId(@Param("userId") Integer userId);
-
-    Optional<Assessment> findByIdAndUserId(Integer id, Integer userId);
+    
+    @Query(value = "SELECT * FROM avaliacoes "
+            + "WHERE id_avaliacao = :id "
+            + "AND (id_usuario = :userId OR id_usuario IS NULL)" , 
+            nativeQuery = true)
+    Optional<Assessment> findByIdAndUserId(@Param("id") Integer id, @Param("userId") Integer userId);
     
         @Query(value = "SELECT * FROM avaliacoes "
-            + "WHERE id_usuario = :userId "
+            + "WHERE (id_usuario = :userId OR id_usuario IS NULL) "
             + "ORDER BY data_avaliacao "
             + "DESC LIMIT 5", nativeQuery = true)
     List<Assessment> findRecentAssessmentsByUserId(@Param("userId") Integer userId);

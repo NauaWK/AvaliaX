@@ -32,7 +32,7 @@ public class DashboardService {
 
     public DashboardResponseDTO getDashboardDataByUser(Integer userId) 
     {
-        Long totalPatients = patientRepo.countByUserIdAndActiveTrue(userId);
+        Long totalPatients = patientRepo.countByUserId(userId);
         Long totalAssessments = assessmentRepo.countByUserId(userId);
         Long totalTestesIndicados = assessmentRepo.countByUserIdAndResult(userId, Result.TESTE_INDICADO);
         Long totalInconclusivos = assessmentRepo.countByUserIdAndResult(userId, Result.INCONCLUSIVO);

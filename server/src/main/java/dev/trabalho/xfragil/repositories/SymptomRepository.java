@@ -20,7 +20,7 @@ public interface SymptomRepository extends JpaRepository<Symptom, Integer>{
         JOIN sintomas s ON avs.id_sintoma = s.id_sintoma
         JOIN avaliacoes a ON avs.id_avaliacao = a.id_avaliacao
         JOIN pacientes p ON a.id_paciente = p.id_paciente
-        WHERE a.id_usuario = :userId AND p.sexo = :gender AND avs.presente = 1
+        WHERE (a.id_usuario = :userId OR a.id_usuario IS NULL) AND p.sexo = :gender AND avs.presente = 1
         GROUP BY s.descricao
         ORDER BY qtd DESC
         LIMIT 1
@@ -45,7 +45,7 @@ public interface SymptomRepository extends JpaRepository<Symptom, Integer>{
         FROM avaliacao_sintoma avs
         JOIN sintomas s ON avs.id_sintoma = s.id_sintoma
         JOIN avaliacoes a ON avs.id_avaliacao = a.id_avaliacao
-        WHERE a.id_usuario = :userId AND avs.presente = 1
+        WHERE (a.id_usuario = :userId OR a.id_usuario IS NULL) AND avs.presente = 1
         GROUP BY s.descricao
         ORDER BY qtd DESC
     """, nativeQuery = true)

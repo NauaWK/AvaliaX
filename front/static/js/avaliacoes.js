@@ -193,6 +193,9 @@ function renderizarAvaliacoes(lista) {
 async function abrirDetalhes(id) {
     const tokenAtual = localStorage.getItem("token");
 
+    console.log("Tentando abrir avaliação ID:", id);
+    console.log("Token existe?", !!tokenAtual);
+
     try {
         const response = await fetch(`${API_URL}/${id}`, {
             method: "GET",
@@ -201,18 +204,34 @@ async function abrirDetalhes(id) {
             }
         });
 
+        const respostaTexto = await response.text();
+
+        console.log("Status GET por ID:", response.status);
+        console.log("Resposta do backend:", respostaTexto);
+
         if (response.status === 401) {
-            const erro = await response.json();
-            console.log("Erro 401:", erro);
-            alert("Token inválido ou expirado. Faça login novamente.");
+            alert("Sua sessão expirou. Faça login novamente.");
+            localStorage.removeItem("token");
+            window.location.href = "login.html";
+            return;
+        }
+
+        if (response.status === 403) {
+            alert("O backend bloqueou essa avaliação para esse usuário comum.");
+            return;
+        }
+
+        if (response.status === 404) {
+            alert("Avaliação não encontrada pelo ID: " + id);
             return;
         }
 
         if (!response.ok) {
-            throw new Error("Erro ao buscar avaliação por ID.");
+            alert("Erro no backend ao buscar avaliação. Status: " + response.status);
+            return;
         }
 
-        avaliacaoAtual = await response.json();
+        avaliacaoAtual = respostaTexto ? JSON.parse(respostaTexto) : null;
 
         preencherDetalhes(avaliacaoAtual);
 
@@ -220,7 +239,7 @@ async function abrirDetalhes(id) {
         modal.classList.add("ativo");
 
     } catch (error) {
-        console.error(error);
+        console.error("Erro completo ao abrir detalhes:", error);
         alert("Erro ao abrir avaliação.");
     }
 }

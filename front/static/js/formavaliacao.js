@@ -164,6 +164,8 @@ form.addEventListener("submit", async event => {
             alert(erro);
             return;
         }
+        localStorage.removeItem("cpfPacienteAvaliacao");
+        window.location.href = "avaliacoes.html"
 
 
     } catch (error) {
